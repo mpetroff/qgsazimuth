@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ui</class>
+ <widget class="QDialog" name="ui">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>431</width>
+    <height>489</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Geometry from Azimuth and Distance</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>56</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Layer:</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>10</y>
+     <width>341</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>310</y>
+     <width>331</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>Azimuth</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Distance</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Zenith</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>310</y>
+     <width>75</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Remove</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>460</y>
+     <width>75</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Import List</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_4">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>390</y>
+     <width>75</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Up</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_5">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>420</y>
+     <width>75</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Down</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_6">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>460</y>
+     <width>75</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Clear List</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>301</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Starting vertex</string>
+   </property>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>20</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_2">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>50</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_3">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>80</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>21</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>X0:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>60</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Y0:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>21</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Z0:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_8">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>20</y>
+      <width>101</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Capture from Map</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_3">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>101</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Survey type</string>
+   </property>
+   <widget class="QRadioButton" name="radioButton_7">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>92</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Irradiate</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_8">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>92</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Polygonal</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="pushButton_7">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>460</y>
+     <width>75</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Draw</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_4">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>30</y>
+     <width>171</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Input type</string>
+   </property>
+   <widget class="QRadioButton" name="radioButton_12">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Degrees, Minutes, Seconds</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_11">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>151</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Decimal Degrees</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>301</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Next vertex</string>
+   </property>
+   <widget class="QLineEdit" name="lineEdit_7">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>20</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_8">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>50</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_9">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>80</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>90</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>51</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Azimuth:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>51</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Distance:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>41</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Zenith:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>80</y>
+      <width>75</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Insert</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_10">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>20</y>
+      <width>101</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Capture from Map</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="pushButton_9">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>460</y>
+     <width>75</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Export List</string>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>comboBox</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>lineEdit_2</tabstop>
+  <tabstop>lineEdit_3</tabstop>
+  <tabstop>radioButton_8</tabstop>
+  <tabstop>radioButton_7</tabstop>
+  <tabstop>radioButton_12</tabstop>
+  <tabstop>lineEdit_7</tabstop>
+  <tabstop>lineEdit_8</tabstop>
+  <tabstop>lineEdit_9</tabstop>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>pushButton_2</tabstop>
+  <tabstop>pushButton_4</tabstop>
+  <tabstop>pushButton_5</tabstop>
+  <tabstop>pushButton_6</tabstop>
+  <tabstop>pushButton_3</tabstop>
+  <tabstop>pushButton_7</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_6</sender>
+   <signal>clicked()</signal>
+   <receiver>tableWidget</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>303</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>175</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

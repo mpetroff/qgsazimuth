@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>qgsazimuth.png</file>
+    </qresource>
+</RCC>
