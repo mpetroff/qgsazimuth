@@ -52,7 +52,7 @@ class GetCoordTool(QgsMapTool):
     
     snapper=QgsMapCanvasSnapper(self.canvas)
     snapped=snapper.snapToBackgroundLayers(pixels)
-    QMessageBox.information(None,"Teste", str(snapped[1]))
+    #QMessageBox.information(None,"Teste", str(snapped[1]))
     if len(snapped[1])>0:
         xy=snapped[1][0].afterVertex
     else:
