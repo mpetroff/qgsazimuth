@@ -200,7 +200,7 @@ class qgsazimuth:
         if (self.pluginGui.tableWidget.currentRow()>0):
             i=self.pluginGui.tableWidget.currentRow()
         else:
-            i=0
+            i=self.pluginGui.tableWidget.rowCount()
         self.pluginGui.tableWidget.insertRow(i)
         self.pluginGui.tableWidget.setItem(i, 0, QTableWidgetItem(str(az)))
         self.pluginGui.tableWidget.setItem(i, 1, QTableWidgetItem(str(dist)))
