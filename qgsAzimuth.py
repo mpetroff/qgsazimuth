@@ -69,6 +69,8 @@ class qgsazimuth:
         for (name,layer) in self.layermap.iteritems():
             self.pluginGui.comboBox.addItem(name)
         self.pluginGui.tableWidget.setCurrentCell(0,0)
+        self.crs=self.canvas.mapRenderer().destinationSrs()
+        self.pluginGui.lineEdit_4.setText(self.crs.description())
         self.pluginGui.show()
     
     
@@ -99,6 +101,7 @@ class qgsazimuth:
             return 0
         vlist=[]
         vlist.append([float(str(self.pluginGui.lineEdit.text())) ,float(str(self.pluginGui.lineEdit_2.text())),         float(str(self.pluginGui.lineEdit_3.text()))])
+        #reading the table
         for i in range(0,self.pluginGui.tableWidget.rowCount()):
             zen=str(self.pluginGui.tableWidget.item(i,2).text())
             az=str(self.pluginGui.tableWidget.item(i,0).text())
@@ -110,11 +113,15 @@ class qgsazimuth:
             elif (self.pluginGui.radioButton_12.isChecked()): #inputtype='DMS'
                 az=float(self.dmsToDd(az))
                 zen=float(self.dmsToDd(zen))
-            #checking survey type
+            #checking survey type and drawing
             if (self.pluginGui.radioButton_7.isChecked()): #surveytype='irradiation'
                 vlist.append(self.nextvertex(vlist[0],d,az,zen))#reference first vertex
             elif (self.pluginGui.radioButton_8.isChecked()): #surveytype='polygonal'
                 vlist.append(self.nextvertex(vlist[-1],d,az,zen))#reference last vertex
+        
+        #reprojecting to projects SRS
+        vlist=self.reproject(vlist, vectorlayer)
+        
         featurelist=[]
         if (geometrytype==1): #POINT
             for point in vlist:
@@ -228,3 +235,9 @@ class qgsazimuth:
         self.canvas.setMapTool(self.saveTool)
         QObject.disconnect(self.tool, SIGNAL("finished(PyQt_PyObject)"),
                        self.getpoint)
+
+    def reproject(self, vlist,  vectorlayer):
+        renderer=self.canvas.mapRenderer()
+        for i, point in enumerate(vlist):
+            vlist[i]= renderer.layerToMapCoordinates(vectorlayer, QgsPoint(point[0], point[1]))
+        return vlist
