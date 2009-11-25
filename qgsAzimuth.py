@@ -457,25 +457,27 @@ class qgsazimuth:
     
     #------------------------
     def loadConf(self):
-        self.say("getting config data from "+self.configFile)
+        #self.say("getting config data from "+self.configFile)
         try:
             f=open(self.configFile)
             lines=f.readlines()
             for line in lines:
-                self.say("found '"+line+"'")
+                #self.say("found '"+line+"'")
                 parts = (line.strip()).split('=')
                 if (parts[0]=='inp_exp_dir'):
                     self.fPath = parts[1]
-                    self.say("found config file:\n inp/exp dir='"+self.fPath+"' in "+self.configFile)
+                    #self.say("found config file:\n inp/exp dir='"+self.fPath+"' in "+self.configFile)
         except: 
             self.fPath = QString()
         f.close()
 
     def saveConf(self):
         f=open(self.configFile, 'w')
-        self.say("saving '"+self.fPath+"' to "+self.configFile)
+        #self.say("saving '"+self.fPath+"' to "+self.configFile)
         try:
-            f.write('inp_exp_dir='+self.fpath+'\n')
+            line = 'inp_exp_dir='+self.fPath+'\n'
+            f.write(line)
         except:
-            self.say('Unable to write to file: '+self.configFile)
+            import sys
+            self.say("Unable to write to file '"+self.configFile+"':\n"+str(sys.exc_info()[0])+str(sys.exc_info()[1]))
         f.close()
