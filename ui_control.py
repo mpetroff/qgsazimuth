@@ -9,15 +9,9 @@ class ui_Control(QDialog, Ui_ui):
         QDialog.__init__(self, parent)
         self.setupUi(self)
 
-"""import sys,os
-sys.path.append("/usr/share/qgis/python/")
-os.system("export LD_LIBRARY_PATH=/usr/lib/qgis/")
-from qgis.core import *
-from qgis.gui import *
-QgsApplication.setPrefixPath("/usr/", True)
-QgsApplication.initQgis()
-app=QApplication(sys.argv)
-c=ui_Control(None)
-c.show()
-QgsApplication.exitQgis()
-sys.exit(app.exec_())"""
+if __name__=="__main__":
+    import sys,os
+    app=QApplication(sys.argv)
+    c=ui_Control(None)
+    c.show()
+    sys.exit(app.exec_())
