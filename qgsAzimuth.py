@@ -70,10 +70,17 @@ class qgsazimuth:
         QObject.connect(self.pluginGui.pushButton_8,SIGNAL("clicked()"),self.startgetpoint)   # capture starting point from map
         QObject.connect(self.pluginGui.pushButton_9,SIGNAL("clicked()"),self.saveList)          # export list
         
-        #reading all layers
+        #fill combo box with all layers
         self.layermap=QgsMapLayerRegistry.instance().mapLayers()
         for (name,layer) in self.layermap.iteritems():
             self.pluginGui.comboBox.addItem(name)
+            if (layer == self.iface.activeLayer()):
+                self.say('found active layer='+name)
+                activeName = name
+        
+        # set combo box to current active layer
+        lyrNdx = self.pluginGui.comboBox.findText(activeName)
+        self.pluginGui.comboBox.setCurrentIndex(lyrNdx)
         self.pluginGui.tableWidget.setCurrentCell(0,0)
         self.pluginGui.show()
         
