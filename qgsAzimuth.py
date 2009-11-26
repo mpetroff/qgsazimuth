@@ -109,7 +109,8 @@ class qgsazimuth:
             return 0
         
         # if magnetic heading chosen, assure we have a declination angle
-        if (self.pluginGui.radioButton_15.isChecked())  and (str(self.pluginGui.lineEdit_7.text()) == ''):   #magnetic headings      
+        #if (self.pluginGui.radioButton_15.isChecked())  and (str(self.pluginGui.lineEdit_7.text()) == ''):   #magnetic headings      
+        if (self.pluginGui.radioButton_15.isChecked())  and (str(self.pluginGui.lineEdit_5.text()) == ''):   #magnetic headings      
             #warn=QgsMessageViewer()
             #warn.setMessageAsPlainText("No magnetic declination value entered.")
             #warn.showMessage()
@@ -142,7 +143,8 @@ class qgsazimuth:
             if (self.pluginGui.radioButton_13.isChecked()):     # True headings
                 self.magDev = 0.0
             elif (self.pluginGui.radioButton_15.isChecked()):   #magnetic headings
-                self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_7.text())))
+                #self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_7.text())))
+                self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_5.text())))
             az = float(az) + float(self.magDev)
         
             #correct for angles outside of 0.0-360.0
@@ -343,7 +345,8 @@ class qgsazimuth:
     def setDeclination(self,  s):    
         #self.say('processing declination='+s)
         #TODO - we need a proper field for this
-        self.pluginGui.lineEdit_7.setText(s)
+        #self.pluginGui.lineEdit_7.setText(s)
+        self.pluginGui.lineEdit_5.setText(s)
         self.magDev = float(s)
 
     def setStartAt(self,  s):
