@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>537</width>
-    <height>576</height>
+    <width>601</width>
+    <height>613</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -100,7 +100,7 @@
          <item>
           <widget class="QGroupBox" name="groupBox_4">
            <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="title">
             <string>Input type</string>
@@ -109,7 +109,7 @@
             <item>
              <widget class="QRadioButton" name="radioButton_11">
               <property name="enabled">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="text">
                <string>Decimal Degrees</string>
@@ -125,7 +125,7 @@
             <item>
              <widget class="QRadioButton" name="radioButton_12">
               <property name="enabled">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="text">
                <string>Degrees, Minutes, Seconds</string>
@@ -575,7 +575,7 @@
           <item>
            <widget class="QRadioButton" name="radioButton_15">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>Magnetic</string>
@@ -584,6 +584,9 @@
              <bool>false</bool>
             </property>
            </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_5"/>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -604,10 +607,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBox">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
+             <widget class="QPushButton" name="pushButton_12">
               <property name="text">
                <string>Get from NIMA</string>
               </property>
@@ -699,7 +699,7 @@
           <item>
            <widget class="QRadioButton" name="radioButton_18">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>Bearing</string>
@@ -852,7 +852,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_9">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
         <string>Export List</string>

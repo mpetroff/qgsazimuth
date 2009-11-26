@@ -35,7 +35,7 @@ class qgsazimuth:
         self.iface = iface
         self.canvas = iface.mapCanvas()
         self.fPath = QString()  # set default working directory, updated from config file & by Import/Export
-        self.configFile = QDir.currentPath ()+'qgsAz.conf'  # application config file 
+        self.configFile = os.path.join(os.getcwd(),'qgsAz.conf')  # application config file 
         self.loadConf() # get config data
     
     def initGui(self):
@@ -458,7 +458,7 @@ class qgsazimuth:
     #------------------------
     def loadConf(self):
         #self.say("getting config data from "+self.configFile)
-        try:
+        if os.path.exists(self.configFile):
             f=open(self.configFile)
             lines=f.readlines()
             for line in lines:
@@ -467,9 +467,10 @@ class qgsazimuth:
                 if (parts[0]=='inp_exp_dir'):
                     self.fPath = parts[1]
                     #self.say("found config file:\n inp/exp dir='"+self.fPath+"' in "+self.configFile)
-        except: 
+            f.close()
+        else:
             self.fPath = QString()
-        f.close()
+        
 
     def saveConf(self):
         f=open(self.configFile, 'w')
