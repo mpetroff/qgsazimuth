@@ -69,13 +69,14 @@ class qgsazimuth:
         QObject.connect(self.pluginGui.pushButton_7,SIGNAL("clicked()"),self.addgeometry)   # draw object
         QObject.connect(self.pluginGui.pushButton_8,SIGNAL("clicked()"),self.startgetpoint)   # capture starting point from map
         QObject.connect(self.pluginGui.pushButton_9,SIGNAL("clicked()"),self.saveList)          # export list
+        #QObject.connect(self.pluginGui.pushButton_13,SIGNAL("clicked()"),sys.exit())                 # quit!
         
         #fill combo box with all layers
         self.layermap=QgsMapLayerRegistry.instance().mapLayers()
         for (name,layer) in self.layermap.iteritems():
             self.pluginGui.comboBox.addItem(name)
             if (layer == self.iface.activeLayer()):
-                self.say('found active layer='+name)
+                #self.say('found active layer='+name)
                 activeName = name
         
         # set combo box to current active layer
@@ -133,11 +134,10 @@ class qgsazimuth:
             dis=float(str(self.pluginGui.tableWidget.item(i,1).text()))
             zen=str(self.pluginGui.tableWidget.item(i,2).text())
 
-            #-v-v-v-
-            # adjust for input in feet, not meters
-            dis = dis/3.281
-            #-^-^-^-
-            
+            if (self.pluginGui.radioButton_2.isChecked()):
+                # adjust for input in feet, not meters
+                dis = dis/3.281
+           
             #checking degree input
             if (self.pluginGui.radioButton_17.isChecked()):     #angletype='Azimuth'
                 az=float(self.dmsToDd(az))
@@ -147,7 +147,7 @@ class qgsazimuth:
                 zen=float(self.bearingToDd(zen))
         
             #correct for magnetic compass headings if necessary
-            if (self.pluginGui.radioButton_13.isChecked()):     # True headings
+            if (self.pluginGui.radioButton_14.isChecked()):     # default headings
                 self.magDev = 0.0
             elif (self.pluginGui.radioButton_15.isChecked()):   #magnetic headings
                 #self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_7.text())))
@@ -342,8 +342,8 @@ class qgsazimuth:
     
     def setHeading(self,  s):
         #self.say('processing headingType='+s)
-        if (s=='true'):
-            self.pluginGui.radioButton_13.setChecked(True)
+        if (s=='coordinate system'):
+            self.pluginGui.radioButton_14.setChecked(True)
         elif (s=='magnetic'):
             self.pluginGui.radioButton_15.setChecked(True)
         else:
@@ -355,6 +355,11 @@ class qgsazimuth:
         #self.pluginGui.lineEdit_7.setText(s)
         self.pluginGui.lineEdit_5.setText(s)
         self.magDev = float(s)
+
+    def setDistanceUnits(self,  s):
+         #self.say('processing distance units='+s)
+        if (s=='feet'):
+            self.pluginGui.radioButton_2.setChecked(True)
 
     def setStartAt(self,  s):
         #self.say('processing startAt='+s)
@@ -383,12 +388,13 @@ class qgsazimuth:
     #
     # format:
     #   line 1: angle=Azimuth|Bearing|Polar
-    #   line 2: heading=True|Magnetic
+    #   line 2: heading=Coordinate System|Magnetic
     #   line 3: declination=[- ]x.xxd[ xx.x'] [E|W]
-    #   line 4: startAt=xxxxx.xxxxx, xxxxxx.xxxxx
-    #   line 5: survey=Polygonal|Irradiat
-    #   line 6: [data]
-    #   line 7 through end: Azimuth; dist; zen
+    #   line 4: distunits=Default|Feet
+    #   line 5: startAt=xxxxx.xxxxx, xxxxxx.xxxxx
+    #   line 6: survey=Polygonal|Irradiat
+    #   line 7: [data]
+    #   line 8 through end: Azimuth; dist; zen
     #
     #       note: lines 1 through 5 are optional if hand entered, but will always be generated when 'saved'
     # ---------------------------------------------------------------------------------------------------------------------------------
@@ -416,6 +422,8 @@ class qgsazimuth:
                     self.setHeading(parts[1].lower())
                 elif (parts[0].lower()=='declination'):
                     self.setDeclination(parts[1].lower())
+                elif (parts[0].lower()=='dist_units'):
+                    self.setDistanceUnits(parts[1].lower())
                 elif (parts[0].lower()=='startat'):
                     self.setStartAt(parts[1].lower())
                 elif (parts[0].lower()=='survey'):
@@ -441,14 +449,20 @@ class qgsazimuth:
             s='Bearing'
         f.write('angle='+s+'\n') 
         
-        if (self.pluginGui.radioButton_13.isChecked()):
-            s='True'
+        if (self.pluginGui.radioButton_14.isChecked()):
+            s='Coordinate_System'
         elif (self.pluginGui.radioButton_15.isChecked()):
             s='Magnetic'
         f.write('heading='+s+'\n') 
         
         if (self.magDev!=0.0):
             f.write('declination='+str(self.magDev)+'\n')
+        
+        if (self.pluginGui.radioButton.isChecked()):
+            s='Default'
+        elif (self.pluginGui.radioButton_2.isChecked()):
+            s='Feet'
+        f.write('dist_units='+s+'\n') 
         
         f.write('startAt='+str(self.pluginGui.lineEdit.text())+';'+str(self.pluginGui.lineEdit_2.text())+';'+str(self.pluginGui.lineEdit_3.text())+'\n')
 
