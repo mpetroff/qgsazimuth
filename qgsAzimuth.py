@@ -69,13 +69,14 @@ class qgsazimuth:
         QObject.connect(self.pluginGui.pushButton_7,SIGNAL("clicked()"),self.addgeometry)   # draw object
         QObject.connect(self.pluginGui.pushButton_8,SIGNAL("clicked()"),self.startgetpoint)   # capture starting point from map
         QObject.connect(self.pluginGui.pushButton_9,SIGNAL("clicked()"),self.saveList)          # export list
-        #QObject.connect(self.pluginGui.pushButton_13,SIGNAL("clicked()"),sys.exit())                 # quit!
+        #QObject.connect(self.pluginGui.pushButton_13,SIGNAL("clicked()"), return)                 # quit!
         
         #fill combo box with all layers
         self.layermap=QgsMapLayerRegistry.instance().mapLayers()
         for (name,layer) in self.layermap.iteritems():
             self.pluginGui.comboBox.addItem(name)
             if (layer == self.iface.activeLayer()):
+                self.pluginGui.lineEdit_4.setText((layer.crs()).description())
                 #self.say('found active layer='+name)
                 activeName = name
         
@@ -110,18 +111,11 @@ class qgsazimuth:
         
         #check if the layer is editable
         if (not vectorlayer.isEditable()):
-            #warn=QgsMessageViewer()
-            #warn.setMessageAsPlainText("Layer not in edit mode.")
-            #warn.showMessage()
             self.say("Layer not in edit mode.")
             return 0
         
         # if magnetic heading chosen, assure we have a declination angle
-        #if (self.pluginGui.radioButton_15.isChecked())  and (str(self.pluginGui.lineEdit_7.text()) == ''):   #magnetic headings      
         if (self.pluginGui.radioButton_15.isChecked())  and (str(self.pluginGui.lineEdit_5.text()) == ''):   #magnetic headings      
-            #warn=QgsMessageViewer()
-            #warn.setMessageAsPlainText("No magnetic declination value entered.")
-            #warn.showMessage()
             self.say("No magnetic declination value entered.")
             return 0
         
@@ -150,7 +144,6 @@ class qgsazimuth:
             if (self.pluginGui.radioButton_14.isChecked()):     # default headings
                 self.magDev = 0.0
             elif (self.pluginGui.radioButton_15.isChecked()):   #magnetic headings
-                #self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_7.text())))
                 self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_5.text())))
             az = float(az) + float(self.magDev)
         
@@ -351,8 +344,6 @@ class qgsazimuth:
             
     def setDeclination(self,  s):    
         #self.say('processing declination='+s)
-        #TODO - we need a proper field for this
-        #self.pluginGui.lineEdit_7.setText(s)
         self.pluginGui.lineEdit_5.setText(s)
         self.magDev = float(s)
 
