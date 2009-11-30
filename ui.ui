@@ -160,6 +160,9 @@
               <property name="text" >
                <string>X0:</string>
               </property>
+              <property name="buddy" >
+               <cstring>lineEdit</cstring>
+              </property>
              </widget>
             </item>
             <item>
@@ -223,6 +226,9 @@
               <property name="text" >
                <string>Y0:</string>
               </property>
+              <property name="buddy" >
+               <cstring>lineEdit_2</cstring>
+              </property>
              </widget>
             </item>
             <item>
@@ -278,6 +284,9 @@
              <widget class="QLabel" name="label_4" >
               <property name="text" >
                <string>Z0:</string>
+              </property>
+              <property name="buddy" >
+               <cstring>lineEdit_3</cstring>
               </property>
              </widget>
             </item>
@@ -359,6 +368,9 @@
               <property name="text" >
                <string>Azimuth:</string>
               </property>
+              <property name="buddy" >
+               <cstring>lineEdit_7</cstring>
+              </property>
              </widget>
             </item>
             <item>
@@ -425,6 +437,9 @@
               <property name="text" >
                <string>Distance:</string>
               </property>
+              <property name="buddy" >
+               <cstring>lineEdit_8</cstring>
+              </property>
              </widget>
             </item>
             <item>
@@ -464,6 +479,9 @@
              <widget class="QLabel" name="label_10" >
               <property name="text" >
                <string>Vertical:</string>
+              </property>
+              <property name="buddy" >
+               <cstring>lineEdit_9</cstring>
               </property>
              </widget>
             </item>
@@ -854,9 +872,22 @@
       </widget>
      </item>
      <item>
+      <spacer name="horizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButton_13" >
        <property name="enabled" >
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text" >
         <string>Close</string>
@@ -880,5 +911,22 @@
   <tabstop>lineEdit_9</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_13</sender>
+   <signal>clicked()</signal>
+   <receiver>ui</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>419</x>
+     <y>597</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>377</x>
+     <y>595</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

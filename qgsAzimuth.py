@@ -29,7 +29,15 @@ import resources
 from math import *
 from getcoordtool import *
 
-class qgsazimuth:
+class qgsazimuth (object):
+    """
+    Base class for the qgsAzimuth plugin
+    - Provides a means to draw a feature by specifying the angle and distance beetween points.
+    - Supports angles in either the conventional 0.0 - 360.0 clockwise from North
+        or the surveyor's 'Easting' system with bearings plus or minus 90 deg. from North or South
+    - Supports magnetic declination as degrees plus or minus for East or West respectively
+    - supports inputs in feet or the current CRS units
+    """
 
     def __init__(self, iface):
         self.iface = iface
@@ -130,7 +138,7 @@ class qgsazimuth:
 
             if (self.pluginGui.radioButton_2.isChecked()):
                 # adjust for input in feet, not meters
-                dis = dis/3.281
+                dis = float(dis)/3.281
            
             #checking degree input
             if (self.pluginGui.radioButton_17.isChecked()):     #angletype='Azimuth'
