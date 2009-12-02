@@ -70,28 +70,27 @@ class qgsazimuth (object):
         self.pluginGui = ui_Control(self.iface.mainWindow())
 
         #INSERT EVERY SIGNAL CONECTION HERE!
-        QObject.connect(self.pluginGui.pushButton,SIGNAL("clicked()"),self.newVertex)         # insert next segment
-        QObject.connect(self.pluginGui.pushButton_2,SIGNAL("clicked()"),self.delrow)           # delete list row
-        QObject.connect(self.pluginGui.pushButton_3,SIGNAL("clicked()"),self.loadList)          # import list
-        QObject.connect(self.pluginGui.pushButton_6,SIGNAL("clicked()"),self.clearList)         #'Clear List'
-        QObject.connect(self.pluginGui.pushButton_7,SIGNAL("clicked()"),self.addgeometry)   # draw object
-        QObject.connect(self.pluginGui.pushButton_8,SIGNAL("clicked()"),self.startgetpoint)   # capture starting point from map
-        QObject.connect(self.pluginGui.pushButton_9,SIGNAL("clicked()"),self.saveList)          # export list
-        #QObject.connect(self.pluginGui.pushButton_13,SIGNAL("clicked()"), return)                 # quit!
+        QObject.connect(self.pluginGui.pushButton_vertexInsert,SIGNAL("clicked()"),self.newVertex) 
+        QObject.connect(self.pluginGui.pushButton_segListRowDel,SIGNAL("clicked()"),self.delrow) 
+        QObject.connect(self.pluginGui.pushButton_segListLoad,SIGNAL("clicked()"),self.loadList)
+        QObject.connect(self.pluginGui.pushButton_segListClear,SIGNAL("clicked()"),self.clearList) 
+        QObject.connect(self.pluginGui.pushButton_objectDraw,SIGNAL("clicked()"),self.addgeometry)
+        QObject.connect(self.pluginGui.pushButton_startCapture,SIGNAL("clicked()"),self.startgetpoint) 
+        QObject.connect(self.pluginGui.pushButton_segListSave,SIGNAL("clicked()"),self.saveList)
         
         #fill combo box with all layers
         self.layermap=QgsMapLayerRegistry.instance().mapLayers()
         for (name,layer) in self.layermap.iteritems():
-            self.pluginGui.comboBox.addItem(name)
+            self.pluginGui.comboBox_layers.addItem(name)
             if (layer == self.iface.activeLayer()):
-                self.pluginGui.lineEdit_4.setText((layer.crs()).description())
+                self.pluginGui.lineEdit_crs.setText((layer.crs()).description())
                 #self.say('found active layer='+name)
                 activeName = name
         
         # set combo box to current active layer
-        lyrNdx = self.pluginGui.comboBox.findText(activeName)
-        self.pluginGui.comboBox.setCurrentIndex(lyrNdx)
-        self.pluginGui.tableWidget.setCurrentCell(0,0)
+        lyrNdx = self.pluginGui.comboBox_layers.findText(activeName)
+        self.pluginGui.comboBox_layers.setCurrentIndex(lyrNdx)
+        self.pluginGui.table_segmentList.setCurrentCell(0,0)
         self.pluginGui.show()
         
         #misc init
@@ -111,8 +110,8 @@ class qgsazimuth (object):
     
     def addgeometry(self):
         #reading a layer
-        print "Saving in "+self.pluginGui.comboBox.currentText()
-        vectorlayer=self.layermap[self.pluginGui.comboBox.currentText()]
+        print "Saving in "+self.pluginGui.comboBox_layers.currentText()
+        vectorlayer=self.layermap[self.pluginGui.comboBox_layers.currentText()]
         provider=vectorlayer.dataProvider()
         geometrytype=provider.geometryType()
         print geometrytype
@@ -123,36 +122,38 @@ class qgsazimuth (object):
             return 0
         
         # if magnetic heading chosen, assure we have a declination angle
-        if (self.pluginGui.radioButton_15.isChecked())  and (str(self.pluginGui.lineEdit_5.text()) == ''):   #magnetic headings      
+        if (self.pluginGui.radioButton_magNorth.isChecked())  and (str(self.pluginGui.lineEdit_magNorth.text()) == ''):   #magnetic headings      
             self.say("No magnetic declination value entered.")
             return 0
         
         vlist=[]
-        vlist.append([float(str(self.pluginGui.lineEdit.text())),
-                          float(str(self.pluginGui.lineEdit_2.text())), 
-                          float(str(self.pluginGui.lineEdit_3.text()))])
-        for i in range(self.pluginGui.tableWidget.rowCount()):
-            az=str(self.pluginGui.tableWidget.item(i,0).text())
-            dis=float(str(self.pluginGui.tableWidget.item(i,1).text()))
-            zen=str(self.pluginGui.tableWidget.item(i,2).text())
+        #Enter starting point
+        vlist.append([float(str(self.pluginGui.lineEdit_vertexX0.text())),
+                          float(str(self.pluginGui.lineEdit_vertexY0.text())), 
+                          float(str(self.pluginGui.lineEdit_vertexZ0.text()))])
+        #convert segment list to set of vertice
+        for i in range(self.pluginGui.table_segmentList.rowCount()):
+            az=str(self.pluginGui.table_segmentList.item(i,0).text())
+            dis=float(str(self.pluginGui.table_segmentList.item(i,1).text()))
+            zen=str(self.pluginGui.table_segmentList.item(i,2).text())
 
-            if (self.pluginGui.radioButton_2.isChecked()):
+            if (self.pluginGui.radioButton_englishUnits.isChecked()):
                 # adjust for input in feet, not meters
                 dis = float(dis)/3.281
            
             #checking degree input
-            if (self.pluginGui.radioButton_17.isChecked()):     #angletype='Azimuth'
+            if (self.pluginGui.radioButton_azimuthAngle.isChecked()):
                 az=float(self.dmsToDd(az))
                 zen=float(self.dmsToDd(zen))
-            elif (self.pluginGui.radioButton_18.isChecked()):   #angletype='Bearing'
+            elif (self.pluginGui.radioButton_bearingAngle.isChecked()): 
                 az=float(self.bearingToDd(az))
                 zen=float(self.bearingToDd(zen))
         
             #correct for magnetic compass headings if necessary
-            if (self.pluginGui.radioButton_14.isChecked()):     # default headings
+            if (self.pluginGui.radioButton_defaultNorth.isChecked()):
                 self.magDev = 0.0
-            elif (self.pluginGui.radioButton_15.isChecked()):   #magnetic headings
-                self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_5.text())))
+            elif (self.pluginGui.radioButton_magNorth.isChecked()): 
+                self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_magNorth.text())))
             az = float(az) + float(self.magDev)
         
             #correct for angles outside of 0.0-360.0
@@ -162,10 +163,10 @@ class qgsazimuth (object):
                 az = az + 360.0
         
             #checking survey type
-            if (self.pluginGui.radioButton_7.isChecked()):          #surveytype='irradiation'
+            if (self.pluginGui.radioButton_irrSurvey.isChecked()):
                 vlist.append(self.nextvertex(vlist[0],dis,az,zen))      #reference first vertex
                 surveytype='irradiation'
-            elif (self.pluginGui.radioButton_8.isChecked()):        #surveytype='polygonal'
+            elif (self.pluginGui.radioButton_polySurvey.isChecked()): 
                 vlist.append(self.nextvertex(vlist[-1],dis,az,zen))     #reference last vertex
                 surveytype = 'polygonal'
     
@@ -277,34 +278,35 @@ class qgsazimuth (object):
             dms=dms[1:]
         dms=dms.split(";")
         dd=0
+        #dd=str(float(dms[0])+float(dms[1])/60+float(dms[2])/3600)
         for i, f in enumerate(dms):
             if f!="":
                 dd+=float(f)/pow(60, i)
-        #dd=str(float(dms[0])+float(dms[1])/60+float(dms[2])/3600)
         return dd
     
     def clearList(self):
-        self.pluginGui.tableWidget.clearContents()
-        self.pluginGui.tableWidget.setRowCount(0)
+        self.pluginGui.table_segmentList.clearContents()
+        self.pluginGui.table_segmentList.setRowCount(0)
     
     def newVertex(self):
         #adds a vertex from the gui
-        self.addrow(self.pluginGui.lineEdit_7.text(), self.pluginGui.lineEdit_8.text(), self.pluginGui.lineEdit_9.text())
+        self.addrow(self.pluginGui.lineEdit_nextAzimuth.text(), 
+                        self.pluginGui.lineEdit_nextDistance.text(), 
+                        self.pluginGui.lineEdit_nextVertical.text())
     
     def addrow(self, az=0, dist=0, zen=90):
         #insert the vertext in the table
-        if (self.pluginGui.tableWidget.currentRow()>0):
-            i=self.pluginGui.tableWidget.currentRow()
+        if (self.pluginGui.table_segmentList.currentRow()>0):
+            i=self.pluginGui.table_segmentList.currentRow()
         else:
-            i=self.pluginGui.tableWidget.rowCount()
-        self.pluginGui.tableWidget.insertRow(i)
-        self.pluginGui.tableWidget.setItem(i, 0, QTableWidgetItem(str(az)))
-        self.pluginGui.tableWidget.setItem(i, 1, QTableWidgetItem(str(dist)))
-        self.pluginGui.tableWidget.setItem(i, 2, QTableWidgetItem(str(zen)))
-        #print self.pluginGui.tableWidget.item(i+1,1).text()#.setText("90")
+            i=self.pluginGui.table_segmentList.rowCount()
+        self.pluginGui.table_segmentList.insertRow(i)
+        self.pluginGui.table_segmentList.setItem(i, 0, QTableWidgetItem(str(az)))
+        self.pluginGui.table_segmentList.setItem(i, 1, QTableWidgetItem(str(dist)))
+        self.pluginGui.table_segmentList.setItem(i, 2, QTableWidgetItem(str(zen)))
     
     def delrow(self):
-        self.pluginGui.tableWidget.removeRow(self.pluginGui.tableWidget.currentRow())
+        self.pluginGui.table_segmentList.removeRow(self.pluginGui.table_segmentList.currentRow())
     
     def moveup(self):
         pass
@@ -319,8 +321,8 @@ class qgsazimuth (object):
         self.canvas.setMapTool(self.tool)
 
     def getpoint(self,pt):
-        self.pluginGui.lineEdit.setText(str(pt.x()))
-        self.pluginGui.lineEdit_2.setText(str(pt.y()))
+        self.pluginGui.lineEdit_vertexX0.setText(str(pt.x()))
+        self.pluginGui.lineEdit_vertexY0.setText(str(pt.y()))
         self.canvas.setMapTool(self.saveTool)
         QObject.disconnect(self.tool, SIGNAL("finished(PyQt_PyObject)"), self.getpoint)
 
@@ -333,46 +335,48 @@ class qgsazimuth (object):
     def setAngle(self, s):
         #self.say('processing angleType='+s)
         if (s=='azimuth'):
-            self.pluginGui.radioButton_17.setChecked(True)
+            self.pluginGui.radioButton_azimuthAngle.setChecked(True)
         elif (s=='bearing'):
-            self.pluginGui.radioButton_18.setChecked(True)
+            self.pluginGui.radioButton_bearingAngle.setChecked(True)
         elif (s=='polar'):
-            self.pluginGui.radioButton_16.setChecked(True)
+            self.pluginGui.radioButton_polorCoordAngle.setChecked(True)
         else:
             self.say('invalid angle type: '+s)
     
     def setHeading(self,  s):
         #self.say('processing headingType='+s)
         if (s=='coordinate system'):
-            self.pluginGui.radioButton_14.setChecked(True)
+            self.pluginGui.radioButton_defaultNorth.setChecked(True)
         elif (s=='magnetic'):
-            self.pluginGui.radioButton_15.setChecked(True)
+            self.pluginGui.radioButton_magNorth.setChecked(True)
         else:
             self.say('invalid heading type: '+s)
             
     def setDeclination(self,  s):    
         #self.say('processing declination='+s)
-        self.pluginGui.lineEdit_5.setText(s)
+        self.pluginGui.lineEdit_magNorth.setText(s)
         self.magDev = float(s)
 
     def setDistanceUnits(self,  s):
          #self.say('processing distance units='+s)
         if (s=='feet'):
-            self.pluginGui.radioButton_2.setChecked(True)
+            self.pluginGui.radioButton_englishUnits.setChecked(True)
+        else:
+            self.pluginGui.radioButton_defaultUnits.setChecked(True)
 
     def setStartAt(self,  s):
         #self.say('processing startAt='+s)
         coords=s.split(';')
-        self.pluginGui.lineEdit.setText(coords[0])
-        self.pluginGui.lineEdit_2.setText(coords[1])
-        self.pluginGui.lineEdit_3.setText(coords[2])
+        self.pluginGui.lineEdit_vertexX0.setText(coords[0])
+        self.pluginGui.lineEdit_vertexY0.setText(coords[1])
+        self.pluginGui.lineEdit_vertexZ0.setText(coords[2])
     
     def setSurvey(self, s):
         #self.say('processing surveyType='+s)
         if (s=='polygonal'):
-            self.pluginGui.radioButton_8.setChecked(True)
+            self.pluginGui.radioButton_polySurvey.setChecked(True)
         elif (s=='irradiate'):
-            self.pluginGui.radioButton_7.setChecked(True)
+            self.pluginGui.radioButton_irrSurvey.setChecked(True)
         else:
             self.say('invalid survey type: '+s)
     
@@ -442,38 +446,42 @@ class qgsazimuth (object):
         self.fPath = fInfo.absolutePath ()
         self.saveConf()
         
-        if (self.pluginGui.radioButton_17.isChecked()): 
+        if (self.pluginGui.radioButton_azimuthAngle.isChecked()): 
             s='Azimuth'
-        elif (self.pluginGui.radioButton_18.isChecked()):
+        elif (self.pluginGui.radioButton_bearingAngle.isChecked()):
             s='Bearing'
         f.write('angle='+s+'\n') 
         
-        if (self.pluginGui.radioButton_14.isChecked()):
+        if (self.pluginGui.radioButton_defaultNorth.isChecked()):
             s='Coordinate_System'
-        elif (self.pluginGui.radioButton_15.isChecked()):
+        elif (self.pluginGui.radioButton_magNorth.isChecked()):
             s='Magnetic'
         f.write('heading='+s+'\n') 
         
         if (self.magDev!=0.0):
             f.write('declination='+str(self.magDev)+'\n')
         
-        if (self.pluginGui.radioButton.isChecked()):
+        if (self.pluginGui.radioButton_defaultUnits.isChecked()):
             s='Default'
-        elif (self.pluginGui.radioButton_2.isChecked()):
+        elif (self.pluginGui.radioButton_englishUnits.isChecked()):
             s='Feet'
         f.write('dist_units='+s+'\n') 
         
-        f.write('startAt='+str(self.pluginGui.lineEdit.text())+';'+str(self.pluginGui.lineEdit_2.text())+';'+str(self.pluginGui.lineEdit_3.text())+'\n')
+        f.write('startAt='+str(self.pluginGui.lineEdit_vertexX0.text())+';'+
+                                    str(self.pluginGui.lineEdit_vertexY0.text())+';'+
+                                    str(self.pluginGui.lineEdit_vertexZ0.text())+'\n')
 
-        if (self.pluginGui.radioButton_8.isChecked()):
+        if (self.pluginGui.radioButton_polySurvey.isChecked()):
             s='Polygonal'
-        elif (self.pluginGui.radioButton_7.isChecked()):
+        elif (self.pluginGui.radioButton_irrSurvey.isChecked()):
             s='Irradiate'
         f.write('survey='+s+'\n') 
         
         f.write('[data]\n')
-        for i in range(self.pluginGui.tableWidget.rowCount()):
-            line = str(self.pluginGui.tableWidget.item(i, 0).text()) +';'+str(self.pluginGui.tableWidget.item(i, 1).text()) +';'+str(self.pluginGui.tableWidget.item(i, 2).text())
+        for i in range(self.pluginGui.table_segmentList.rowCount()):
+            line = str(self.pluginGui.table_segmentList.item(i, 0).text()) +';' \
+                    +str(self.pluginGui.table_segmentList.item(i, 1).text()) +';' \
+                    +str(self.pluginGui.table_segmentList.item(i, 2).text())
             f.write(line+'\n')
             
         f.close()

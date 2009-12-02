@@ -12,7 +12,7 @@
   <property name="windowTitle" >
    <string>Geometry from Azimuth and Distance</string>
   </property>
-  <widget class="QPlainTextEdit" name="plainTextEdit" >
+  <widget class="QPlainTextEdit" name="plainTextEdit_note" >
    <property name="enabled" >
     <bool>true</bool>
    </property>
@@ -63,7 +63,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox" />
+       <widget class="QComboBox" name="comboBox_layers" />
       </item>
      </layout>
     </item>
@@ -83,14 +83,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_4" >
+       <widget class="QLineEdit" name="lineEdit_crs" >
         <property name="enabled" >
          <bool>false</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_11" >
+       <widget class="QPushButton" name="pushButton_crsChg" >
         <property name="enabled" >
          <bool>false</bool>
         </property>
@@ -132,7 +132,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_5" >
     <item>
-     <widget class="QRadioButton" name="radioButton_17" >
+     <widget class="QRadioButton" name="radioButton_azimuthAngle" >
       <property name="enabled" >
        <bool>true</bool>
       </property>
@@ -154,7 +154,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton_18" >
+     <widget class="QRadioButton" name="radioButton_bearingAngle" >
       <property name="enabled" >
        <bool>true</bool>
       </property>
@@ -173,7 +173,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton_16" >
+     <widget class="QRadioButton" name="radioButton_polarCoordAngle" >
       <property name="enabled" >
        <bool>false</bool>
       </property>
@@ -192,9 +192,9 @@
      </widget>
     </item>
    </layout>
-   <zorder>radioButton_18</zorder>
-   <zorder>radioButton_16</zorder>
-   <zorder>radioButton_17</zorder>
+   <zorder>radioButton_bearingAngle</zorder>
+   <zorder>radioButton_polarCoordAngle</zorder>
+   <zorder>radioButton_azimuthAngle</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>layoutWidget</zorder>
@@ -227,7 +227,7 @@
          <string>X0:</string>
         </property>
         <property name="buddy" >
-         <cstring>lineEdit</cstring>
+         <cstring>lineEdit_vertexX0</cstring>
         </property>
        </widget>
       </item>
@@ -248,7 +248,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit" >
+       <widget class="QLineEdit" name="lineEdit_vertexX0" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
           <horstretch>0</horstretch>
@@ -261,7 +261,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_8" >
+       <widget class="QPushButton" name="pushButton_startCapture" >
         <property name="text" >
          <string>Capture from Map</string>
         </property>
@@ -293,7 +293,7 @@
          <string>Y0:</string>
         </property>
         <property name="buddy" >
-         <cstring>lineEdit_2</cstring>
+         <cstring>lineEdit_vertexY0</cstring>
         </property>
        </widget>
       </item>
@@ -314,7 +314,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_2" >
+       <widget class="QLineEdit" name="lineEdit_vertexY0" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
           <horstretch>0</horstretch>
@@ -352,7 +352,7 @@
          <string>Z0:</string>
         </property>
         <property name="buddy" >
-         <cstring>lineEdit_3</cstring>
+         <cstring>lineEdit_vertexZ0</cstring>
         </property>
        </widget>
       </item>
@@ -373,7 +373,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_3" >
+       <widget class="QLineEdit" name="lineEdit_vertexZ0" >
         <property name="enabled" >
          <bool>false</bool>
         </property>
@@ -441,7 +441,7 @@
          <string>Azimuth:</string>
         </property>
         <property name="buddy" >
-         <cstring>lineEdit_7</cstring>
+         <cstring>lineEdit_nextAzimuth</cstring>
         </property>
        </widget>
       </item>
@@ -462,7 +462,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_7" >
+       <widget class="QLineEdit" name="lineEdit_nextAzimuth" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
           <horstretch>0</horstretch>
@@ -500,12 +500,12 @@
          <string>Distance:</string>
         </property>
         <property name="buddy" >
-         <cstring>lineEdit_8</cstring>
+         <cstring>lineEdit_nextDistance</cstring>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_8" >
+       <widget class="QLineEdit" name="lineEdit_nextDistance" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
           <horstretch>0</horstretch>
@@ -543,7 +543,7 @@
          <string>Vertical:</string>
         </property>
         <property name="buddy" >
-         <cstring>lineEdit_9</cstring>
+         <cstring>lineEdit_nextVertical</cstring>
         </property>
        </widget>
       </item>
@@ -564,7 +564,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_9" >
+       <widget class="QLineEdit" name="lineEdit_nextVertical" >
         <property name="enabled" >
          <bool>false</bool>
         </property>
@@ -596,7 +596,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton" >
+       <widget class="QPushButton" name="pushButton_vertexInsert" >
         <property name="text" >
          <string>Insert</string>
         </property>
@@ -651,7 +651,7 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout" >
      <item>
-      <widget class="QRadioButton" name="radioButton_8" >
+      <widget class="QRadioButton" name="radioButton_polySurvey" >
        <property name="enabled" >
         <bool>true</bool>
        </property>
@@ -670,7 +670,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_7" >
+      <widget class="QRadioButton" name="radioButton_irrSurvey" >
        <property name="enabled" >
         <bool>false</bool>
        </property>
@@ -736,7 +736,7 @@
     </property>
     <layout class="QGridLayout" name="gridLayout" >
      <item row="0" column="0" >
-      <widget class="QRadioButton" name="radioButton_14" >
+      <widget class="QRadioButton" name="radioButton_defaultNorth" >
        <property name="enabled" >
         <bool>true</bool>
        </property>
@@ -758,7 +758,7 @@
       </widget>
      </item>
      <item row="1" column="0" >
-      <widget class="QRadioButton" name="radioButton_15" >
+      <widget class="QRadioButton" name="radioButton_magNorth" >
        <property name="enabled" >
         <bool>true</bool>
        </property>
@@ -771,7 +771,7 @@
       </widget>
      </item>
      <item row="1" column="1" >
-      <widget class="QLineEdit" name="lineEdit_5" >
+      <widget class="QLineEdit" name="lineEdit_magNorth" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
          <horstretch>0</horstretch>
@@ -815,7 +815,7 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2" >
      <item>
-      <widget class="QRadioButton" name="radioButton" >
+      <widget class="QRadioButton" name="radioButton_defaultUnits" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
          <horstretch>0</horstretch>
@@ -828,7 +828,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_2" >
+      <widget class="QRadioButton" name="radioButton_englishUnits" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
          <horstretch>0</horstretch>
@@ -867,7 +867,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2" >
     <item>
-     <widget class="QPushButton" name="pushButton_7" >
+     <widget class="QPushButton" name="pushButton_objectDraw" >
       <property name="sizePolicy" >
        <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
         <horstretch>0</horstretch>
@@ -893,7 +893,7 @@
      </spacer>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_10" >
+     <widget class="QPushButton" name="pushButton_dlgClose" >
       <property name="text" >
        <string>Close</string>
       </property>
@@ -913,7 +913,7 @@
    <property name="title" >
     <string>Segment List</string>
    </property>
-   <widget class="QTableWidget" name="tableWidget" >
+   <widget class="QTableWidget" name="table_segmentList" >
     <property name="geometry" >
      <rect>
       <x>10</x>
@@ -955,7 +955,7 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout" >
      <item>
-      <widget class="QPushButton" name="pushButton_4" >
+      <widget class="QPushButton" name="pushButton_segListRowUp" >
        <property name="enabled" >
         <bool>false</bool>
        </property>
@@ -965,7 +965,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_5" >
+      <widget class="QPushButton" name="pushButton_segListRowDn" >
        <property name="enabled" >
         <bool>false</bool>
        </property>
@@ -988,7 +988,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2" >
+      <widget class="QPushButton" name="pushButton_segListRowDel" >
        <property name="text" >
         <string>Remove</string>
        </property>
@@ -1020,7 +1020,7 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_3" >
      <item>
-      <widget class="QPushButton" name="pushButton_3" >
+      <widget class="QPushButton" name="pushButton_segListLoad" >
        <property name="enabled" >
         <bool>true</bool>
        </property>
@@ -1030,7 +1030,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_9" >
+      <widget class="QPushButton" name="pushButton_segListSave" >
        <property name="enabled" >
         <bool>true</bool>
        </property>
@@ -1053,7 +1053,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_6" >
+      <widget class="QPushButton" name="pushButton_segListClear" >
        <property name="text" >
         <string>Clear List</string>
        </property>
@@ -1064,18 +1064,18 @@
   </widget>
  </widget>
  <tabstops>
-  <tabstop>comboBox</tabstop>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>lineEdit_3</tabstop>
-  <tabstop>lineEdit_7</tabstop>
-  <tabstop>lineEdit_8</tabstop>
-  <tabstop>lineEdit_9</tabstop>
+  <tabstop>comboBox_layers</tabstop>
+  <tabstop>lineEdit_vertexX0</tabstop>
+  <tabstop>lineEdit_vertexY0</tabstop>
+  <tabstop>lineEdit_vertexZ0</tabstop>
+  <tabstop>lineEdit_nextAzimuth</tabstop>
+  <tabstop>lineEdit_nextDistance</tabstop>
+  <tabstop>lineEdit_nextVertical</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton_10</sender>
+   <sender>pushButton_dlgClose</sender>
    <signal>clicked()</signal>
    <receiver>ui</receiver>
    <slot>reject()</slot>

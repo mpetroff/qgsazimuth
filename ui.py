@@ -437,4 +437,3 @@ class Ui_ui(object):
         self.pushButton_3.setText(QtGui.QApplication.translate("ui", "Import List", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_9.setText(QtGui.QApplication.translate("ui", "Export List", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_13.setText(QtGui.QApplication.translate("ui", "Close", None, QtGui.QApplication.UnicodeUTF8))
-
