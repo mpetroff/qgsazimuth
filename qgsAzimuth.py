@@ -80,12 +80,14 @@ class qgsazimuth (object):
         
         #fill combo box with all layers
         self.layermap=QgsMapLayerRegistry.instance().mapLayers()
+        activeName = ""
         for (name,layer) in self.layermap.iteritems():
             self.pluginGui.comboBox_layers.addItem(name)
             if (layer == self.iface.activeLayer()):
                 self.pluginGui.lineEdit_crs.setText((layer.crs()).description())
                 #self.say('found active layer='+name)
                 activeName = name
+                
         
         # set combo box to current active layer
         lyrNdx = self.pluginGui.comboBox_layers.findText(activeName)
