@@ -18,13 +18,13 @@ def description():
   return "Creates a polygon from azimuths and distances."
 
 def version():
-  return "Version 0.5"
+  return "Version 0.8"
   
 def qgisMinimumVersion():
   return "1.0"
 
 def authorName():
-  return "Mauricio de Paulo"
+  return "Mauricio de Paulo and Fred Laplante"
 
 def classFactory(iface):
   return qgsazimuth(iface)
