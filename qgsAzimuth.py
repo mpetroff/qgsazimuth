@@ -84,7 +84,7 @@ class qgsazimuth (object):
         for (name,layer) in self.layermap.iteritems():
             self.pluginGui.comboBox_layers.addItem(name)
             if (layer == self.iface.activeLayer()):
-                self.pluginGui.lineEdit_crs.setText((layer.crs()).description())
+                self.pluginGui.lineEdit_crs.setText((layer.srs()).description())
                 #self.say('found active layer='+name)
                 activeName = name
                 
