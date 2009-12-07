@@ -18,7 +18,7 @@ def description():
   return "Creates a polygon from azimuths and distances."
 
 def version():
-  return "Version 0.8.1"
+  return "Version 0.8.2"
   
 def qgisMinimumVersion():
   return "1.0"

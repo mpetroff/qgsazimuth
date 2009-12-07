@@ -43,7 +43,7 @@ class qgsazimuth (object):
         self.iface = iface
         self.canvas = iface.mapCanvas()
         self.fPath = QString()  # set default working directory, updated from config file & by Import/Export
-        self.configFile = os.path.join(os.getcwd(),'qgsAz.conf')  # application config file 
+        self.settings = QSettings()
         self.loadConf() # get config data
     
     def initGui(self):
@@ -490,28 +490,10 @@ class qgsazimuth (object):
     
     #------------------------
     def loadConf(self):
-        #self.say("getting config data from "+self.configFile)
-        if os.path.exists(self.configFile):
-            f=open(self.configFile)
-            lines=f.readlines()
-            for line in lines:
-                #self.say("found '"+line+"'")
-                parts = (line.strip()).split('=')
-                if (parts[0]=='inp_exp_dir'):
-                    self.fPath = parts[1]
-                    #self.say("found config file:\n inp/exp dir='"+self.fPath+"' in "+self.configFile)
-            f.close()
-        else:
-            self.fPath = QString()
+        settings=QSettings()
+        self.fPath = settings.value('/Plugin-qgsAzimuth/inp_exp_dir').toString()
         
 
     def saveConf(self):
-        f=open(self.configFile, 'w')
-        #self.say("saving '"+self.fPath+"' to "+self.configFile)
-        try:
-            line = 'inp_exp_dir='+self.fPath+'\n'
-            f.write(line)
-        except:
-            import sys
-            self.say("Unable to write to file '"+self.configFile+"':\n"+str(sys.exc_info()[0])+str(sys.exc_info()[1]))
-        f.close()
+        settings=QSettings()
+        settings.setValue('/Plugin-qgsAzimuth/inp_exp_dir', QVariant(self.fPath))
