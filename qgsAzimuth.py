@@ -87,17 +87,18 @@ class qgsazimuth (object):
 
         # Initialize layer combo box
         #fill combo box with all layers
-        self.layermap=QgsMapLayerRegistry.instance().mapLayers()
+        layermap=QgsMapLayerRegistry.instance().mapLayers()
         activeName = ""
-        for (name,layer) in self.layermap.iteritems():
+        for (name,layer) in sorted(layermap.iteritems()):
             self.pluginGui.comboBox_layers.addItem(name)
             if (layer == self.iface.activeLayer()):
                 self.pluginGui.lineEdit_crs.setText((layer.srs()).description())
                 #self.say('found active layer='+name)
                 activeName = name
-        # set combo box to current active layer
-        lyrNdx = self.pluginGui.comboBox_layers.findText(activeName)
-        self.pluginGui.comboBox_layers.setCurrentIndex(lyrNdx)
+                # set combo box to current active layer
+                lyrNdx = self.pluginGui.comboBox_layers.findText(activeName)
+                self.pluginGui.comboBox_layers.setCurrentIndex(lyrNdx)
+
         self.pluginGui.table_segmentList.setCurrentCell(0,0)
         self.pluginGui.show()
 
@@ -106,23 +107,23 @@ class qgsazimuth (object):
 
     #Now these are the SLOTS
     def nextvertex(self,v,d,az,zen=90):
-        print "direction:", az, zen, d
+        #print "direction:", az, zen, d
         az=radians(az)
         zen=radians(zen)
         d1=d*sin(zen)
         x=v[0]+d1*sin(az)
         y=v[1]+d1*cos(az)
         z=v[2]+d*cos(zen)
-        print "point ", x,y,z
+        #print "point ", x,y,z
         return [x,y,z]
 
     def addgeometry(self):
-        #reading a layer
-        print "Saving in "+self.pluginGui.comboBox_layers.currentText()
+        #initialization
+        self.tell ("Saving in "+self.pluginGui.comboBox_layers.currentText())
         vectorlayer=self.layermap[self.pluginGui.comboBox_layers.currentText()]
         provider=vectorlayer.dataProvider()
         geometrytype=provider.geometryType()
-        print geometrytype
+        #print geometrytype
 
         #check if the layer is editable
         if (not vectorlayer.isEditable()):
@@ -134,11 +135,18 @@ class qgsazimuth (object):
             self.say("No magnetic declination value entered.")
             return 0
 
+        #Get starting point coordinates
+        X0 = float(str(self.pluginGui.lineEdit_vertexX0.text()))
+        Y0 = float(str(self.pluginGui.lineEdit_vertexY0.text()))
+        Z0 = float(str(self.pluginGui.lineEdit_vertexZ0.text()))
+
+        #check if the starting point is specified
+        if (X0 == 0 and Y0 == 0 and Z0 == 90):
+            self.say("You must supply a starting point.")
+            return 0
+
         vlist=[]
-        #Enter starting point
-        vlist.append([float(str(self.pluginGui.lineEdit_vertexX0.text())),
-                          float(str(self.pluginGui.lineEdit_vertexY0.text())),
-                          float(str(self.pluginGui.lineEdit_vertexZ0.text()))])
+        vlist.append([X0,Y0,Z0])
         #convert segment list to set of vertice
         for i in range(self.pluginGui.table_segmentList.rowCount()):
             az=str(self.pluginGui.table_segmentList.item(i,0).text())
@@ -446,6 +454,7 @@ class qgsazimuth (object):
         f=open(self.fileName)
         lines=f.readlines()
         f.close()
+        self.clearList()
         for line in lines:
             #remove trailing 'new lines', etc and break into parts
             parts = ((line.strip()).lower()).split("=")
@@ -531,6 +540,7 @@ class qgsazimuth (object):
         self.pluginGui.move(position)
         #settings.restoreGeometry(settings.value("Geometry").toByteArray())
         self.fPath = settings.value('/Plugin-qgsAzimuth/inp_exp_dir').toString()
+        self.fileName = self.fPath
 
     def saveConf(self):
         settings=QSettings()
@@ -538,3 +548,9 @@ class qgsazimuth (object):
         settings.setValue('/Plugin-qgsAzimuth/size',  QVariant(self.pluginGui.size()))
         settings.setValue('/Plugin-qgsAzimuth/position',  QVariant(self.pluginGui.pos()))
         settings.setValue('/Plugin-qgsAzimuth/inp_exp_dir', QVariant(self.fPath))
+
+    def sortedDict(self, adict):
+        keys = adict.keys()
+        keys.sort()
+        return map(adict.get, keys)
+

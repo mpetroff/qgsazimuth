@@ -370,7 +370,7 @@
             <item>
              <widget class="QPushButton" name="pushButton_vertexAdd" >
               <property name="text" >
-               <string>Add</string>
+               <string>Add to Bottom</string>
               </property>
              </widget>
             </item>
@@ -479,7 +479,7 @@
             <item>
              <widget class="QPushButton" name="pushButton_vertexInsert" >
               <property name="text" >
-               <string>Insert</string>
+               <string>Insert above</string>
               </property>
              </widget>
             </item>

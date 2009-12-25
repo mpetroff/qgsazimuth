@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\Documents and Settings\flaplante.FLOS-INC\.qgis\python\plugins\qgsAzimuth\ui.ui'
 #
-# Created: Tue Dec 22 12:40:41 2009
+# Created: Thu Dec 24 19:07:30 2009
 #      by: PyQt4 UI code generator 4.4.3
 #
 # WARNING! All changes made in this file will be lost!
