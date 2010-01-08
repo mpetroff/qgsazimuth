@@ -87,9 +87,9 @@ class qgsazimuth (object):
 
         # Initialize layer combo box
         #fill combo box with all layers
-        layermap=QgsMapLayerRegistry.instance().mapLayers()
+        self.layermap=QgsMapLayerRegistry.instance().mapLayers()
         activeName = ""
-        for (name,layer) in sorted(layermap.iteritems()):
+        for (name,layer) in sorted(self.layermap.iteritems()):
             self.pluginGui.comboBox_layers.addItem(name)
             if (layer == self.iface.activeLayer()):
                 self.pluginGui.lineEdit_crs.setText((layer.srs()).description())
