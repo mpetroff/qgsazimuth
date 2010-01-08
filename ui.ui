@@ -521,9 +521,9 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_10" >
           <item>
-           <widget class="QRadioButton" name="radioButton_irrSurvey" >
+           <widget class="QRadioButton" name="radioButton_radialSurvey" >
             <property name="enabled" >
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="sizePolicy" >
              <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
@@ -532,7 +532,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>Irradiate</string>
+             <string>Polar / Radial</string>
             </property>
             <property name="checkable" >
              <bool>true</bool>
@@ -543,7 +543,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_polySurvey" >
+           <widget class="QRadioButton" name="radioButton_boundarySurvey" >
             <property name="enabled" >
              <bool>true</bool>
             </property>
@@ -554,7 +554,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>Polygonal</string>
+             <string>Boundary</string>
             </property>
             <property name="checked" >
              <bool>true</bool>
@@ -649,6 +649,9 @@
             </property>
             <property name="text" >
              <string>Default</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -963,8 +966,8 @@
   <tabstop>lineEdit_nextAzimuth</tabstop>
   <tabstop>lineEdit_nextDistance</tabstop>
   <tabstop>pushButton_vertexAdd</tabstop>
-  <tabstop>radioButton_irrSurvey</tabstop>
-  <tabstop>radioButton_polySurvey</tabstop>
+  <tabstop>radioButton_radialSurvey</tabstop>
+  <tabstop>radioButton_boundarySurvey</tabstop>
   <tabstop>radioButton_defaultNorth</tabstop>
   <tabstop>radioButton_magNorth</tabstop>
   <tabstop>lineEdit_magNorth</tabstop>

@@ -179,11 +179,11 @@ class qgsazimuth (object):
                 az = az + 360.0
 
             #checking survey type
-            if (self.pluginGui.radioButton_irrSurvey.isChecked()):
+            if (self.pluginGui.radioButton_radialSurvey.isChecked()):
                 vlist.append(self.nextvertex(vlist[0],dis,az,zen))      #reference first vertex
-                surveytype='irradiation'
-            elif (self.pluginGui.radioButton_polySurvey.isChecked()):
-                vlist.append(self.nextvertex(vlist[-1],dis,az,zen))     #reference last vertex
+                surveytype='radial'
+            elif (self.pluginGui.radioButton_boundarySurvey.isChecked()):
+                vlist.append(self.nextvertex(vlist[-1],dis,az,zen))     #reference previous vertex
                 surveytype = 'polygonal'
 
         #reprojecting to projects SRS
@@ -205,21 +205,17 @@ class qgsazimuth (object):
                     #writing new feature
                     p=QgsPoint(point[0],point[1])
                     pointlist.append(p)
-                geom=QgsGeometry.fromPolyline(pointlist)
-                feature=QgsFeature()
-                feature.setGeometry(geom)
-                featurelist.append(feature)
-            elif (surveytype=='irradiation'):
+            elif (surveytype=='radial'):
                 v0=vlist.pop(0)
                 v0=QgsPoint(v0[0],v0[1])
                 for point in vlist:
                     #writing new feature
                     p=QgsPoint(point[0],point[1])
                     pointlist=[v0,p]
-                    geom=QgsGeometry.fromPolyline(pointlist)
-                    feature=QgsFeature()
-                    feature.setGeometry(geom)
-                    featurelist.append(feature)
+            geom=QgsGeometry.fromPolyline(pointlist)
+            feature=QgsFeature()
+            feature.setGeometry(geom)
+            featurelist.append(feature)
         elif (geometrytype==3): #POLYGON
             pointlist=[]
             for point in vlist:
@@ -409,8 +405,8 @@ class qgsazimuth (object):
     def setSurvey(self, s):
         #self.say('processing surveyType='+s)
         if (s=='polygonal'):
-            self.pluginGui.radioButton_polySurvey.setChecked(True)
-        elif (s=='irradiate'):
+            self.pluginGui.radioButton_boundarySurvey.setChecked(True)
+        elif (s=='radial'):
             self.pluginGui.radioButton_irrSurvey.setChecked(True)
         else:
             self.say('invalid survey type: '+s)
@@ -435,7 +431,7 @@ class qgsazimuth (object):
     #   line 3: declination=[- ]x.xxd[ xx.x'] [E|W]
     #   line 4: distunits=Default|Feet
     #   line 5: startAt=xxxxx.xxxxx, xxxxxx.xxxxx
-    #   line 6: survey=Polygonal|Irradiat
+    #   line 6: survey=Polygonal|Radial
     #   line 7: [data]
     #   line 8 through end: Azimuth; dist; zen
     #
@@ -516,10 +512,10 @@ class qgsazimuth (object):
                                     str(self.pluginGui.lineEdit_vertexY0.text())+';'+
                                     str(self.pluginGui.lineEdit_vertexZ0.text())+'\n')
 
-        if (self.pluginGui.radioButton_polySurvey.isChecked()):
+        if (self.pluginGui.radioButton_boundarySurvey.isChecked()):
             s='Polygonal'
-        elif (self.pluginGui.radioButton_irrSurvey.isChecked()):
-            s='Irradiate'
+        elif (self.pluginGui.radioButton_radialSurvey.isChecked()):
+            s='Radial'
         f.write('survey='+s+'\n')
 
         f.write('[data]\n')
