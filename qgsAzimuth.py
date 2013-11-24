@@ -434,33 +434,36 @@ class qgsazimuth (object):
         self.saveConf()
 
         # get saved data
-        f=open(self.fileName)
-        lines=f.readlines()
-        f.close()
-        self.clearList()
-        for line in lines:
-            #remove trailing 'new lines', etc and break into parts
-            parts = ((line.strip()).lower()).split("=")
-            if (len(parts)>1):
-                #self.say("line="+line+'\nparts[0]='+parts[0]+'\nparts[1]='+parts[1])
-                if (parts[0].lower()=='angle'):
-                    self.setAngle(parts[1].lower())
-                elif (parts[0].lower()=='heading'):
-                    self.setHeading(parts[1].lower())
-                elif (parts[0].lower()=='declination'):
-                    self.setDeclination(parts[1].lower())
-                elif (parts[0].lower()=='dist_units'):
-                    self.setDistanceUnits(parts[1].lower())
-                elif (parts[0].lower()=='startat'):
-                    self.setStartAt(parts[1].lower())
-                elif (parts[0].lower()=='survey'):
-                    self.setSurvey(parts[1].lower())
-            else:
-                coords=(line.strip()).split(";")
-                if (coords[0].lower()=='[data]'):
-                    pass
+        try:
+            f=open(self.fileName)
+            lines=f.readlines()
+            f.close()
+            self.clearList()
+            for line in lines:
+                #remove trailing 'new lines', etc and break into parts
+                parts = ((line.strip()).lower()).split("=")
+                if (len(parts)>1):
+                    #self.say("line="+line+'\nparts[0]='+parts[0]+'\nparts[1]='+parts[1])
+                    if (parts[0].lower()=='angle'):
+                        self.setAngle(parts[1].lower())
+                    elif (parts[0].lower()=='heading'):
+                        self.setHeading(parts[1].lower())
+                    elif (parts[0].lower()=='declination'):
+                        self.setDeclination(parts[1].lower())
+                    elif (parts[0].lower()=='dist_units'):
+                        self.setDistanceUnits(parts[1].lower())
+                    elif (parts[0].lower()=='startat'):
+                        self.setStartAt(parts[1].lower())
+                    elif (parts[0].lower()=='survey'):
+                        self.setSurvey(parts[1].lower())
                 else:
-                    self.addrow(coords[0], coords[1], coords[2])
+                    coords=(line.strip()).split(";")
+                    if (coords[0].lower()=='[data]'):
+                        pass
+                    else:
+                        self.addrow(coords[0], coords[1], coords[2])
+        except:
+            self.say("Invalid input")
 
     def saveList(self):
         #file=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fPath,"")
