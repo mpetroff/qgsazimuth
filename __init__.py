@@ -11,20 +11,5 @@ Copyright (C) 2008-2009 Mauricio Carvalho Mathias de Paulo
 """
 from qgsAzimuth import qgsazimuth
 
-def name():
-  return "Azimuth and Distance Plugin"
-
-def description():
-  return "Creates a polygon from azimuths and distances."
-
-def version():
-  return "Version 0.8.4"
-
-def qgisMinimumVersion():
-  return "1.0"
-
-def authorName():
-  return "Mauricio de Paulo and Fred Laplante"
-
 def classFactory(iface):
   return qgsazimuth(iface)

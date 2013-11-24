@@ -47,6 +47,7 @@ class GetCoordTool(QgsMapTool):
                                    "############.a.#",
                                    "#############.##"]))
   
+  finished = pyqtSignal(QgsPoint)
   def canvasPressEvent(self,event):
     pixels=event.pos()
     
@@ -59,7 +60,7 @@ class GetCoordTool(QgsMapTool):
         #transforming pixels to x,y
         transform = self.canvas.getCoordinateTransform()
         xy = transform.toMapCoordinates(pixels) #captures the clicked coordinate and transform
-    self.emit(SIGNAL("finished(PyQt_PyObject)"),xy)     #return QgsPoint in a signal
+    self.finished.emit(xy)
   
   def canvasMoveEvent(self,event):
     pass

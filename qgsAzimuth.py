@@ -44,13 +44,13 @@ class qgsazimuth (object):
     def __init__(self, iface):
         self.iface = iface
         self.canvas = iface.mapCanvas()
-        self.fPath = QString()  # set default working directory, updated from config file & by Import/Export
+        self.fPath = ""  # set default working directory, updated from config file & by Import/Export
 
     def initGui(self):
         # create action that will start plugin configuration
         self.action = QAction(QIcon(":qgsazimuth.png"), "Azimuth and distance", self.iface.mainWindow())
         self.action.setWhatsThis("Azimuth and distance")
-        QObject.connect(self.action, SIGNAL("activated()"), self.run)
+        self.action.activated.connect(self.run)
 
         # add toolbar button and menu item
         self.iface.addPluginToMenu("&Topography", self.action)
@@ -76,28 +76,16 @@ class qgsazimuth (object):
         self.setStartAt("0;0;90")    # remove previous StartAt point
 
         #INSERT EVERY SIGNAL CONECTION HERE!
-        QObject.connect(self.pluginGui.pushButton_vertexAdd,SIGNAL("clicked()"),self.addRow)
-        QObject.connect(self.pluginGui.pushButton_vertexInsert,SIGNAL("clicked()"),self.insertRow)
-        QObject.connect(self.pluginGui.pushButton_segListRowDel,SIGNAL("clicked()"),self.delRow)
-        QObject.connect(self.pluginGui.pushButton_segListLoad,SIGNAL("clicked()"),self.loadList)
-        QObject.connect(self.pluginGui.pushButton_segListClear,SIGNAL("clicked()"),self.clearList)
-        QObject.connect(self.pluginGui.pushButton_objectDraw,SIGNAL("clicked()"),self.addgeometry)
-        QObject.connect(self.pluginGui.pushButton_startCapture,SIGNAL("clicked()"),self.startgetpoint)
-        QObject.connect(self.pluginGui.pushButton_segListSave,SIGNAL("clicked()"),self.saveList)
+        self.pluginGui.pushButton_vertexAdd.clicked.connect(self.addRow)
+        self.pluginGui.pushButton_vertexInsert.clicked.connect(self.insertRow)
+        self.pluginGui.pushButton_segListRowDel.clicked.connect(self.delRow)
+        self.pluginGui.pushButton_segListLoad.clicked.connect(self.loadList)
+        self.pluginGui.pushButton_segListClear.clicked.connect(self.clearList)
+        self.pluginGui.pushButton_objectDraw.clicked.connect(self.addgeometry)
+        self.pluginGui.pushButton_startCapture.clicked.connect(self.startgetpoint)
+        self.pluginGui.pushButton_segListSave.clicked.connect(self.saveList)
 
-        # Initialize layer combo box
-        #fill combo box with all layers
-        self.layermap=QgsMapLayerRegistry.instance().mapLayers()
-        activeName = ""
-        for (name,layer) in sorted(self.layermap.iteritems()):
-            self.pluginGui.comboBox_layers.addItem(name)
-            if (layer == self.iface.activeLayer()):
-                self.pluginGui.lineEdit_crs.setText((layer.srs()).description())
-                #self.say('found active layer='+name)
-                activeName = name
-                # set combo box to current active layer
-                lyrNdx = self.pluginGui.comboBox_layers.findText(activeName)
-                self.pluginGui.comboBox_layers.setCurrentIndex(lyrNdx)
+        self.pluginGui.lineEdit_crs.setText(self.iface.mapCanvas().mapRenderer().destinationCrs().description())
 
         self.pluginGui.table_segmentList.setCurrentCell(0,0)
         self.pluginGui.show()
@@ -119,16 +107,14 @@ class qgsazimuth (object):
 
     def addgeometry(self):
         #initialization
-        self.tell ("Saving in "+self.pluginGui.comboBox_layers.currentText())
-        vectorlayer=self.layermap[self.pluginGui.comboBox_layers.currentText()]
+        s = QSettings()
+        oldValidation = s.value("/Projections/defaultBehaviour", "useProject")
+        s.setValue("/Projections/defaultBehaviour", "useProject")
+        vectorlayer=QgsVectorLayer("LineString", "tmp_plot", "memory")
+        s.setValue("/Projections/defaultBehaviour", oldValidation)
         provider=vectorlayer.dataProvider()
+        vectorlayer.startEditing()
         geometrytype=provider.geometryType()
-        #print geometrytype
-
-        #check if the layer is editable
-        if (not vectorlayer.isEditable()):
-            self.say("Layer not in edit mode.")
-            return 0
 
         # if magnetic heading chosen, assure we have a declination angle
         if (self.pluginGui.radioButton_magNorth.isChecked())  and (str(self.pluginGui.lineEdit_magNorth.text()) == ''):   #magnetic headings
@@ -228,8 +214,9 @@ class qgsazimuth (object):
             featurelist.append(feature)
 
         #commit
-        vectorlayer.addFeatures(featurelist)
-        self.iface.mapCanvas().zoomToSelected()
+        provider.addFeatures(featurelist)
+        vectorlayer.commitChanges()
+        QgsMapLayerRegistry.instance().addMapLayer(vectorlayer)
 
     def bearingToDd (self,  dms):
         #allow survey bearings in form:  - N 25d 34' 40" E
@@ -347,7 +334,7 @@ class qgsazimuth (object):
 
     def startgetpoint(self):
         #point capture tool
-        QObject.connect(self.tool, SIGNAL("finished(PyQt_PyObject)"), self.getpoint)
+        self.tool.finished.connect(self.getpoint)
         self.saveTool = self.canvas.mapTool()
         self.canvas.setMapTool(self.tool)
 
@@ -355,7 +342,7 @@ class qgsazimuth (object):
         self.pluginGui.lineEdit_vertexX0.setText(str(pt.x()))
         self.pluginGui.lineEdit_vertexY0.setText(str(pt.y()))
         self.canvas.setMapTool(self.saveTool)
-        QObject.disconnect(self.tool, SIGNAL("finished(PyQt_PyObject)"), self.getpoint)
+        self.tool.finished.disconnect(self.getpoint)
 
     def reproject(self, vlist,  vectorlayer):
         renderer=self.canvas.mapRenderer()
@@ -438,7 +425,7 @@ class qgsazimuth (object):
     #       note: lines 1 through 5 are optional if hand entered, but will always be generated when 'saved'
     # ---------------------------------------------------------------------------------------------------------------------------------
     def loadList(self):
-        self.fileName=QFileDialog.getOpenFileName(None,"Load data separated by ';'",self.fPath,QString(),None)
+        self.fileName=QFileDialog.getOpenFileName(None,"Load data separated by ';'",self.fPath,"")
         if not os.path.exists(self.fileName):
             return 0
         # update selected file's folder
@@ -476,9 +463,9 @@ class qgsazimuth (object):
                     self.addrow(coords[0], coords[1], coords[2])
 
     def saveList(self):
-        #file=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fPath,QString(),None)
+        #file=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fPath,"")
         #self.tell("loaded file name: " + self.fileName)
-        file=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fileName,QString(),None)
+        file=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fileName,"")
         if (file == ''): return
         #self.tell('target file: '+file)
         f=open(file, 'w')
@@ -530,20 +517,20 @@ class qgsazimuth (object):
     #------------------------
     def loadConf(self):
         settings=QSettings()
-        size = settings.value('/Plugin-qgsAzimuth/size', QVariant(QSize(800, 600))).toSize()
+        size = settings.value('/Plugin-qgsAzimuth/size', QSize(800, 600), type=QSize)
         self.pluginGui.resize(size)
-        position = settings.value('/Plugin-qgsAzimuth/position', QVariant(QPoint(0, 0))).toPoint()
+        position = settings.value('/Plugin-qgsAzimuth/position', QPoint(0, 0), type=QPoint)
         self.pluginGui.move(position)
-        #settings.restoreGeometry(settings.value("Geometry").toByteArray())
-        self.fPath = settings.value('/Plugin-qgsAzimuth/inp_exp_dir').toString()
+        #settings.restoreGeometry(settings.value("Geometry"), QByteArray(), type=QByteArray)
+        self.fPath = settings.value('/Plugin-qgsAzimuth/inp_exp_dir', "", type=unicode)
         self.fileName = self.fPath
 
     def saveConf(self):
         settings=QSettings()
-        #settings.setValue("Geometry", QVariant(self.saveGeometry()))
-        settings.setValue('/Plugin-qgsAzimuth/size',  QVariant(self.pluginGui.size()))
-        settings.setValue('/Plugin-qgsAzimuth/position',  QVariant(self.pluginGui.pos()))
-        settings.setValue('/Plugin-qgsAzimuth/inp_exp_dir', QVariant(self.fPath))
+        #settings.setValue("Geometry", self.saveGeometry())
+        settings.setValue('/Plugin-qgsAzimuth/size',  self.pluginGui.size())
+        settings.setValue('/Plugin-qgsAzimuth/position',  self.pluginGui.pos())
+        settings.setValue('/Plugin-qgsAzimuth/inp_exp_dir', self.fPath)
 
     def sortedDict(self, adict):
         keys = adict.keys()
