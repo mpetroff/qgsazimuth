@@ -50,7 +50,7 @@ class qgsazimuth (object):
         # create action that will start plugin configuration
         self.action = QAction(QIcon(":qgsazimuth.png"), "Azimuth and distance", self.iface.mainWindow())
         self.action.setWhatsThis("Azimuth and distance")
-        self.action.activated.connect(self.run)
+        self.action.triggered.connect(self.run)
 
         # add toolbar button and menu item
         self.iface.addPluginToMenu("&Topography", self.action)
@@ -267,7 +267,7 @@ class qgsazimuth (object):
 
     def dmsToDd(self,dms):
         "It's not fast, but it's a safe way of dealing with DMS"
-        dms=dms.replace(" ", "")
+        #dms=dms.replace(" ", "")
         for c in dms:
             if ((not c.isdigit()) and (c != '.') and (c != '-')):
                 dms=dms.replace(c,';')
@@ -363,7 +363,7 @@ class qgsazimuth (object):
 
     def setHeading(self,  s):
         #self.say('processing headingType='+s)
-        if (s=='coordinate system'):
+        if (s=='coordinate_system'):
             self.pluginGui.radioButton_defaultNorth.setChecked(True)
         elif (s=='magnetic'):
             self.pluginGui.radioButton_magNorth.setChecked(True)
