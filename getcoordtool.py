@@ -55,7 +55,7 @@ class GetCoordTool(QgsMapTool):
     snapped=snapper.snapToBackgroundLayers(pixels)
     #QMessageBox.information(None,"Teste", str(snapped[1]))
     if len(snapped[1])>0:
-        xy=snapped[1][0].afterVertex
+        xy=snapped[1][0].snappedVertex
     else:
         #transforming pixels to x,y
         transform = self.canvas.getCoordinateTransform()
