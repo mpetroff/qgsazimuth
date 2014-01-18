@@ -130,6 +130,11 @@ class qgsazimuth (object):
         if (X0 == 0 and Y0 == 0 and Z0 == 90):
             self.say("You must supply a starting point.")
             return 0
+        
+        # Check if there are any segments
+        if (self.pluginGui.table_segmentList.rowCount() < 1):
+            self.say("You must enter at least one segment.")
+            return 0
 
         vlist=[]
         vlist.append([X0,Y0,Z0])
