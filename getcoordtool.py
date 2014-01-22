@@ -45,7 +45,7 @@ class GetCoordTool(QgsMapTool):
                                    "##########.aa..#",
                                    "###########.aa..",
                                    "############.a.#",
-                                   "#############.##"]))
+                                   "#############.##"]), 0, 0)
   
   finished = pyqtSignal(QgsPoint)
   def canvasPressEvent(self,event):
