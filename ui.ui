@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ui</class>
- <widget class="QDialog" name="ui" >
-  <property name="geometry" >
+ <widget class="QDialog" name="ui">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,33 +10,47 @@
     <height>685</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Geometry from Azimuth and Distance</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_13" >
+  <layout class="QVBoxLayout" name="verticalLayout_13">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_3" >
+    <widget class="QRadioButton" name="radioButton_useActiveLayer">
+     <property name="text">
+      <string>Active Layer</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="radioButton_useMemoryLayer">
+     <property name="text">
+      <string>Memory Layer</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_14" >
+      <layout class="QHBoxLayout" name="horizontalLayout_14">
        <item>
-        <widget class="QLabel" name="label_5" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+        <widget class="QLabel" name="label_5">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Coordinate System:</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>lineEdit_crs</cstring>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_crs" >
-         <property name="enabled" >
+        <widget class="QLineEdit" name="lineEdit_crs">
+         <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
@@ -45,61 +60,61 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4" >
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_6" >
+      <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QPlainTextEdit" name="plainTextEdit_note" >
-         <property name="enabled" >
+        <widget class="QPlainTextEdit" name="plainTextEdit_note">
+         <property name="enabled">
           <bool>true</bool>
          </property>
-         <property name="verticalScrollBarPolicy" >
+         <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
-         <property name="horizontalScrollBarPolicy" >
+         <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
-         <property name="readOnly" >
+         <property name="readOnly">
           <bool>true</bool>
          </property>
-         <property name="plainText" >
-          <string>Angles may be entered as degrees clockwise from North (nnn.nn or nnd nn' nn.n") or as an offset bearing plus or minus 90 deg. from  North or South (N xxd xx' xx" E)</string>
+         <property name="plainText">
+          <string>Angles may be entered as degrees clockwise from North (nnn.nn or nnd nn' nn.n&quot;) or as an offset bearing plus or minus 90 deg. from  North or South (N xxd xx' xx&quot; E)</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+        <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Starting vertex</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_7" >
+         <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6" >
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <widget class="QLabel" name="label_2" >
-              <property name="text" >
+             <widget class="QLabel" name="label_2">
+              <property name="text">
                <string>X0:</string>
               </property>
-              <property name="buddy" >
+              <property name="buddy">
                <cstring>lineEdit_vertexX0</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_3" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Fixed</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>28</width>
                 <height>20</height>
@@ -108,34 +123,34 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_vertexX0" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+             <widget class="QLineEdit" name="lineEdit_vertexX0">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>0</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_startCapture" >
-              <property name="text" >
+             <widget class="QPushButton" name="pushButton_startCapture">
+              <property name="text">
                <string>Capture from Map</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_10" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_10">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Expanding</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>28</width>
                 <height>20</height>
@@ -146,26 +161,26 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_7" >
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QLabel" name="label_3" >
-              <property name="text" >
+             <widget class="QLabel" name="label_3">
+              <property name="text">
                <string>Y0:</string>
               </property>
-              <property name="buddy" >
+              <property name="buddy">
                <cstring>lineEdit_vertexY0</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_6" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Fixed</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>28</width>
                 <height>20</height>
@@ -174,27 +189,27 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_vertexY0" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+             <widget class="QLineEdit" name="lineEdit_vertexY0">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>0</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_4" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Expanding</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>28</width>
                 <height>20</height>
@@ -205,26 +220,26 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8" >
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
-             <widget class="QLabel" name="label_4" >
-              <property name="text" >
+             <widget class="QLabel" name="label_4">
+              <property name="text">
                <string>Z0:</string>
               </property>
-              <property name="buddy" >
+              <property name="buddy">
                <cstring>lineEdit_vertexZ0</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_5" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Fixed</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>28</width>
                 <height>20</height>
@@ -233,30 +248,30 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_vertexZ0" >
-              <property name="enabled" >
+             <widget class="QLineEdit" name="lineEdit_vertexZ0">
+              <property name="enabled">
                <bool>false</bool>
               </property>
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>0</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_7" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_7">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Expanding</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>28</width>
                 <height>20</height>
@@ -270,44 +285,44 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Next vertex</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_8" >
+         <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_9" >
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
             <item>
-             <widget class="QLabel" name="label_8" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+             <widget class="QLabel" name="label_8">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>Azimuth:</string>
               </property>
-              <property name="buddy" >
+              <property name="buddy">
                <cstring>lineEdit_nextAzimuth</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_2" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Fixed</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>2</width>
                 <height>20</height>
@@ -316,31 +331,31 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_nextAzimuth" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+             <widget class="QLineEdit" name="lineEdit_nextAzimuth">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>0</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_vertexAdd" >
-              <property name="text" >
+             <widget class="QPushButton" name="pushButton_vertexAdd">
+              <property name="text">
                <string>Add to Bottom</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_9" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_9">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>40</width>
                 <height>20</height>
@@ -351,39 +366,39 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_10" >
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
-             <widget class="QLabel" name="label_9" >
-              <property name="text" >
+             <widget class="QLabel" name="label_9">
+              <property name="text">
                <string>Distance:</string>
               </property>
-              <property name="buddy" >
+              <property name="buddy">
                <cstring>lineEdit_nextDistance</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_nextDistance" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+             <widget class="QLineEdit" name="lineEdit_nextDistance">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>0</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_8" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_8">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Expanding</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>26</width>
                 <height>20</height>
@@ -394,26 +409,26 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_11" >
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
-             <widget class="QLabel" name="label_10" >
-              <property name="text" >
+             <widget class="QLabel" name="label_10">
+              <property name="text">
                <string>Vertical:</string>
               </property>
-              <property name="buddy" >
+              <property name="buddy">
                <cstring>lineEdit_nextVertical</cstring>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_14" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_14">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Fixed</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>4</width>
                 <height>20</height>
@@ -422,37 +437,37 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_nextVertical" >
-              <property name="enabled" >
+             <widget class="QLineEdit" name="lineEdit_nextVertical">
+              <property name="enabled">
                <bool>false</bool>
               </property>
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>90</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_vertexInsert" >
-              <property name="text" >
+             <widget class="QPushButton" name="pushButton_vertexInsert">
+              <property name="text">
                <string>Insert above</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_12" >
-              <property name="orientation" >
+             <spacer name="horizontalSpacer_12">
+              <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeType" >
+              <property name="sizeType">
                <enum>QSizePolicy::Fixed</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" stdset="0">
                <size>
                 <width>50</width>
                 <height>20</height>
@@ -468,56 +483,56 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4" >
+      <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QGroupBox" name="surveyGrpBox" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+        <widget class="QGroupBox" name="surveyGrpBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Survey type</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_10" >
+         <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
-           <widget class="QRadioButton" name="radioButton_radialSurvey" >
-            <property name="enabled" >
+           <widget class="QRadioButton" name="radioButton_radialSurvey">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Polar / Radial</string>
             </property>
-            <property name="checkable" >
+            <property name="checkable">
              <bool>true</bool>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_boundarySurvey" >
-            <property name="enabled" >
+           <widget class="QRadioButton" name="radioButton_boundarySurvey">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Boundary</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
@@ -526,61 +541,61 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_3" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>North type</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_12" >
+         <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
-           <widget class="QRadioButton" name="radioButton_defaultNorth" >
-            <property name="enabled" >
+           <widget class="QRadioButton" name="radioButton_defaultNorth">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Default</string>
             </property>
-            <property name="checkable" >
+            <property name="checkable">
              <bool>true</bool>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_magNorth" >
-            <property name="enabled" >
+           <widget class="QRadioButton" name="radioButton_magNorth">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Magnetic</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_magNorth" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+           <widget class="QLineEdit" name="lineEdit_magNorth">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>value</string>
             </property>
            </widget>
@@ -589,52 +604,52 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_7" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+        <widget class="QGroupBox" name="groupBox_7">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Distance units</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout" >
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QRadioButton" name="radioButton_defaultUnits" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+           <widget class="QRadioButton" name="radioButton_defaultUnits">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Default</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_englishUnits" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+           <widget class="QRadioButton" name="radioButton_englishUnits">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Feet</string>
             </property>
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer_16" >
-            <property name="orientation" >
+           <spacer name="horizontalSpacer_16">
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>0</width>
               <height>36</height>
@@ -646,76 +661,76 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_6" >
-         <property name="enabled" >
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="enabled">
           <bool>true</bool>
          </property>
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Angle type</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5" >
+         <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QRadioButton" name="radioButton_azimuthAngle" >
-            <property name="enabled" >
+           <widget class="QRadioButton" name="radioButton_azimuthAngle">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Azimuth</string>
             </property>
-            <property name="checkable" >
+            <property name="checkable">
              <bool>true</bool>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_bearingAngle" >
-            <property name="enabled" >
+           <widget class="QRadioButton" name="radioButton_bearingAngle">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Bearing</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_polarCoordAngle" >
-            <property name="enabled" >
+           <widget class="QRadioButton" name="radioButton_polarCoordAngle">
+            <property name="enabled">
              <bool>false</bool>
             </property>
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Polar coordinates</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>false</bool>
             </property>
            </widget>
@@ -731,35 +746,35 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_12" >
+    <layout class="QHBoxLayout" name="horizontalLayout_12">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_11" >
+      <layout class="QVBoxLayout" name="verticalLayout_11">
        <item>
-        <widget class="QGroupBox" name="groupBox_8" >
-         <property name="title" >
+        <widget class="QGroupBox" name="groupBox_8">
+         <property name="title">
           <string>Segment List</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_9" >
+         <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
-           <widget class="QTableWidget" name="table_segmentList" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+           <widget class="QTableWidget" name="table_segmentList">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Azimuth</string>
              </property>
             </column>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Distance</string>
              </property>
             </column>
             <column>
-             <property name="text" >
+             <property name="text">
               <string>Vertical Angle</string>
              </property>
             </column>
@@ -769,33 +784,33 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3" >
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QPushButton" name="pushButton_segListLoad" >
-           <property name="enabled" >
+          <widget class="QPushButton" name="pushButton_segListLoad">
+           <property name="enabled">
             <bool>true</bool>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Import List</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_segListSave" >
-           <property name="enabled" >
+          <widget class="QPushButton" name="pushButton_segListSave">
+           <property name="enabled">
             <bool>true</bool>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Export List</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer" >
-           <property name="orientation" >
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -804,8 +819,8 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_segListClear" >
-           <property name="text" >
+          <widget class="QPushButton" name="pushButton_segListClear">
+           <property name="text">
             <string>Clear List</string>
            </property>
           </widget>
@@ -815,48 +830,48 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout" >
-       <property name="sizeConstraint" >
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
        <item>
-        <widget class="QPushButton" name="pushButton_segListRowUp" >
-         <property name="enabled" >
+        <widget class="QPushButton" name="pushButton_segListRowUp">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Up</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_segListRowDn" >
-         <property name="enabled" >
+        <widget class="QPushButton" name="pushButton_segListRowDn">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Down</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_2" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>28</height>
@@ -865,14 +880,14 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_segListRowDel" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+        <widget class="QPushButton" name="pushButton_segListRowDel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Remove</string>
          </property>
         </widget>
@@ -880,26 +895,26 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2" >
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QPushButton" name="pushButton_objectDraw" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+        <widget class="QPushButton" name="pushButton_objectDraw">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Draw</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>28</width>
            <height>78</height>
@@ -908,8 +923,8 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_dlgClose" >
-         <property name="text" >
+        <widget class="QPushButton" name="pushButton_dlgClose">
+         <property name="text">
           <string>Close</string>
          </property>
         </widget>
@@ -960,11 +975,11 @@
    <receiver>ui</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>600</x>
      <y>673</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>472</x>
      <y>629</y>
     </hint>

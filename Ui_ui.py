@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Sun Nov 24 16:58:04 2013
-#      by: PyQt4 UI code generator 4.9.3
+# Created: Tue May 20 10:03:42 2014
+#      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -20,6 +20,12 @@ class Ui_ui(object):
         ui.resize(612, 685)
         self.verticalLayout_13 = QtGui.QVBoxLayout(ui)
         self.verticalLayout_13.setObjectName(_fromUtf8("verticalLayout_13"))
+        self.radioButton_useActiveLayer = QtGui.QRadioButton(ui)
+        self.radioButton_useActiveLayer.setObjectName(_fromUtf8("radioButton_useActiveLayer"))
+        self.verticalLayout_13.addWidget(self.radioButton_useActiveLayer)
+        self.radioButton_useMemoryLayer = QtGui.QRadioButton(ui)
+        self.radioButton_useMemoryLayer.setObjectName(_fromUtf8("radioButton_useMemoryLayer"))
+        self.verticalLayout_13.addWidget(self.radioButton_useMemoryLayer)
         self.verticalLayout_3 = QtGui.QVBoxLayout()
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.horizontalLayout_14 = QtGui.QHBoxLayout()
@@ -466,6 +472,8 @@ class Ui_ui(object):
 
     def retranslateUi(self, ui):
         ui.setWindowTitle(QtGui.QApplication.translate("ui", "Geometry from Azimuth and Distance", None, QtGui.QApplication.UnicodeUTF8))
+        self.radioButton_useActiveLayer.setText(QtGui.QApplication.translate("ui", "Active Layer", None, QtGui.QApplication.UnicodeUTF8))
+        self.radioButton_useMemoryLayer.setText(QtGui.QApplication.translate("ui", "Memory Layer", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("ui", "Coordinate System:", None, QtGui.QApplication.UnicodeUTF8))
         self.plainTextEdit_note.setPlainText(QtGui.QApplication.translate("ui", "Angles may be entered as degrees clockwise from North (nnn.nn or nnd nn\' nn.n\") or as an offset bearing plus or minus 90 deg. from  North or South (N xxd xx\' xx\" E)", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("ui", "Starting vertex", None, QtGui.QApplication.UnicodeUTF8))
@@ -500,12 +508,9 @@ class Ui_ui(object):
         self.radioButton_bearingAngle.setText(QtGui.QApplication.translate("ui", "Bearing", None, QtGui.QApplication.UnicodeUTF8))
         self.radioButton_polarCoordAngle.setText(QtGui.QApplication.translate("ui", "Polar coordinates", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_8.setTitle(QtGui.QApplication.translate("ui", "Segment List", None, QtGui.QApplication.UnicodeUTF8))
-        item = self.table_segmentList.horizontalHeaderItem(0)
-        item.setText(QtGui.QApplication.translate("ui", "Azimuth", None, QtGui.QApplication.UnicodeUTF8))
-        item = self.table_segmentList.horizontalHeaderItem(1)
-        item.setText(QtGui.QApplication.translate("ui", "Distance", None, QtGui.QApplication.UnicodeUTF8))
-        item = self.table_segmentList.horizontalHeaderItem(2)
-        item.setText(QtGui.QApplication.translate("ui", "Vertical Angle", None, QtGui.QApplication.UnicodeUTF8))
+        self.table_segmentList.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("ui", "Azimuth", None, QtGui.QApplication.UnicodeUTF8))
+        self.table_segmentList.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("ui", "Distance", None, QtGui.QApplication.UnicodeUTF8))
+        self.table_segmentList.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("ui", "Vertical Angle", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_segListLoad.setText(QtGui.QApplication.translate("ui", "Import List", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_segListSave.setText(QtGui.QApplication.translate("ui", "Export List", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_segListClear.setText(QtGui.QApplication.translate("ui", "Clear List", None, QtGui.QApplication.UnicodeUTF8))

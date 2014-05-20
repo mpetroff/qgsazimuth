@@ -43,6 +43,7 @@ class qgsazimuth (object):
 
     def __init__(self, iface):
         self.iface = iface
+        self.legend = iface.legendInterface()
         self.canvas = iface.mapCanvas()
         self.fPath = ""  # set default working directory, updated from config file & by Import/Export
 
@@ -88,10 +89,24 @@ class qgsazimuth (object):
         self.pluginGui.lineEdit_crs.setText(self.iface.mapCanvas().mapRenderer().destinationCrs().description())
 
         self.pluginGui.table_segmentList.setCurrentCell(0,0)
+        if self.iface.activeLayer():
+            self.updatelayertext(self.iface.activeLayer())
+            self.pluginGui.radioButton_useActiveLayer.setChecked(True)
+        else:
+            self.pluginGui.radioButton_useActiveLayer.setEnabled(False)
+            self.pluginGui.radioButton_useMemoryLayer.setChecked(True)
+        self.legend.currentLayerChanged.connect(self.updatelayertext)
         self.pluginGui.show()
 
         # for debugging convenience
         self.notes = self.pluginGui.plainTextEdit_note
+
+    def updatelayertext(self, layer):
+        if not layer:
+            self.pluginGui.radioButton_useActiveLayer.setEnabled(False)
+        else:
+            self.pluginGui.radioButton_useActiveLayer.setEnabled(True)
+            self.pluginGui.radioButton_useActiveLayer.setText("Active Layer ({0})".format(layer.name()))
 
     #Now these are the SLOTS
     def nextvertex(self,v,d,az,zen=90):
@@ -105,15 +120,22 @@ class qgsazimuth (object):
         #print "point ", x,y,z
         return [x,y,z]
 
+    @property
+    def useactivelayer(self):
+        return self.pluginGui.radioButton_useActiveLayer.isChecked()
+
     def addgeometry(self):
         #initialization
         s = QSettings()
-        oldValidation = s.value("/Projections/defaultBehaviour", "useProject")
-        s.setValue("/Projections/defaultBehaviour", "useProject")
-        vectorlayer=QgsVectorLayer("LineString", "tmp_plot", "memory")
-        s.setValue("/Projections/defaultBehaviour", oldValidation)
+        if self.useactivelayer:
+            vectorlayer = self.iface.activeLayer()
+        else:
+            oldValidation = s.value("/Projections/defaultBehaviour", "useProject")
+            s.setValue("/Projections/defaultBehaviour", "useProject")
+            vectorlayer=QgsVectorLayer("LineString", "tmp_plot", "memory")
+            s.setValue("/Projections/defaultBehaviour", oldValidation)
+
         provider=vectorlayer.dataProvider()
-        vectorlayer.startEditing()
         geometrytype=provider.geometryType()
 
         # if magnetic heading chosen, assure we have a declination angle
@@ -220,8 +242,10 @@ class qgsazimuth (object):
 
         #commit
         provider.addFeatures(featurelist)
-        vectorlayer.commitChanges()
-        QgsMapLayerRegistry.instance().addMapLayer(vectorlayer)
+        if not self.useactivelayer:
+            QgsMapLayerRegistry.instance().addMapLayer(vectorlayer)
+
+        self.iface.mapCanvas().refresh()
 
     def bearingToDd (self,  dms):
         #allow survey bearings in form:  - N 25d 34' 40" E
