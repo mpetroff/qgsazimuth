@@ -3,7 +3,7 @@
 name=Azimuth and Distance Plugin
 qgisMinimumVersion=2.0
 description=Creates a polygon from azimuths and distances
-version=0.9.1
+version=0.9.2
 author=Mauricio de Paulo and Fred Laplante
 email=
 
@@ -14,5 +14,6 @@ deprecated=False
 repository=https://github.com/mpetroff/qgsazimuth
 tracker=https://github.com/mpetroff/qgsazimuth/issues
 changelog=
+    Version 0.9.2: Added support for drawing into active layer (completed by DMS, Australia)
     Version 0.9.1: Fixed no segment draw and coordinate offset bugs
     Version 0.9.0: Updated for QGIS 2.0
