@@ -55,6 +55,7 @@ class qgsazimuth (object):
 
         # add toolbar button and menu item
         self.iface.addPluginToMenu("&Topography", self.action)
+        self.iface.addToolBarIcon(self.action)
         self.pluginGui = ui_Control(self.iface.mainWindow())
 
         self.tool = GetCoordTool(self.canvas)
@@ -63,6 +64,7 @@ class qgsazimuth (object):
         # remove the plugin menu item and icon
         self.iface.removePluginMenu("&Topography",self.action)
         self.iface.removeToolBarIcon(self.action)
+        self.tool.cleanup()
         self.saveConf()
 
     def run(self):
@@ -77,6 +79,7 @@ class qgsazimuth (object):
         self.setStartAt("0;0;90")    # remove previous StartAt point
 
         #INSERT EVERY SIGNAL CONECTION HERE!
+        self.pluginGui.finished.connect(self.cleanup)
         self.pluginGui.pushButton_vertexAdd.clicked.connect(self.addRow)
         self.pluginGui.pushButton_vertexInsert.clicked.connect(self.insertRow)
         self.pluginGui.pushButton_segListRowDel.clicked.connect(self.delRow)
@@ -100,6 +103,9 @@ class qgsazimuth (object):
 
         # for debugging convenience
         self.notes = self.pluginGui.plainTextEdit_note
+
+    def cleanup(self):
+        self.tool.cleanup()
 
     def updatelayertext(self, layer):
         if not layer:
@@ -367,7 +373,7 @@ class qgsazimuth (object):
         self.saveTool = self.canvas.mapTool()
         self.canvas.setMapTool(self.tool)
 
-    def getpoint(self,pt):
+    def getpoint(self, pt):
         self.pluginGui.lineEdit_vertexX0.setText(str(pt.x()))
         self.pluginGui.lineEdit_vertexY0.setText(str(pt.y()))
         self.canvas.setMapTool(self.saveTool)
