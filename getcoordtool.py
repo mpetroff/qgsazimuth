@@ -46,28 +46,30 @@ class GetCoordTool(QgsMapTool):
                                    "###########.aa..",
                                    "############.a.#",
                                    "#############.##"]), 0, 0)
-  
+
+    self.snapper = QgsMapCanvasSnapper(self.canvas)
+    self.bandpoint = QgsRubberBand(self.canvas, QGis.Point)
+    self.bandpoint.setIcon(QgsRubberBand.ICON_X)
+    self.bandpoint.setColor(QColor.fromRgb(255,50,255))
+    self.bandpoint.setIconSize(20)
+
   finished = pyqtSignal(QgsPoint)
   def canvasPressEvent(self,event):
-    pixels=event.pos()
-    
-    snapper=QgsMapCanvasSnapper(self.canvas)
-    snapped=snapper.snapToBackgroundLayers(pixels)
-    #QMessageBox.information(None,"Teste", str(snapped[1]))
-    if len(snapped[1])>0:
-        xy=snapped[1][0].snappedVertex
-    else:
-        #transforming pixels to x,y
-        transform = self.canvas.getCoordinateTransform()
-        xy = transform.toMapCoordinates(pixels) #captures the clicked coordinate and transform
-    self.finished.emit(xy)
-  
+    point = self.snappoint(event.pos())
+    self.finished.emit(point)
+
+  def snappoint(self, point):
+    try:
+        _, results = self.snapper.snapToBackgroundLayers(point)
+        point = results[0].snappedVertex
+        return point
+    except IndexError:
+        return self.canvas.getCoordinateTransform().toMapCoordinates(point)
+
   def canvasMoveEvent(self,event):
-    pass
-  
-  def canvasReleaseEvent(self,event):
-    pass
-            
+    point = self.snappoint(event.pos())
+    self.bandpoint.setToGeometry(QgsGeometry.fromPoint(point), None)
+
   def activate(self):
     QgsMapTool.activate(self)
     self.canvas.setCursor(self.cursor)
