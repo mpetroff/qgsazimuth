@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Tue May 20 10:03:42 2014
+# Created: Fri Aug 22 09:46:20 2014
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -291,8 +291,6 @@ class Ui_ui(object):
         self.radioButton_englishUnits.setSizePolicy(sizePolicy)
         self.radioButton_englishUnits.setObjectName(_fromUtf8("radioButton_englishUnits"))
         self.horizontalLayout.addWidget(self.radioButton_englishUnits)
-        spacerItem11 = QtGui.QSpacerItem(0, 36, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem11)
         self.verticalLayout_4.addWidget(self.groupBox_7)
         self.groupBox_6 = QtGui.QGroupBox(ui)
         self.groupBox_6.setEnabled(True)
@@ -373,8 +371,8 @@ class Ui_ui(object):
         self.pushButton_segListSave.setEnabled(True)
         self.pushButton_segListSave.setObjectName(_fromUtf8("pushButton_segListSave"))
         self.horizontalLayout_3.addWidget(self.pushButton_segListSave)
-        spacerItem12 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem12)
+        spacerItem11 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem11)
         self.pushButton_segListClear = QtGui.QPushButton(ui)
         self.pushButton_segListClear.setObjectName(_fromUtf8("pushButton_segListClear"))
         self.horizontalLayout_3.addWidget(self.pushButton_segListClear)
@@ -401,8 +399,8 @@ class Ui_ui(object):
         self.pushButton_segListRowDn.setSizePolicy(sizePolicy)
         self.pushButton_segListRowDn.setObjectName(_fromUtf8("pushButton_segListRowDn"))
         self.verticalLayout.addWidget(self.pushButton_segListRowDn)
-        spacerItem13 = QtGui.QSpacerItem(20, 28, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem13)
+        spacerItem12 = QtGui.QSpacerItem(20, 28, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem12)
         self.pushButton_segListRowDel = QtGui.QPushButton(ui)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -414,6 +412,9 @@ class Ui_ui(object):
         self.horizontalLayout_12.addLayout(self.verticalLayout)
         self.verticalLayout_2 = QtGui.QVBoxLayout()
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.checkBox_asSegments = QtGui.QCheckBox(ui)
+        self.checkBox_asSegments.setObjectName(_fromUtf8("checkBox_asSegments"))
+        self.verticalLayout_2.addWidget(self.checkBox_asSegments)
         self.pushButton_objectDraw = QtGui.QPushButton(ui)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -422,8 +423,8 @@ class Ui_ui(object):
         self.pushButton_objectDraw.setSizePolicy(sizePolicy)
         self.pushButton_objectDraw.setObjectName(_fromUtf8("pushButton_objectDraw"))
         self.verticalLayout_2.addWidget(self.pushButton_objectDraw)
-        spacerItem14 = QtGui.QSpacerItem(28, 78, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem14)
+        spacerItem13 = QtGui.QSpacerItem(28, 78, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem13)
         self.pushButton_dlgClose = QtGui.QPushButton(ui)
         self.pushButton_dlgClose.setObjectName(_fromUtf8("pushButton_dlgClose"))
         self.verticalLayout_2.addWidget(self.pushButton_dlgClose)
@@ -517,6 +518,7 @@ class Ui_ui(object):
         self.pushButton_segListRowUp.setText(QtGui.QApplication.translate("ui", "Up", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_segListRowDn.setText(QtGui.QApplication.translate("ui", "Down", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_segListRowDel.setText(QtGui.QApplication.translate("ui", "Remove", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_asSegments.setText(QtGui.QApplication.translate("ui", "As Segments", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_objectDraw.setText(QtGui.QApplication.translate("ui", "Draw", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_dlgClose.setText(QtGui.QApplication.translate("ui", "Close", None, QtGui.QApplication.UnicodeUTF8))
 

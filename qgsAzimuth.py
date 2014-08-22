@@ -142,7 +142,8 @@ class qgsazimuth (object):
             s.setValue("/Projections/defaultBehaviour", oldValidation)
 
         provider=vectorlayer.dataProvider()
-        geometrytype=provider.geometryType()
+
+        geometrytype= vectorlayer.geometryType()
 
         # if magnetic heading chosen, assure we have a declination angle
         if (self.pluginGui.radioButton_magNorth.isChecked())  and (str(self.pluginGui.lineEdit_magNorth.text()) == ''):   #magnetic headings
@@ -208,8 +209,9 @@ class qgsazimuth (object):
         #reprojecting to projects SRS
         vlist=self.reproject(vlist, vectorlayer)
 
-        featurelist=[]
-        if (geometrytype==1): #POINT
+        as_segments = self.pluginGui.checkBox_asSegments.isChecked()
+
+        def add_points(points):
             for point in vlist:
                 #writing new feature
                 p=QgsPoint(point[0],point[1])
@@ -217,9 +219,24 @@ class qgsazimuth (object):
                 feature=QgsFeature()
                 feature.setGeometry(geom)
                 featurelist.append(feature)
-        elif (geometrytype==2): #LINESTRING
+
+        featurelist=[]
+        if (geometrytype == QGis.Point): #POINT
+            add_points(vlist)
+        elif (geometrytype == QGis.Line): #LINESTRING
+            def createline(points):
+                """
+                Creata a line feature from a list of points
+                :param points: List of QgsPoints
+                """
+                geom=QgsGeometry.fromPolyline(points)
+                feature=QgsFeature()
+                feature.setGeometry(geom)
+                featurelist.append(feature)
+
+            pointlist=[]
+
             if (surveytype== 'polygonal'):
-                pointlist=[]
                 for point in vlist:
                     #writing new feature
                     p=QgsPoint(point[0],point[1])
@@ -231,11 +248,14 @@ class qgsazimuth (object):
                     #writing new feature
                     p=QgsPoint(point[0],point[1])
                     pointlist=[v0,p]
-            geom=QgsGeometry.fromPolyline(pointlist)
-            feature=QgsFeature()
-            feature.setGeometry(geom)
-            featurelist.append(feature)
-        elif (geometrytype==3): #POLYGON
+
+            if as_segments:
+                for start, end in zip(pointlist, pointlist[1:]):
+                    createline([start, end])
+            else:
+                createline(pointlist)
+
+        elif (geometrytype == QGis.Polygon): #POLYGON
             pointlist=[]
             for point in vlist:
                 #writing new feature

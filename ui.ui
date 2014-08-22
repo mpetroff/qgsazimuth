@@ -644,19 +644,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <spacer name="horizontalSpacer_16">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>36</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
        </item>
@@ -896,6 +883,13 @@
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QCheckBox" name="checkBox_asSegments">
+         <property name="text">
+          <string>As Segments</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QPushButton" name="pushButton_objectDraw">
          <property name="sizePolicy">
