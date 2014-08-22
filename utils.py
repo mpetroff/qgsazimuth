@@ -10,7 +10,7 @@ def to_qgspoints(points, repeatfirst=False):
     """
     if not repeatfirst:
         # Just return a full list like normal
-        return [QgsPoint(**point) for point in points]
+        return [QgsPoint(point[0], point[1]) for point in points]
     else:
         pointlist = []
 

@@ -145,7 +145,6 @@ class qgsazimuth (object):
 
         provider=vectorlayer.dataProvider()
 
-        geometrytype= vectorlayer.geometryType()
 
         # if magnetic heading chosen, assure we have a declination angle
         if (self.pluginGui.radioButton_magNorth.isChecked())  and (str(self.pluginGui.lineEdit_magNorth.text()) == ''):   #magnetic headings
@@ -229,13 +228,12 @@ class qgsazimuth (object):
 
         as_segments = self.pluginGui.checkBox_asSegments.isChecked()
 
-        def add_points(points):
+        def createpoints(points):
             for point in points:
-                # writing new feature
-                geom = QgsGeometry.fromPoint(p)
+                geom = QgsGeometry.fromPoint(point)
                 feature = QgsFeature()
                 feature.setGeometry(geom)
-                featurelist.append(feature)
+                yield feature
 
         def createline(points):
             """
@@ -245,34 +243,43 @@ class qgsazimuth (object):
             geom = QgsGeometry.fromPolyline(points)
             feature = QgsFeature()
             feature.setGeometry(geom)
-            featurelist.append(feature)
+            return feature
 
-        def createpolygon(points):
+        def createpolygon(polygon):
             """
             Create a polygon from a list of points
             :param points: List of QgsPoints
             """
-            geom = QgsGeometry.fromPolygon([pointlist])
+            geom = QgsGeometry.fromPolygon(polygon)
+            QgsMessageLog.logMessage(str(geom.isGeosValid()))
             feature = QgsFeature()
             feature.setGeometry(geom)
-            featurelist.append(feature)
+            return feature
+
 
         featurelist=[]
+        geometrytype= vectorlayer.geometryType()
+        if geometrytype == QGis.Point:
+            points = utils.to_qgspoints(vlist)
+            features = createpoints(points)
+            featurelist.extend(features)
 
-        if (geometrytype == QGis.Point):  # POINT
-            add_points(utils.to_qgspoints(vlist))
-        elif (geometrytype == QGis.Line):  # LINESTRING
+        elif geometrytype == QGis.Line:
             pointlist = utils.to_qgspoints(vlist, repeatfirst=surveytype == 'radial')
 
             if as_segments:
                 # If the line is to be draw as segments then we loop the pairs and create a line for each one.
                 for pair in utils.pairs(pointlist, matchtail=surveytype == 'polygonal'):
-                    createline(pair)
+                    feature = createline(pair)
+                    featurelist.append(feature)
             else:
-                createline(pointlist)
+                feature = createline(pointlist)
+                featurelist.append(feature)
 
-        elif (geometrytype == QGis.Polygon):  # POLYGON
-            createpolygon(utils.to_qgspoints(vlist))
+        elif geometrytype == QGis.Polygon:
+            polygon = utils.to_qgspoints(vlist)
+            feature = createpolygon([polygon])
+            featurelist.append(feature)
 
         #commit
         provider.addFeatures(featurelist)
