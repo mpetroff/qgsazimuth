@@ -29,6 +29,8 @@ import resources
 from math import *
 from getcoordtool import *
 
+import utils
+
 class qgsazimuth (object):
     """
     Base class for the qgsAzimuth plugin
@@ -159,55 +161,71 @@ class qgsazimuth (object):
         if (X0 == 0 and Y0 == 0 and Z0 == 90):
             self.say("You must supply a starting point.")
             return 0
-        
+
         # Check if there are any segments
         if (self.pluginGui.table_segmentList.rowCount() < 1):
             self.say("You must enter at least one segment.")
             return 0
 
-        vlist=[]
-        vlist.append([X0,Y0,Z0])
-        #convert segment list to set of vertice
-        for i in range(self.pluginGui.table_segmentList.rowCount()):
-            az=str(self.pluginGui.table_segmentList.item(i,0).text())
-            dis=float(str(self.pluginGui.table_segmentList.item(i,1).text()))
-            zen=str(self.pluginGui.table_segmentList.item(i,2).text())
+        if (self.pluginGui.radioButton_radialSurvey.isChecked()):
+            surveytype='radial'
+        elif (self.pluginGui.radioButton_boundarySurvey.isChecked()):
+            surveytype = 'polygonal'
 
-            if (self.pluginGui.radioButton_englishUnits.isChecked()):
-                # adjust for input in feet, not meters
-                dis = float(dis)/3.281
+        def get_points(surveytype):
+            """
+            Return a list of calculated points for the full run.
+            :param surveytype:
+            :return:
+            """
+            vlist = []
+            vlist.append([X0, Y0, Z0])
+            # convert segment list to set of vertice
+            for i in range(self.pluginGui.table_segmentList.rowCount()):
+                az = str(self.pluginGui.table_segmentList.item(i, 0).text())
+                dis = float(str(self.pluginGui.table_segmentList.item(i, 1).text()))
+                zen = str(self.pluginGui.table_segmentList.item(i, 2).text())
 
-            #checking degree input
-            if (self.pluginGui.radioButton_azimuthAngle.isChecked()):
-                az=float(self.dmsToDd(az))
-                zen=float(self.dmsToDd(zen))
-            elif (self.pluginGui.radioButton_bearingAngle.isChecked()):
-                az=float(self.bearingToDd(az))
-                zen=float(self.bearingToDd(zen))
+                if (self.pluginGui.radioButton_englishUnits.isChecked()):
+                    # adjust for input in feet, not meters
+                    dis = float(dis) / 3.281
 
-            #correct for magnetic compass headings if necessary
-            if (self.pluginGui.radioButton_defaultNorth.isChecked()):
-                self.magDev = 0.0
-            elif (self.pluginGui.radioButton_magNorth.isChecked()):
-                self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_magNorth.text())))
-            az = float(az) + float(self.magDev)
+                #checking degree input
+                if (self.pluginGui.radioButton_azimuthAngle.isChecked()):
+                    az = float(self.dmsToDd(az))
+                    zen = float(self.dmsToDd(zen))
+                elif (self.pluginGui.radioButton_bearingAngle.isChecked()):
+                    az = float(self.bearingToDd(az))
+                    zen = float(self.bearingToDd(zen))
 
-            #correct for angles outside of 0.0-360.0
-            while (az > 360.0):
-                az = az - 360.0
-            while (az < 0.0):
-                az = az + 360.0
+                #correct for magnetic compass headings if necessary
+                if (self.pluginGui.radioButton_defaultNorth.isChecked()):
+                    self.magDev = 0.0
+                elif (self.pluginGui.radioButton_magNorth.isChecked()):
+                    self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_magNorth.text())))
+                az = float(az) + float(self.magDev)
 
-            #checking survey type
-            if (self.pluginGui.radioButton_radialSurvey.isChecked()):
-                vlist.append(self.nextvertex(vlist[0],dis,az,zen))      #reference first vertex
-                surveytype='radial'
-            elif (self.pluginGui.radioButton_boundarySurvey.isChecked()):
-                vlist.append(self.nextvertex(vlist[-1],dis,az,zen))     #reference previous vertex
-                surveytype = 'polygonal'
+                #correct for angles outside of 0.0-360.0
+                while (az > 360.0):
+                    az = az - 360.0
+                while (az < 0.0):
+                    az = az + 360.0
+
+                # checking survey type
+                if surveytype == 'radial':
+                    reference_point = vlist[0]  # reference first vertex
+
+                if surveytype == 'polygonal':
+                    reference_point = vlist[-1]  #reference previous vertex
+
+                nextpoint = self.nextvertex(reference_point, dis, az, zen)
+                vlist.append(nextpoint)
+
+            return vlist
 
         #reprojecting to projects SRS
-        vlist=self.reproject(vlist, vectorlayer)
+        points = get_points(surveytype)
+        vlist = self.reproject(points, vectorlayer)
 
         as_segments = self.pluginGui.checkBox_asSegments.isChecked()
 
@@ -234,24 +252,37 @@ class qgsazimuth (object):
                 feature.setGeometry(geom)
                 featurelist.append(feature)
 
-            pointlist=[]
+            def get_pointlist():
+                """
+                Generate the point list for the feature.
+                :return:
+                """
+                pointlist = []
+                if (surveytype == 'polygonal'):
+                    for point in vlist:
+                        # writing new feature
+                        p = QgsPoint(point[0], point[1])
+                        pointlist.append(p)
 
-            if (surveytype== 'polygonal'):
-                for point in vlist:
-                    #writing new feature
-                    p=QgsPoint(point[0],point[1])
-                    pointlist.append(p)
-            elif (surveytype=='radial'):
-                v0=vlist.pop(0)
-                v0=QgsPoint(v0[0],v0[1])
-                for point in vlist:
-                    #writing new feature
-                    p=QgsPoint(point[0],point[1])
-                    pointlist=[v0,p]
+                elif (surveytype == 'radial'):
+                    # Pop the first point
+                    v0 = vlist.pop(0)
+                    v0 = QgsPoint(v0[0], v0[1])
+
+                    # Loop the rest
+                    for point in vlist:
+                        p = QgsPoint(point[0], point[1])
+                        pointlist.append(v0)
+                        pointlist.append(p)
+
+                return pointlist
+
+            pointlist = get_pointlist()
 
             if as_segments:
-                for start, end in zip(pointlist, pointlist[1:]):
-                    createline([start, end])
+                # If the line is to be draw as segments then we loop the pairs and create a line for each one.
+                for pair in utils.pairs(pointlist, matchtail=surveytype == 'polygonal'):
+                    createline(pair)
             else:
                 createline(pointlist)
 
