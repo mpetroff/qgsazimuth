@@ -19,7 +19,7 @@
 #---------------------------------------------------------------------
 
 import os,sys
-sys.path.append("/usr/share/qgis/python")
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -230,54 +230,39 @@ class qgsazimuth (object):
         as_segments = self.pluginGui.checkBox_asSegments.isChecked()
 
         def add_points(points):
-            for point in vlist:
-                #writing new feature
-                p=QgsPoint(point[0],point[1])
-                geom=QgsGeometry.fromPoint(p)
-                feature=QgsFeature()
+            for point in points:
+                # writing new feature
+                geom = QgsGeometry.fromPoint(p)
+                feature = QgsFeature()
                 feature.setGeometry(geom)
                 featurelist.append(feature)
+
+        def createline(points):
+            """
+            Creata a line feature from a list of points
+            :param points: List of QgsPoints
+            """
+            geom = QgsGeometry.fromPolyline(points)
+            feature = QgsFeature()
+            feature.setGeometry(geom)
+            featurelist.append(feature)
+
+        def createpolygon(points):
+            """
+            Create a polygon from a list of points
+            :param points: List of QgsPoints
+            """
+            geom = QgsGeometry.fromPolygon([pointlist])
+            feature = QgsFeature()
+            feature.setGeometry(geom)
+            featurelist.append(feature)
 
         featurelist=[]
-        if (geometrytype == QGis.Point): #POINT
-            add_points(vlist)
-        elif (geometrytype == QGis.Line): #LINESTRING
-            def createline(points):
-                """
-                Creata a line feature from a list of points
-                :param points: List of QgsPoints
-                """
-                geom=QgsGeometry.fromPolyline(points)
-                feature=QgsFeature()
-                feature.setGeometry(geom)
-                featurelist.append(feature)
 
-            def get_pointlist():
-                """
-                Generate the point list for the feature.
-                :return:
-                """
-                pointlist = []
-                if (surveytype == 'polygonal'):
-                    for point in vlist:
-                        # writing new feature
-                        p = QgsPoint(point[0], point[1])
-                        pointlist.append(p)
-
-                elif (surveytype == 'radial'):
-                    # Pop the first point
-                    v0 = vlist.pop(0)
-                    v0 = QgsPoint(v0[0], v0[1])
-
-                    # Loop the rest
-                    for point in vlist:
-                        p = QgsPoint(point[0], point[1])
-                        pointlist.append(v0)
-                        pointlist.append(p)
-
-                return pointlist
-
-            pointlist = get_pointlist()
+        if (geometrytype == QGis.Point):  # POINT
+            add_points(utils.to_qgspoints(vlist))
+        elif (geometrytype == QGis.Line):  # LINESTRING
+            pointlist = utils.to_qgspoints(vlist, repeatfirst=surveytype == 'radial')
 
             if as_segments:
                 # If the line is to be draw as segments then we loop the pairs and create a line for each one.
@@ -286,16 +271,8 @@ class qgsazimuth (object):
             else:
                 createline(pointlist)
 
-        elif (geometrytype == QGis.Polygon): #POLYGON
-            pointlist=[]
-            for point in vlist:
-                #writing new feature
-                p=QgsPoint(point[0],point[1])
-                pointlist.append(p)
-            geom=QgsGeometry.fromPolygon([pointlist])
-            feature=QgsFeature()
-            feature.setGeometry(geom)
-            featurelist.append(feature)
+        elif (geometrytype == QGis.Polygon):  # POLYGON
+            createpolygon(utils.to_qgspoints(vlist))
 
         #commit
         provider.addFeatures(featurelist)

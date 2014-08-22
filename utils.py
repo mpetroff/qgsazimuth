@@ -1,5 +1,31 @@
 __author__ = 'Nathan.Woodrow'
 
+from qgis.core import QgsPoint
+
+def to_qgspoints(points, repeatfirst=False):
+    """
+    Generate a QgsPoint list from a list of x,y pairs
+    :param repeatfirst: Repeat the first item in the list for each other point
+    :return:
+    """
+    if not repeatfirst:
+        # Just return a full list like normal
+        return [QgsPoint(**point) for point in points]
+    else:
+        pointlist = []
+
+        # Pop the first point
+        points = iter(points)
+        v0 = points.next()
+        v0 = QgsPoint(v0[0], v0[1])
+
+        # Loop the rest
+        for point in points:
+            p = QgsPoint(point[0], point[1])
+            pointlist.append(v0)
+            pointlist.append(p)
+        return pointlist
+
 def pairs(points, matchtail):
     """
     Return a list of pairs from a list of points
