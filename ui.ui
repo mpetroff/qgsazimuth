@@ -400,50 +400,6 @@
           <property name="margin">
            <number>6</number>
           </property>
-          <item row="6" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QPushButton" name="pushButton_segListLoad">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="text">
-               <string>Import List</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_segListSave">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="text">
-               <string>Export List</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_segListClear">
-              <property name="text">
-               <string>Clear List</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
           <item row="4" column="1" rowspan="3">
            <layout class="QVBoxLayout" name="verticalLayout">
             <property name="sizeConstraint">
@@ -563,30 +519,30 @@
             </column>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QCheckBox" name="checkBox_asSegments">
+             <widget class="QPushButton" name="pushButton_segListLoad">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="text">
-               <string>As Segments</string>
+               <string>Import List</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_objectDraw">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+             <widget class="QPushButton" name="pushButton_segListSave">
+              <property name="enabled">
+               <bool>true</bool>
               </property>
               <property name="text">
-               <string>Draw</string>
+               <string>Export List</string>
               </property>
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_3">
+             <spacer name="horizontalSpacer">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -597,6 +553,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_segListClear">
+              <property name="text">
+               <string>Clear List</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -872,6 +835,26 @@
     <layout class="QHBoxLayout" name="horizontalLayout_12">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QCheckBox" name="checkBox_asSegments">
+         <property name="text">
+          <string>As Segments</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_objectDraw">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Draw</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
