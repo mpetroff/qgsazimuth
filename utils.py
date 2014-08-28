@@ -41,3 +41,55 @@ def pairs(points, matchtail):
     for start, end in it:
         yield [start, end]
 
+def nextvertex(reference_point, distance, angle, virtical_anagle=90):
+    """
+    Return the next vertex given a start, angle, distance.
+    :param reference_point: Start point
+    :param distance: Distance to the next vertex
+    :param angle: Angle is assumed to already include north correction
+    :param virtical_anagle: Virtical angle for height correction
+    :return: A tuple of x,y,z for the next point.
+    """
+    angle = radians(angle)
+    virtical_anagle = radians(virtical_anagle)
+    d1 = distance * sin(virtical_anagle)
+    x = reference_point[0] + d1 * sin(angle)
+    y = reference_point[1] + d1 * cos(angle)
+    z = reference_point[2] + distance * cos(virtical_anagle)
+    return [x, y, z]
+
+def central_angle(chord, radius):
+    """
+    Central angle given the chord length and radius
+    :param chord: Chord length
+    :param radius: Radius
+    :return: Angle of the central angle from the circle
+    """
+    angle = chord / float(2 * radius)
+    rad = 2 * math.asin(angle)
+    return math.degrees(rad)
+
+def arc_length(radius, c_angle):
+    """
+    The length of the total arc given the radius and central angle.
+    :param radius: Radius
+    :param c_angle: Central angle of the circle
+    :return: The length of the arc
+    """
+    return 2 * math.pi * radius * ( c_angle / 360 )
+
+def angle_to_center_point(start_anglge, half_cord, radius):
+    """
+    Angle from chord and radius length.  start_angle will be added to the result for offset
+    :param half_cord: The length of the half chord
+    :param radius: Radius
+    :return: A tuple of (start + angle, angle)
+    """
+    angle = math.acos(half_cord / float(radius))
+    angle = math.degrees(angle)
+    return start_anglge + angle, angle
+
+def next_arc_point(angle, opposite, adjacent):
+
+
+

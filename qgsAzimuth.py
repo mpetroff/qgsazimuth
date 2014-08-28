@@ -117,16 +117,16 @@ class qgsazimuth (object):
             self.pluginGui.radioButton_useActiveLayer.setText("Active Layer ({0})".format(layer.name()))
 
     #Now these are the SLOTS
-    def nextvertex(self,v,d,az,zen=90):
-        #print "direction:", az, zen, d
-        az=radians(az)
-        zen=radians(zen)
-        d1=d*sin(zen)
-        x=v[0]+d1*sin(az)
-        y=v[1]+d1*cos(az)
-        z=v[2]+d*cos(zen)
+    def nextvertex(self, reference, distance, angle, virtical_anagle=90):
+        # print "direction:", az, zen, d
+        angle = radians(angle)
+        virtical_anagle = radians(virtical_anagle)
+        d1 = distance * sin(virtical_anagle)
+        x = reference[0] + d1 * sin(angle)
+        y = reference[1] + d1 * cos(angle)
+        z = reference[2] + distance * cos(virtical_anagle)
         #print "point ", x,y,z
-        return [x,y,z]
+        return [x, y, z]
 
     @property
     def useactivelayer(self):
@@ -171,6 +171,15 @@ class qgsazimuth (object):
         elif (self.pluginGui.radioButton_boundarySurvey.isChecked()):
             surveytype = 'polygonal'
 
+        def get_arcpoints(start, end, length, radius):
+            """
+            Generate a arc from the start to the end point using the given length.
+            :param start: The start point [x,y,z]
+            :param end: The end point [x,y,x]
+            :param length: The length of the arc.
+            :return: A list of points that make the arc.
+            """
+
         def get_points(surveytype):
             """
             Return a list of calculated points for the full run.
@@ -184,6 +193,7 @@ class qgsazimuth (object):
                 az = str(self.pluginGui.table_segmentList.item(i, 0).text())
                 dis = float(str(self.pluginGui.table_segmentList.item(i, 1).text()))
                 zen = str(self.pluginGui.table_segmentList.item(i, 2).text())
+                radius = str(self.pluginGui.table_segmentList.item(i, 3).text())
 
                 if (self.pluginGui.radioButton_englishUnits.isChecked()):
                     # adjust for input in feet, not meters
@@ -218,7 +228,15 @@ class qgsazimuth (object):
                     reference_point = vlist[-1]  #reference previous vertex
 
                 nextpoint = self.nextvertex(reference_point, dis, az, zen)
-                vlist.append(nextpoint)
+
+                if radius:
+                    # If there is a radius then we are drawing a arc.
+                    # Calculate the arc points.
+                    points = get_arcpoints(reference_point, nextpoint, dis, radius)
+                    # Append them to the final points list.
+                    vlist.extend(points)
+                else:
+                    vlist.append(nextpoint)
 
             return vlist
 
