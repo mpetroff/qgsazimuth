@@ -1,6 +1,11 @@
 __author__ = 'Nathan.Woodrow'
 
+import math
 from qgis.core import QgsPoint
+from collections import namedtuple
+
+Point = namedtuple("Point", "x y")
+
 
 def to_qgspoints(points, repeatfirst=False):
     """
@@ -26,6 +31,7 @@ def to_qgspoints(points, repeatfirst=False):
             pointlist.append(p)
         return pointlist
 
+
 def pairs(points, matchtail):
     """
     Return a list of pairs from a list of points
@@ -41,6 +47,7 @@ def pairs(points, matchtail):
     for start, end in it:
         yield [start, end]
 
+
 def nextvertex(reference_point, distance, angle, virtical_anagle=90):
     """
     Return the next vertex given a start, angle, distance.
@@ -50,24 +57,17 @@ def nextvertex(reference_point, distance, angle, virtical_anagle=90):
     :param virtical_anagle: Virtical angle for height correction
     :return: A tuple of x,y,z for the next point.
     """
-    angle = radians(angle)
-    virtical_anagle = radians(virtical_anagle)
-    d1 = distance * sin(virtical_anagle)
-    x = reference_point[0] + d1 * sin(angle)
-    y = reference_point[1] + d1 * cos(angle)
-    z = reference_point[2] + distance * cos(virtical_anagle)
-    return [x, y, z]
+    angle = math.radians(angle)
+    virtical_anagle = math.radians(virtical_anagle)
+    d1 = distance * math.sin(virtical_anagle)
+    x = reference_point[0] + d1 * math.sin(angle)
+    y = reference_point[1] + d1 * math.cos(angle)
+    try:
+        z = reference_point[2] + distance * math.cos(virtical_anagle)
+        return [x, y, z]
+    except IndexError:
+        return Point(x, y)
 
-def central_angle(chord, radius):
-    """
-    Central angle given the chord length and radius
-    :param chord: Chord length
-    :param radius: Radius
-    :return: Angle of the central angle from the circle
-    """
-    angle = chord / float(2 * radius)
-    rad = 2 * math.asin(angle)
-    return math.degrees(rad)
 
 def arc_length(radius, c_angle):
     """
@@ -78,18 +78,64 @@ def arc_length(radius, c_angle):
     """
     return 2 * math.pi * radius * ( c_angle / 360 )
 
-def angle_to_center_point(start_anglge, half_cord, radius):
-    """
-    Angle from chord and radius length.  start_angle will be added to the result for offset
-    :param half_cord: The length of the half chord
-    :param radius: Radius
-    :return: A tuple of (start + angle, angle)
-    """
-    angle = math.acos(half_cord / float(radius))
-    angle = math.degrees(angle)
-    return start_anglge + angle, angle
 
-def next_arc_point(angle, opposite, adjacent):
+def points_on_arc(count, center, radius, start, end):
+    pass
 
+
+def angle_to(p1, p2):
+    xDiff = p1.x - p2.x
+    yDiff = p1.y - p2.y
+    rads = math.atan2(xDiff, yDiff)
+    angle = math.degrees(rads)
+    if angle < 0:
+        angle += 360
+    return angle
+
+
+def calculate_center(start, end, radius, distance):
+    def func(diff):
+        half = distance / 2
+        return math.sqrt(radius ** 2 - half ** 2) * diff / distance
+
+    midpoint = calculate_midpoint(start, end)
+    return Point(midpoint.x - func(start.y - end.y), midpoint.y - func(end.x - start.x))
+
+
+def calculate_midpoint(start, end):
+    midpoint = Point((start.x + end.x) / 2, (start.y + end.y) / 2)
+    return midpoint
+
+
+def arc_points(start, end, distance, radius, point_count=5, direction='clock'):
+    center = calculate_center(start, end, radius, distance)
+
+    first_angle = angle_to(start, center)
+    last_angle = angle_to(end, center)
+    if not direction == 'clock':
+        last_angle, first_angle = first_angle, last_angle
+
+    if first_angle < last_angle:
+        sweep = last_angle - first_angle
+    elif first_angle > last_angle:
+        last_angle += 360
+        sweep = last_angle - first_angle
+    else:
+        sweep = 0
+
+    alpha = sweep / float(point_count)
+    if sweep < 0:
+        alpha *= -1.0
+
+    print "First:", first_angle
+    print "Last:", last_angle
+    print "Sweep", sweep
+    print "Alpha", alpha
+
+    a = first_angle
+    for i in range(point_count):
+        a += alpha
+        if not a == last_angle:
+            yield nextvertex(center, radius, a)
 
 
