@@ -207,29 +207,18 @@
                 </property>
                </widget>
               </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_7">
-              <item>
+              <item row="3" column="0" colspan="2">
                <widget class="QPushButton" name="pushButton_startCapture">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>Capture from Map</string>
                 </property>
                </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
               </item>
              </layout>
             </item>
@@ -342,11 +331,36 @@
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QDoubleSpinBox" name="radiusDoubleSpinBox">
+               <widget class="QDoubleSpinBox" name="spin_radius">
                 <property name="maximum">
                  <double>999999999.000000000000000</double>
                 </property>
                </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Direction</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QRadioButton" name="radio_clockwise">
+                  <property name="text">
+                   <string>Clockwise</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="radio_anticlockwise">
+                  <property name="text">
+                   <string>Anti-clockwise</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </item>
@@ -518,7 +532,7 @@
             </column>
             <column>
              <property name="text">
-              <string>Arc Length</string>
+              <string>Direction</string>
              </property>
             </column>
            </widget>

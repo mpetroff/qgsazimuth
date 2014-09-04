@@ -4,8 +4,10 @@ import math
 from qgis.core import QgsPoint
 from collections import namedtuple
 
-Point = namedtuple("Point", "x y")
+PointT = namedtuple("Point", "x y z")
 
+def Point(x, y, z=0):
+    return PointT(x,y,z)
 
 def to_qgspoints(points, repeatfirst=False):
     """
@@ -62,11 +64,8 @@ def nextvertex(reference_point, distance, angle, virtical_anagle=90):
     d1 = distance * math.sin(virtical_anagle)
     x = reference_point[0] + d1 * math.sin(angle)
     y = reference_point[1] + d1 * math.cos(angle)
-    try:
-        z = reference_point[2] + distance * math.cos(virtical_anagle)
-        return [x, y, z]
-    except IndexError:
-        return Point(x, y)
+    z = reference_point[2] + distance * math.cos(virtical_anagle)
+    return Point(x, y, z)
 
 
 def arc_length(radius, c_angle):
@@ -107,12 +106,12 @@ def calculate_midpoint(start, end):
     return midpoint
 
 
-def arc_points(start, end, distance, radius, point_count=5, direction='clock'):
+def arc_points(start, end, distance, radius, point_count=20, direction='clockwise'):
     center = calculate_center(start, end, radius, distance)
 
     first_angle = angle_to(start, center)
     last_angle = angle_to(end, center)
-    if not direction == 'clock':
+    if not direction == 'clockwise':
         last_angle, first_angle = first_angle, last_angle
 
     if first_angle < last_angle:
@@ -133,9 +132,9 @@ def arc_points(start, end, distance, radius, point_count=5, direction='clock'):
     print "Alpha", alpha
 
     a = first_angle
-    for i in range(point_count):
+    for i in range(point_count + 1):
         a += alpha
-        if not a == last_angle:
+        if not a >= last_angle and not a <= first_angle:
             yield nextvertex(center, radius, a)
 
 

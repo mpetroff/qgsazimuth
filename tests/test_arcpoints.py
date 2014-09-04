@@ -18,7 +18,6 @@ class MyTestCase(unittest.TestCase):
         start = Point(float(5), float(5))
         end = nextvertex(start, distance, angle)
 
-        midpoint = calculate_midpoint(start, end)
         center = calculate_center(start, end, radius, distance)
 
         print start

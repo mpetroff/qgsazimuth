@@ -31,6 +31,10 @@ from getcoordtool import *
 
 import utils
 
+def log(message):
+    from qgis.core import QgsMessageLog
+    QgsMessageLog.logMessage(str(message), "Plugin")
+
 class qgsazimuth (object):
     """
     Base class for the qgsAzimuth plugin
@@ -116,18 +120,6 @@ class qgsazimuth (object):
             self.pluginGui.radioButton_useActiveLayer.setEnabled(True)
             self.pluginGui.radioButton_useActiveLayer.setText("Active Layer ({0})".format(layer.name()))
 
-    #Now these are the SLOTS
-    def nextvertex(self, reference, distance, angle, virtical_anagle=90):
-        # print "direction:", az, zen, d
-        angle = radians(angle)
-        virtical_anagle = radians(virtical_anagle)
-        d1 = distance * sin(virtical_anagle)
-        x = reference[0] + d1 * sin(angle)
-        y = reference[1] + d1 * cos(angle)
-        z = reference[2] + distance * cos(virtical_anagle)
-        #print "point ", x,y,z
-        return [x, y, z]
-
     @property
     def useactivelayer(self):
         return self.pluginGui.radioButton_useActiveLayer.isChecked()
@@ -143,7 +135,6 @@ class qgsazimuth (object):
             vectorlayer=QgsVectorLayer("LineString", "tmp_plot", "memory")
             s.setValue("/Projections/defaultBehaviour", oldValidation)
 
-        provider=vectorlayer.dataProvider()
 
 
         # if magnetic heading chosen, assure we have a declination angle
@@ -171,15 +162,6 @@ class qgsazimuth (object):
         elif (self.pluginGui.radioButton_boundarySurvey.isChecked()):
             surveytype = 'polygonal'
 
-        def get_arcpoints(start, end, length, radius):
-            """
-            Generate a arc from the start to the end point using the given length.
-            :param start: The start point [x,y,z]
-            :param end: The end point [x,y,x]
-            :param length: The length of the arc.
-            :return: A list of points that make the arc.
-            """
-
         def get_points(surveytype):
             """
             Return a list of calculated points for the full run.
@@ -187,13 +169,17 @@ class qgsazimuth (object):
             :return:
             """
             vlist = []
-            vlist.append([X0, Y0, Z0])
+            vlist.append(utils.Point(X0, Y0, Z0))
             # convert segment list to set of vertice
             for i in range(self.pluginGui.table_segmentList.rowCount()):
                 az = str(self.pluginGui.table_segmentList.item(i, 0).text())
                 dis = float(str(self.pluginGui.table_segmentList.item(i, 1).text()))
                 zen = str(self.pluginGui.table_segmentList.item(i, 2).text())
-                radius = str(self.pluginGui.table_segmentList.item(i, 3).text())
+                direction = str(self.pluginGui.table_segmentList.item(i, 4).text())
+                try:
+                    radius = float(self.pluginGui.table_segmentList.item(i, 3).text())
+                except ValueError:
+                    radius = None
 
                 if (self.pluginGui.radioButton_englishUnits.isChecked()):
                     # adjust for input in feet, not meters
@@ -227,16 +213,20 @@ class qgsazimuth (object):
                 if surveytype == 'polygonal':
                     reference_point = vlist[-1]  #reference previous vertex
 
-                nextpoint = self.nextvertex(reference_point, dis, az, zen)
+                nextpoint = utils.nextvertex(reference_point, dis, az, zen)
+                log(nextpoint)
+                log(reference_point)
 
                 if radius:
                     # If there is a radius then we are drawing a arc.
                     # Calculate the arc points.
-                    points = get_arcpoints(reference_point, nextpoint, dis, radius)
+                    points = list(utils.arc_points(reference_point, nextpoint, dis, radius, direction=direction))
+                    if direction == "anticlockwise":
+                        points = reversed(points)
                     # Append them to the final points list.
                     vlist.extend(points)
-                else:
-                    vlist.append(nextpoint)
+
+                vlist.append(nextpoint)
 
             return vlist
 
@@ -300,6 +290,7 @@ class qgsazimuth (object):
             featurelist.append(feature)
 
         #commit
+        provider=vectorlayer.dataProvider()
         provider.addFeatures(featurelist)
         if not self.useactivelayer:
             QgsMapLayerRegistry.instance().addMapLayer(vectorlayer)
@@ -382,27 +373,50 @@ class qgsazimuth (object):
         #adds a vertex from the gui
         self.addrow(self.pluginGui.lineEdit_nextAzimuth.text(),
                         self.pluginGui.lineEdit_nextDistance.text(),
-                        self.pluginGui.lineEdit_nextVertical.text())
+                        self.pluginGui.lineEdit_nextVertical.text(),
+                        self.pluginGui.spin_radius.value())
 
     def addRow(self):
         # this and following must be split to handle both GUI & FILE inputs
         az = self.pluginGui.lineEdit_nextAzimuth.text()
         dist = self.pluginGui.lineEdit_nextDistance.text()
         zen = self.pluginGui.lineEdit_nextVertical.text()
-        self.addrow(az, dist, zen)
+        radius = self.pluginGui.spin_radius.value()
+        self.addrow(az, dist, zen, radius)
 
-    def addrow(self,  az=0,  dist=0,  zen = 90):
+    def addrow(self,  az=0,  dist=0,  zen = 90, radius=None):
         #add the vertext to the end of the table
+        if radius == 0:
+            radius = None
+            direction = None
+        else:
+            if self.pluginGui.radio_anticlockwise.isChecked():
+                direction = "anticlockwise"
+            else:
+                direction = "clockwise"
+
         i=self.pluginGui.table_segmentList.rowCount()
         self.pluginGui.table_segmentList.insertRow(i)
         self.pluginGui.table_segmentList.setItem(i, 0, QTableWidgetItem(str(az).upper()))
         self.pluginGui.table_segmentList.setItem(i, 1, QTableWidgetItem(str(dist)))
         self.pluginGui.table_segmentList.setItem(i, 2, QTableWidgetItem(str(zen)))
+        self.pluginGui.table_segmentList.setItem(i, 3, QTableWidgetItem(str(radius)))
+        self.pluginGui.table_segmentList.setItem(i, 4, QTableWidgetItem(str(direction)))
 
     def insertRow(self):
         az = self.pluginGui.lineEdit_nextAzimuth.text()
         dist = self.pluginGui.lineEdit_nextDistance.text()
         zen = self.pluginGui.lineEdit_nextVertical.text()
+        radius = self.pluginGui.spin_radius.value()
+
+        if radius == 0:
+            radius = None
+            direction = None
+        else:
+            if self.pluginGui.radio_anticlockwise.isChecked():
+                direction = "anticlockwise"
+            else:
+                direction = "clockwise"
 
         #insert the vertext into the table at the current position
         i=self.pluginGui.table_segmentList.currentRow()
@@ -410,6 +424,8 @@ class qgsazimuth (object):
         self.pluginGui.table_segmentList.setItem(i, 0, QTableWidgetItem(str(az).upper()))
         self.pluginGui.table_segmentList.setItem(i, 1, QTableWidgetItem(str(dist)))
         self.pluginGui.table_segmentList.setItem(i, 2, QTableWidgetItem(str(zen)))
+        self.pluginGui.table_segmentList.setItem(i, 3, QTableWidgetItem(str(radius)))
+        self.pluginGui.table_segmentList.setItem(i, 4, QTableWidgetItem(str(direction)))
 
     def delRow(self):
         self.pluginGui.table_segmentList.removeRow(self.pluginGui.table_segmentList.currentRow())
