@@ -534,6 +534,9 @@
              <property name="text">
               <string>Direction</string>
              </property>
+             <property name="toolTip">
+              <string>Supported values are 'anticlockwise', 'a', 'c', 'clockwise'</string>
+             </property>
             </column>
            </widget>
           </item>

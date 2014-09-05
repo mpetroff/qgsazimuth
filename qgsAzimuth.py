@@ -178,6 +178,8 @@ class qgsazimuth (object):
                 dis = float(str(self.pluginGui.table_segmentList.item(i, 1).text()))
                 zen = str(self.pluginGui.table_segmentList.item(i, 2).text())
                 direction = str(self.pluginGui.table_segmentList.item(i, 4).text())
+                direction = utils.Direction.resolve(direction)
+
                 try:
                     radius = float(self.pluginGui.table_segmentList.item(i, 3).text())
                 except ValueError:
@@ -225,8 +227,10 @@ class qgsazimuth (object):
                     points = list(utils.arc_points(reference_point, nextpoint, dis, radius,
                                                    point_count=arcpoint_count,
                                                    direction=direction))
-                    if direction == "anticlockwise":
+
+                    if direction == utils.Direction.ANTICLOCKWISE:
                         points = reversed(points)
+
                     # Append them to the final points list.
                     vlist.extend(points)
 

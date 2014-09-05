@@ -105,13 +105,24 @@ def calculate_midpoint(start, end):
     midpoint = Point((start.x + end.x) / 2, (start.y + end.y) / 2)
     return midpoint
 
+class Direction:
+    CLOCKWISE = 0
+    ANTICLOCKWISE = 1
 
-def arc_points(start, end, distance, radius, point_count=20, direction='clockwise'):
+    @classmethod
+    def resolve(cls, value):
+        if value == 'a' or value == "anticlockwise":
+            return Direction.ANTICLOCKWISE
+        else:
+            return Direction.CLOCKWISE
+
+
+def arc_points(start, end, distance, radius, point_count=20, direction=Direction.CLOCKWISE):
     center = calculate_center(start, end, radius, distance)
 
     first_angle = angle_to(start, center)
     last_angle = angle_to(end, center)
-    if not direction == 'clockwise':
+    if direction == Direction.ANTICLOCKWISE:
         last_angle, first_angle = first_angle, last_angle
 
     if first_angle < last_angle:
