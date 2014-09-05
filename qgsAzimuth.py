@@ -162,6 +162,8 @@ class qgsazimuth (object):
         elif (self.pluginGui.radioButton_boundarySurvey.isChecked()):
             surveytype = 'polygonal'
 
+        arcpoint_count = self.pluginGui.spin_arclines.value()
+
         def get_points(surveytype):
             """
             Return a list of calculated points for the full run.
@@ -220,7 +222,9 @@ class qgsazimuth (object):
                 if radius:
                     # If there is a radius then we are drawing a arc.
                     # Calculate the arc points.
-                    points = list(utils.arc_points(reference_point, nextpoint, dis, radius, direction=direction))
+                    points = list(utils.arc_points(reference_point, nextpoint, dis, radius,
+                                                   point_count=arcpoint_count,
+                                                   direction=direction))
                     if direction == "anticlockwise":
                         points = reversed(points)
                     # Append them to the final points list.

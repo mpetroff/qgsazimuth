@@ -326,7 +326,7 @@
               <item row="3" column="0">
                <widget class="QLabel" name="radiusLabel">
                 <property name="text">
-                 <string>Radius</string>
+                 <string>Arc Radius</string>
                 </property>
                </widget>
               </item>
@@ -340,7 +340,7 @@
               <item row="4" column="0">
                <widget class="QLabel" name="label">
                 <property name="text">
-                 <string>Direction</string>
+                 <string>Arc Direction</string>
                 </property>
                </widget>
               </item>
@@ -830,6 +830,38 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Arcs</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="arcNodesLabel">
+            <property name="toolTip">
+             <string>The more lines the smoother the arc will be</string>
+            </property>
+            <property name="text">
+             <string>Arc lines</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="spin_arclines">
+            <property name="toolTip">
+             <string>The more lines the smoother the arc will be</string>
+            </property>
+            <property name="minimum">
+             <number>6</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+         <zorder>arcNodesLabel</zorder>
+         <zorder>arcNodesLabel</zorder>
+         <zorder>spin_arclines</zorder>
         </widget>
        </item>
        <item>

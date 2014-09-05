@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Thu Sep 04 16:28:02 2014
+# Created: Fri Sep 05 11:11:05 2014
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -432,6 +432,18 @@ class Ui_ui(object):
         self.radioButton_polarCoordAngle.setObjectName(_fromUtf8("radioButton_polarCoordAngle"))
         self.verticalLayout_5.addWidget(self.radioButton_polarCoordAngle)
         self.verticalLayout_4.addWidget(self.groupBox_6)
+        self.groupBox_4 = QtGui.QGroupBox(ui)
+        self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
+        self.formLayout_3 = QtGui.QFormLayout(self.groupBox_4)
+        self.formLayout_3.setObjectName(_fromUtf8("formLayout_3"))
+        self.arcNodesLabel = QtGui.QLabel(self.groupBox_4)
+        self.arcNodesLabel.setObjectName(_fromUtf8("arcNodesLabel"))
+        self.formLayout_3.setWidget(0, QtGui.QFormLayout.LabelRole, self.arcNodesLabel)
+        self.spin_arclines = QtGui.QSpinBox(self.groupBox_4)
+        self.spin_arclines.setMinimum(6)
+        self.spin_arclines.setObjectName(_fromUtf8("spin_arclines"))
+        self.formLayout_3.setWidget(0, QtGui.QFormLayout.FieldRole, self.spin_arclines)
+        self.verticalLayout_4.addWidget(self.groupBox_4)
         spacerItem4 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_4.addItem(spacerItem4)
         self.horizontalLayout_4.addLayout(self.verticalLayout_4)
@@ -507,8 +519,8 @@ class Ui_ui(object):
         self.lineEdit_nextVertical.setText(QtGui.QApplication.translate("ui", "90", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("ui", "Distance:", None, QtGui.QApplication.UnicodeUTF8))
         self.lineEdit_nextDistance.setText(QtGui.QApplication.translate("ui", "0", None, QtGui.QApplication.UnicodeUTF8))
-        self.radiusLabel.setText(QtGui.QApplication.translate("ui", "Radius", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("ui", "Direction", None, QtGui.QApplication.UnicodeUTF8))
+        self.radiusLabel.setText(QtGui.QApplication.translate("ui", "Arc Radius", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("ui", "Arc Direction", None, QtGui.QApplication.UnicodeUTF8))
         self.radio_clockwise.setText(QtGui.QApplication.translate("ui", "Clockwise", None, QtGui.QApplication.UnicodeUTF8))
         self.radio_anticlockwise.setText(QtGui.QApplication.translate("ui", "Anti-clockwise", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_vertexAdd.setText(QtGui.QApplication.translate("ui", "Add to Bottom", None, QtGui.QApplication.UnicodeUTF8))
@@ -539,6 +551,10 @@ class Ui_ui(object):
         self.radioButton_azimuthAngle.setText(QtGui.QApplication.translate("ui", "Azimuth", None, QtGui.QApplication.UnicodeUTF8))
         self.radioButton_bearingAngle.setText(QtGui.QApplication.translate("ui", "Bearing", None, QtGui.QApplication.UnicodeUTF8))
         self.radioButton_polarCoordAngle.setText(QtGui.QApplication.translate("ui", "Polar coordinates", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox_4.setTitle(QtGui.QApplication.translate("ui", "Arcs", None, QtGui.QApplication.UnicodeUTF8))
+        self.arcNodesLabel.setToolTip(QtGui.QApplication.translate("ui", "The more lines the smoother the arc will be", None, QtGui.QApplication.UnicodeUTF8))
+        self.arcNodesLabel.setText(QtGui.QApplication.translate("ui", "Arc lines", None, QtGui.QApplication.UnicodeUTF8))
+        self.spin_arclines.setToolTip(QtGui.QApplication.translate("ui", "The more lines the smoother the arc will be", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_asSegments.setText(QtGui.QApplication.translate("ui", "As Segments", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_objectDraw.setText(QtGui.QApplication.translate("ui", "Draw", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_dlgClose.setText(QtGui.QApplication.translate("ui", "Close", None, QtGui.QApplication.UnicodeUTF8))
