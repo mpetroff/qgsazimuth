@@ -1,13 +1,53 @@
 __author__ = 'Nathan.Woodrow'
 
 import math
-from qgis.core import QgsPoint
+from qgis.core import QgsPoint, QgsFeature, QgsGeometry, QgsMessageLog
 from collections import namedtuple
 
-PointT = namedtuple("Point", "x y z")
 
-def Point(x, y, z=0):
-    return PointT(x,y,z)
+def createpoints(points):
+    for point in points:
+        geom = QgsGeometry.fromPoint(point)
+        feature = QgsFeature()
+        feature.setGeometry(geom)
+        yield feature
+
+
+def createline(points):
+    """
+    Creata a line feature from a list of points
+    :param points: List of QgsPoints
+    """
+    geom = QgsGeometry.fromPolyline(points)
+    feature = QgsFeature()
+    feature.setGeometry(geom)
+    return feature
+
+
+def createpolygon(polygon):
+    """
+    Create a polygon from a list of points
+    :param points: List of QgsPoints
+    """
+    geom = QgsGeometry.fromPolygon(polygon)
+    QgsMessageLog.logMessage(str(geom.isGeosValid()))
+    feature = QgsFeature()
+    feature.setGeometry(geom)
+    return feature
+
+class Point(QgsPoint):
+    def __init__(self, x, y, z=0, arc_point=False):
+        QgsPoint.__init__(self, x, y)
+        self.arc_point = arc_point
+        self.z = z
+
+    @property
+    def x(self):
+        return QgsPoint.x(self)
+
+    @property
+    def y(self):
+        return QgsPoint.y(self)
 
 def to_qgspoints(points, repeatfirst=False):
     """
@@ -50,7 +90,7 @@ def pairs(points, matchtail):
         yield [start, end]
 
 
-def nextvertex(reference_point, distance, angle, virtical_anagle=90):
+def nextvertex(reference_point, distance, angle, virtical_anagle=90, arc_point=False):
     """
     Return the next vertex given a start, angle, distance.
     :param reference_point: Start point
@@ -62,10 +102,10 @@ def nextvertex(reference_point, distance, angle, virtical_anagle=90):
     angle = math.radians(angle)
     virtical_anagle = math.radians(virtical_anagle)
     d1 = distance * math.sin(virtical_anagle)
-    x = reference_point[0] + d1 * math.sin(angle)
-    y = reference_point[1] + d1 * math.cos(angle)
-    z = reference_point[2] + distance * math.cos(virtical_anagle)
-    return Point(x, y, z)
+    x = reference_point.x + d1 * math.sin(angle)
+    y = reference_point.y + d1 * math.cos(angle)
+    z = reference_point.z + distance * math.cos(virtical_anagle)
+    return Point(x, y, z, arc_point)
 
 
 def arc_length(radius, c_angle):
@@ -146,6 +186,6 @@ def arc_points(start, end, distance, radius, point_count=20, direction=Direction
     for i in range(point_count + 1):
         a += alpha
         if not a >= last_angle and not a <= first_angle:
-            yield nextvertex(center, radius, a)
+            yield nextvertex(center, radius, a, arc_point=True)
 
 
