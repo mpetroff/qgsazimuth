@@ -26,6 +26,7 @@ from qgis.gui import *
 # Raster File Info Tool class
 class GetCoordTool(QgsMapTool):
   finished = pyqtSignal(QgsPoint)
+  locationChanged = pyqtSignal(QgsPoint)
 
   def __init__(self, canvas):
     QgsMapTool.__init__(self,canvas)
@@ -50,10 +51,6 @@ class GetCoordTool(QgsMapTool):
                                    "#############.##"]), 0, 0)
 
     self.snapper = QgsMapCanvasSnapper(self.canvas)
-    self.bandpoint = QgsRubberBand(self.canvas, QGis.Point)
-    self.bandpoint.setIcon(QgsRubberBand.ICON_X)
-    self.bandpoint.setColor(QColor.fromRgb(255,50,255))
-    self.bandpoint.setIconSize(20)
 
 
   def canvasPressEvent(self,event):
@@ -70,7 +67,7 @@ class GetCoordTool(QgsMapTool):
 
   def canvasMoveEvent(self,event):
     point = self.snappoint(event.pos())
-    self.bandpoint.setToGeometry(QgsGeometry.fromPoint(point), None)
+    self.locationChanged.emit(point)
 
   def activate(self):
     QgsMapTool.activate(self)
@@ -81,7 +78,7 @@ class GetCoordTool(QgsMapTool):
     pass
 
   def cleanup(self):
-    self.bandpoint.reset()
+    pass
 
   def isZoomTool(self):
     return False

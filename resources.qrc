@@ -1,5 +1,14 @@
 <RCC>
-    <qresource prefix="/" >
-        <file>qgsazimuth.png</file>
-    </qresource>
+  <qresource prefix="icons">
+    <file>resources/lastpoint.svg</file>
+    <file>resources/draw.svg</file>
+    <file>resources/capture.svg</file>
+    <file>resources/clear.svg</file>
+    <file>resources/down.svg</file>
+    <file>resources/export.svg</file>
+    <file>resources/import.svg</file>
+    <file>resources/remove.svg</file>
+    <file>resources/up.svg</file>
+    <file>qgsazimuth.png</file>
+  </qresource>
 </RCC>

@@ -24,8 +24,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 
-from ui_control import ui_Control
-import resources
+from ui_control import Dock
+import resources_rc
 from math import *
 from getcoordtool import *
 
@@ -35,7 +35,7 @@ def log(message):
     from qgis.core import QgsMessageLog
     QgsMessageLog.logMessage(str(message), "Plugin")
 
-class qgsazimuth (object):
+class qgsazimuth(object):
     """
     Base class for the qgsAzimuth plugin
     - Provides a means to draw a feature by specifying the angle and distance beetween points.
@@ -52,40 +52,30 @@ class qgsazimuth (object):
         self.legend = iface.legendInterface()
         self.canvas = iface.mapCanvas()
         self.fPath = ""  # set default working directory, updated from config file & by Import/Export
+        self.bands = []
 
     def initGui(self):
         # create action that will start plugin configuration
-        self.action = QAction(QIcon(":qgsazimuth.png"), "Azimuth and distance", self.iface.mainWindow())
+        self.action = QAction(QIcon(":icons/qgsazimuth.png"), "Azimuth and distance", self.iface.mainWindow())
         self.action.setWhatsThis("Azimuth and distance")
         self.action.triggered.connect(self.run)
+
+        self.bandpoint = QgsRubberBand(self.canvas, QGis.Point)
+        self.bandpoint.setIcon(QgsRubberBand.ICON_CROSS)
+        self.bandpoint.setColor(QColor.fromRgb(255,50,255))
+        self.bandpoint.setWidth(3)
+        self.bandpoint.setIconSize(20)
 
         # add toolbar button and menu item
         self.iface.addPluginToMenu("&Topography", self.action)
         self.iface.addToolBarIcon(self.action)
-        self.pluginGui = ui_Control(self.iface.mainWindow())
 
-        self.tool = GetCoordTool(self.canvas)
+        self.dock = Dock(self.iface.mainWindow())
+        self.iface.addDockWidget(Qt.BottomDockWidgetArea, self.dock)
+        self.dock.hide()
+        self.pluginGui = self.dock.widget()
 
-    def unload(self):
-        # remove the plugin menu item and icon
-        self.iface.removePluginMenu("&Topography",self.action)
-        self.iface.removeToolBarIcon(self.action)
-        self.tool.cleanup()
-        self.saveConf()
-
-    def run(self):
-        # create and show a configuration dialog or something similar
-        flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMaximizeButtonHint  # QgisGui.ModalDialogFlags
-        self.pluginGui = ui_Control(self.iface.mainWindow())
-
-        #misc init
-        self.loadConf() # get config data
-        self.clearList()
-        self.setDeclination('0.0')
-        self.setStartAt("0;0;90")    # remove previous StartAt point
-
-        #INSERT EVERY SIGNAL CONECTION HERE!
-        self.pluginGui.finished.connect(self.cleanup)
+        self.dock.closed.connect(self.cleanup)
         self.pluginGui.pushButton_vertexAdd.clicked.connect(self.addRow)
         self.pluginGui.pushButton_vertexInsert.clicked.connect(self.insertRow)
         self.pluginGui.pushButton_segListRowDel.clicked.connect(self.delRow)
@@ -94,10 +84,39 @@ class qgsazimuth (object):
         self.pluginGui.pushButton_objectDraw.clicked.connect(self.addgeometry)
         self.pluginGui.pushButton_startCapture.clicked.connect(self.startgetpoint)
         self.pluginGui.pushButton_segListSave.clicked.connect(self.saveList)
+        self.pluginGui.pushButton_useLast.clicked.connect(self.use_last_vertex)
+
+        # self.pluginGui.table_segmentList.cellChanged.connect(self.render_temp_band)
+
+        self.pluginGui.table_segmentList.setCurrentCell(0,0)
+
+        self.tool = GetCoordTool(self.canvas)
+        self.tool.finished.connect(self.getpoint)
+        self.tool.locationChanged.connect(self.pluginGui.update_startpoint)
+        self.tool.locationChanged.connect(self.update_marker_location)
+
+    def update_marker_location(self, point):
+        self.bandpoint.setToGeometry(QgsGeometry.fromPoint(point), None)
+
+    def unload(self):
+        # remove the plugin menu item and icon
+        self.saveConf()
+        self.iface.removeDockWidget(self.dock)
+        self.iface.removePluginMenu("&Topography",self.action)
+        self.iface.removeToolBarIcon(self.action)
+        self.bandpoint.reset()
+        self.tool.cleanup()
+        del self.tool
+        del self.bandpoint
+
+    def run(self):
+        #misc init
+        self.loadConf() # get config data
+        self.clearList()
+        self.setStartAt("0;0;90")    # remove previous StartAt point
 
         self.pluginGui.lineEdit_crs.setText(self.iface.mapCanvas().mapRenderer().destinationCrs().description())
 
-        self.pluginGui.table_segmentList.setCurrentCell(0,0)
         if self.iface.activeLayer():
             self.updatelayertext(self.iface.activeLayer())
             self.pluginGui.radioButton_useActiveLayer.setChecked(True)
@@ -105,13 +124,16 @@ class qgsazimuth (object):
             self.pluginGui.radioButton_useActiveLayer.setEnabled(False)
             self.pluginGui.radioButton_useMemoryLayer.setChecked(True)
         self.legend.currentLayerChanged.connect(self.updatelayertext)
-        self.pluginGui.show()
+        if not self.dock.isVisible():
+            self.dock.show()
 
         # for debugging convenience
         self.notes = self.pluginGui.plainTextEdit_note
 
     def cleanup(self):
         self.tool.cleanup()
+        self.clear_bands()
+        self.saveConf()
 
     def updatelayertext(self, layer):
         if not layer:
@@ -124,186 +146,350 @@ class qgsazimuth (object):
     def useactivelayer(self):
         return self.pluginGui.radioButton_useActiveLayer.isChecked()
 
+    def render_temp_band(self, *args):
+        """
+        Render a temp rubber band for showing the user the results
+        """
+
+        self.clear_bands()
+
+        featurelist, vectorlayer = self.create_feature()
+        if not featurelist or not vectorlayer:
+            return
+
+        for feature in featurelist:
+            band = QgsRubberBand(self.iface.mapCanvas())
+            if hasattr(band, "setLineStyle"):
+                band.setLineStyle(Qt.DotLine)
+            band.setWidth(4)
+            band.setColor(Qt.darkMagenta)
+            band.setToGeometry(feature.geometry(), vectorlayer)
+            band.show()
+            self.bands.append(band)
+        pass
+
+    @property
+    def should_open_form(self):
+        return self.pluginGui.checkBox_openForm.isChecked()
+
+    @should_open_form.setter
+    def should_open_form(self, value):
+        return self.pluginGui.checkBox_openForm.setChecked(value)
+
     def addgeometry(self):
-        #initialization
-        s = QSettings()
+        featurelist, vectorlayer = self.create_feature()
+        if not featurelist or not vectorlayer:
+            return
+
+        if not self.useactivelayer:
+            QgsMapLayerRegistry.instance().addMapLayer(vectorlayer)
+
+        vectorlayer.startEditing()
+        for feature in featurelist:
+            if self.should_open_form:
+                form = self.iface.getFeatureForm(vectorlayer, feature)
+                form.setIsAddDialog(True)
+                if not form.exec_():
+                    continue
+            else:
+                print feature.isValid()
+                print feature.geometry().exportToWkt()
+                error = vectorlayer.addFeature(feature)
+                print error, feature
+                if error:
+                    log("Error in adding feature")
+
+        self.iface.mapCanvas().refresh()
+        self.clear_bands()
+
+    def clear_bands(self):
+        for band in self.bands:
+            band.reset()
+        self.bands = []
+
+    def update_draw_button_state(self):
+        x, y, z = self.starting_point()
+        enabled = True
+        if (x == 0 and y == 0 and z == 90) or (self.pluginGui.table_segmentList.rowCount() == 0):
+            enabled = False
+        self.pluginGui.pushButton_objectDraw.setEnabled(enabled)
+
+    def starting_point(self):
+        #Get starting point coordinates
+        X = float(str(self.pluginGui.lineEdit_vertexX0.text()))
+        Y = float(str(self.pluginGui.lineEdit_vertexY0.text()))
+        Z = float(str(self.pluginGui.lineEdit_vertexZ0.text()))
+        return X, Y, Z
+
+    @property
+    def angletype(self):
+        if self.pluginGui.radioButton_azimuthAngle.isChecked():
+            return "azimuth"
+        elif self.pluginGui.radioButton_bearingAngle.isChecked():
+            return "bearing"
+        elif self.pluginGui.radioButton_polarCoordAngle.isChecked():
+            return "polor"
+
+    @angletype.setter
+    def angletype(self, value):
+        if value == "azimuth": 
+            self.pluginGui.radioButton_azimuthAngle.setChecked(True)
+        elif value == "bearing":
+            self.pluginGui.radioButton_bearingAngle.setChecked(True)
+        elif value == "polor":
+            self.pluginGui.radioButton_polarCoordAngle.setChecked(True)
+        else:
+            self.pluginGui.radioButton_azimuthAngle.setChecked(True)
+
+    @property
+    def distanceunits(self):
+        if self.pluginGui.radioButton_defaultUnits.isChecked():
+            return "default"
+        elif self.pluginGui.radioButton_englishUnits.isChecked():
+            return "feet"
+
+    @distanceunits.setter
+    def distanceunits(self, value):
+        if value == "default":
+            self.pluginGui.radioButton_defaultUnits.setChecked(True)
+        elif value == "feet":
+            self.pluginGui.radioButton_englishUnits.setChecked(True)
+        else:
+            self.pluginGui.radioButton_defaultUnits.setChecked(True)
+
+    @property
+    def northtype(self):
+        if self.pluginGui.radioButton_magNorth.isChecked():
+            return "magnetic"
+        else:
+            return "default"
+
+    @northtype.setter
+    def northtype(self, value):
+        if value == "magnetic":
+            self.pluginGui.radioButton_magNorth.setChecked(True)
+        else:
+            self.pluginGui.radioButton_defaultNorth.setChecked(True)
+
+    @property
+    def mag_dev(self):
+        if self.pluginGui.radioButton_magNorth.isChecked():
+            value = str(self.pluginGui.lineEdit_magNorth.text())
+            return float(self.dmsToDd(value))
+        elif self.pluginGui.radioButton_defaultNorth.isChecked():
+            return 0.0
+        else:
+            return 0.0
+
+    @mag_dev.setter
+    def mag_dev(self, value):
+        self.pluginGui.lineEdit_magNorth.setText(str(value))
+
+    @property
+    def surveytype(self):
+        if self.pluginGui.radioButton_radialSurvey.isChecked():
+            surveytype ='radial'
+        elif self.pluginGui.radioButton_boundarySurvey.isChecked():
+            surveytype = 'polygonal'
+        return surveytype
+
+    @surveytype.setter
+    def surveytype(self, value):
+        if value == 'radial':
+            self.pluginGui.radioButton_radialSurvey.setChecked(True)
+        elif value == "polygonal":
+            self.pluginGui.radioButton_boundarySurvey.setChecked(True)
+        else:
+            self.pluginGui.radioButton_boundarySurvey.setChecked(True)
+
+    def use_last_vertex(self):
+        # Get the last point from the last band
+        x, y, z = 0, 0, 90
+        arcpoint_count = self.arc_count
+        points = self.get_points(self.surveytype, arcpoint_count)
+        try:
+            point = points[-1]
+            x, y, z = point.x, point.y, point.z
+        except IndexError:
+            # Don't do anything if there is no last point
+            return
+
+        point = QgsPoint(x, y)
+        self.pluginGui.update_startpoint(point, z)
+        self.update_marker_location(point)
+        self.clearList()
+
+    def table_entries(self):
+        """
+        Return the entries for each row in the table
+        """
+        rows = self.pluginGui.table_segmentList.rowCount()
+        for row in range(rows):
+            az = self.pluginGui.table_segmentList.item(row, 0).text()
+            dis = float(str(self.pluginGui.table_segmentList.item(row, 1).text()))
+            zen = self.pluginGui.table_segmentList.item(row, 2).text()
+            direction = self.pluginGui.table_segmentList.item(row, 4).text()
+            direction = utils.Direction.resolve(direction)
+
+            try:
+                radius = float(self.pluginGui.table_segmentList.item(row, 3).text())
+            except ValueError:
+                radius = None
+
+            yield az, dis, zen, direction, radius
+
+    def get_points(self, surveytype, arcpoint_count):
+        """
+        Return a list of calculated points for the full run.
+        :param surveytype:
+        :return:
+        """
+        X, Y, Z = self.starting_point()
+
+        if (X == 0 and Y == 0 and Z == 90) or (self.pluginGui.table_segmentList.rowCount() == 0):
+            return []
+
+        vlist = []
+        vlist.append(utils.Point(X, Y, Z))
+        # convert segment list to set of vertice
+        for az, dis, zen, direction, radius in self.table_entries():
+            if (self.pluginGui.radioButton_englishUnits.isChecked()):
+                # adjust for input in feet, not meters
+                dis = float(dis) / 3.281
+
+            #checking degree input
+            if (self.pluginGui.radioButton_azimuthAngle.isChecked()):
+                az = float(self.dmsToDd(az))
+                zen = float(self.dmsToDd(zen))
+            elif (self.pluginGui.radioButton_bearingAngle.isChecked()):
+                az = float(self.bearingToDd(az))
+                zen = float(self.bearingToDd(zen))
+
+            #correct for magnetic compass headings if necessary
+            self.magDev = self.mag_dev
+
+            az = float(az) + float(self.magDev)
+
+            #correct for angles outside of 0.0-360.0
+            while az > 360.0:
+                az = az - 360.0
+
+            while az < 0.0:
+                az = az + 360.0
+
+            # checking survey type
+            if surveytype == 'radial':
+                reference_point = vlist[0]  # reference first vertex
+
+            if surveytype == 'polygonal':
+                reference_point = vlist[-1]  #reference previous vertex
+
+            nextpoint = utils.nextvertex(reference_point, dis, az, zen)
+
+            if radius:
+                # If there is a radius then we are drawing a arc.
+                # Calculate the arc points.
+                points = list(utils.arc_points(reference_point, nextpoint, dis, radius,
+                                                point_count=arcpoint_count,
+                                                direction=direction))
+
+                if direction == utils.Direction.ANTICLOCKWISE:
+                    points = reversed(points)
+
+                # Append them to the final points list.
+                vlist.extend(points)
+
+            vlist.append(nextpoint)
+
+        return vlist
+
+    @property
+    def drawing_layer(self):
         if self.useactivelayer:
             vectorlayer = self.iface.activeLayer()
         else:
-            oldValidation = s.value("/Projections/defaultBehaviour", "useProject")
-            s.setValue("/Projections/defaultBehaviour", "useProject")
-            vectorlayer=QgsVectorLayer("LineString", "tmp_plot", "memory")
-            s.setValue("/Projections/defaultBehaviour", oldValidation)
+            code = self.iface.mapCanvas().mapRenderer().destinationCrs().authid()
+            vectorlayer = QgsVectorLayer("LineString?crs={}".format(code), "tmp_plot", "memory")
+        return vectorlayer
 
+    @property
+    def arc_count(self):
+        """
+        The number of points to use when drawing arcs
+        """
+        return self.pluginGui.spin_arclines.value()
 
+    @arc_count.setter
+    def arc_count(self, value):
+        """
+        The number of points to use when drawing arcs
+        """
+        self.pluginGui.spin_arclines.setValue(value)
 
-        # if magnetic heading chosen, assure we have a declination angle
-        if (self.pluginGui.radioButton_magNorth.isChecked())  and (str(self.pluginGui.lineEdit_magNorth.text()) == ''):   #magnetic headings
-            self.say("No magnetic declination value entered.")
-            return 0
-
-        #Get starting point coordinates
-        X0 = float(str(self.pluginGui.lineEdit_vertexX0.text()))
-        Y0 = float(str(self.pluginGui.lineEdit_vertexY0.text()))
-        Z0 = float(str(self.pluginGui.lineEdit_vertexZ0.text()))
-
-        #check if the starting point is specified
-        if (X0 == 0 and Y0 == 0 and Z0 == 90):
-            self.say("You must supply a starting point.")
-            return 0
-
-        # Check if there are any segments
-        if (self.pluginGui.table_segmentList.rowCount() < 1):
-            self.say("You must enter at least one segment.")
-            return 0
-
-        if (self.pluginGui.radioButton_radialSurvey.isChecked()):
-            surveytype='radial'
-        elif (self.pluginGui.radioButton_boundarySurvey.isChecked()):
-            surveytype = 'polygonal'
-
-        arcpoint_count = self.pluginGui.spin_arclines.value()
-
-        def get_points(surveytype):
-            """
-            Return a list of calculated points for the full run.
-            :param surveytype:
-            :return:
-            """
-            vlist = []
-            vlist.append(utils.Point(X0, Y0, Z0))
-            # convert segment list to set of vertice
-            for i in range(self.pluginGui.table_segmentList.rowCount()):
-                az = str(self.pluginGui.table_segmentList.item(i, 0).text())
-                dis = float(str(self.pluginGui.table_segmentList.item(i, 1).text()))
-                zen = str(self.pluginGui.table_segmentList.item(i, 2).text())
-                direction = str(self.pluginGui.table_segmentList.item(i, 4).text())
-                direction = utils.Direction.resolve(direction)
-
-                try:
-                    radius = float(self.pluginGui.table_segmentList.item(i, 3).text())
-                except ValueError:
-                    radius = None
-
-                if (self.pluginGui.radioButton_englishUnits.isChecked()):
-                    # adjust for input in feet, not meters
-                    dis = float(dis) / 3.281
-
-                #checking degree input
-                if (self.pluginGui.radioButton_azimuthAngle.isChecked()):
-                    az = float(self.dmsToDd(az))
-                    zen = float(self.dmsToDd(zen))
-                elif (self.pluginGui.radioButton_bearingAngle.isChecked()):
-                    az = float(self.bearingToDd(az))
-                    zen = float(self.bearingToDd(zen))
-
-                #correct for magnetic compass headings if necessary
-                if (self.pluginGui.radioButton_defaultNorth.isChecked()):
-                    self.magDev = 0.0
-                elif (self.pluginGui.radioButton_magNorth.isChecked()):
-                    self.magDev = float(self.dmsToDd(str(self.pluginGui.lineEdit_magNorth.text())))
-                az = float(az) + float(self.magDev)
-
-                #correct for angles outside of 0.0-360.0
-                while (az > 360.0):
-                    az = az - 360.0
-                while (az < 0.0):
-                    az = az + 360.0
-
-                # checking survey type
-                if surveytype == 'radial':
-                    reference_point = vlist[0]  # reference first vertex
-
-                if surveytype == 'polygonal':
-                    reference_point = vlist[-1]  #reference previous vertex
-
-                nextpoint = utils.nextvertex(reference_point, dis, az, zen)
-                log(nextpoint)
-                log(reference_point)
-
-                if radius:
-                    # If there is a radius then we are drawing a arc.
-                    # Calculate the arc points.
-                    points = list(utils.arc_points(reference_point, nextpoint, dis, radius,
-                                                   point_count=arcpoint_count,
-                                                   direction=direction))
-
-                    if direction == utils.Direction.ANTICLOCKWISE:
-                        points = reversed(points)
-
-                    # Append them to the final points list.
-                    vlist.extend(points)
-
-                vlist.append(nextpoint)
-
-            return vlist
+    def create_feature(self):
+        vectorlayer = self.drawing_layer
 
         #reprojecting to projects SRS
-        points = get_points(surveytype)
+        arcpoint_count = self.arc_count
+        points = self.get_points(self.surveytype, arcpoint_count)
+
+        if not points:
+            return None, None
+
         vlist = self.reproject(points, vectorlayer)
 
         as_segments = self.pluginGui.checkBox_asSegments.isChecked()
-
-        def createpoints(points):
-            for point in points:
-                geom = QgsGeometry.fromPoint(point)
-                feature = QgsFeature()
-                feature.setGeometry(geom)
-                yield feature
-
-        def createline(points):
-            """
-            Creata a line feature from a list of points
-            :param points: List of QgsPoints
-            """
-            geom = QgsGeometry.fromPolyline(points)
-            feature = QgsFeature()
-            feature.setGeometry(geom)
-            return feature
-
-        def createpolygon(polygon):
-            """
-            Create a polygon from a list of points
-            :param points: List of QgsPoints
-            """
-            geom = QgsGeometry.fromPolygon(polygon)
-            QgsMessageLog.logMessage(str(geom.isGeosValid()))
-            feature = QgsFeature()
-            feature.setGeometry(geom)
-            return feature
-
 
         featurelist=[]
         geometrytype= vectorlayer.geometryType()
         if geometrytype == QGis.Point:
             points = utils.to_qgspoints(vlist)
-            features = createpoints(points)
+            features = utils.createpoints(points)
             featurelist.extend(features)
-
         elif geometrytype == QGis.Line:
-            pointlist = utils.to_qgspoints(vlist, repeatfirst=surveytype == 'radial')
-
             if as_segments:
                 # If the line is to be draw as segments then we loop the pairs and create a line for each one.
-                for pair in utils.pairs(pointlist, matchtail=surveytype == 'polygonal'):
-                    feature = createline(pair)
+                points_to_join = []
+                in_arc = False
+                for pair in utils.pairs(vlist, matchtail=self.surveytype == 'polygonal'):
+                    start, end = pair[0], pair[1]
+                    # If we are not drawing the arc then just add the pair to get a single line
+                    if not start.arc_point and not end.arc_point:
+                        points_to_join = pair
+                    else:
+                        # If we are in a arc we need to handle drawing it as one line
+                        # which means grabbing each pair until we are finished the arc
+                        if not start.arc_point and end.arc_point:
+                            points_to_join = []
+                            in_arc = True
+
+                        if start.arc_point and not end.arc_point:
+                            points_to_join.append(start)
+                            points_to_join.append(end)
+                            in_arc = False
+
+                        if in_arc:
+                            points_to_join.append(start)
+                            points_to_join.append(end)
+                            continue
+                    pointlist = utils.to_qgspoints(points_to_join, repeatfirst=self.surveytype == 'radial')
+                    feature = utils.createline(pointlist)
                     featurelist.append(feature)
             else:
-                feature = createline(pointlist)
+                pointlist = utils.to_qgspoints(vlist, repeatfirst=self.surveytype == 'radial')
+                feature = utils.createline(pointlist)
                 featurelist.append(feature)
-
         elif geometrytype == QGis.Polygon:
             polygon = utils.to_qgspoints(vlist)
-            feature = createpolygon([polygon])
+            feature = utils.createpolygon([polygon])
             featurelist.append(feature)
 
-        #commit
-        provider=vectorlayer.dataProvider()
-        provider.addFeatures(featurelist)
-        if not self.useactivelayer:
-            QgsMapLayerRegistry.instance().addMapLayer(vectorlayer)
+        # Add the fields for the current layer
+        for feature in featurelist:
+            fields = vectorlayer.pendingFields()
+            feature.setFields(fields)
 
-        self.iface.mapCanvas().refresh()
+        return featurelist, vectorlayer
 
     def bearingToDd (self,  dms):
         #allow survey bearings in form:  - N 25d 34' 40" E
@@ -365,9 +551,9 @@ class qgsazimuth (object):
         dms=dms.split(";")
         dd=0
         #dd=str(float(dms[0])+float(dms[1])/60+float(dms[2])/3600)
-        for i, f in enumerate(dms):
+        for row, f in enumerate(dms):
             if f!="":
-                dd+=float(f)/pow(60, i)
+                dd+=float(f)/pow(60, row)
         return dd
 
     def clearList(self):
@@ -375,6 +561,7 @@ class qgsazimuth (object):
         self.pluginGui.table_segmentList.setSortingEnabled(False)
         self.pluginGui.table_segmentList.setRowCount(0)
         self.pluginGui.table_segmentList.setCurrentCell(0, 0) # substitute for missing setCurrentRow()
+        self.render_temp_band()
         #retranslateUi
 
     def newVertex(self):
@@ -403,13 +590,14 @@ class qgsazimuth (object):
             else:
                 direction = "clockwise"
 
-        i=self.pluginGui.table_segmentList.rowCount()
-        self.pluginGui.table_segmentList.insertRow(i)
-        self.pluginGui.table_segmentList.setItem(i, 0, QTableWidgetItem(str(az).upper()))
-        self.pluginGui.table_segmentList.setItem(i, 1, QTableWidgetItem(str(dist)))
-        self.pluginGui.table_segmentList.setItem(i, 2, QTableWidgetItem(str(zen)))
-        self.pluginGui.table_segmentList.setItem(i, 3, QTableWidgetItem(str(radius)))
-        self.pluginGui.table_segmentList.setItem(i, 4, QTableWidgetItem(str(direction)))
+        row=self.pluginGui.table_segmentList.rowCount()
+        self.pluginGui.table_segmentList.insertRow(row)
+        self.pluginGui.table_segmentList.setItem(row, 0, QTableWidgetItem(str(az).upper()))
+        self.pluginGui.table_segmentList.setItem(row, 1, QTableWidgetItem(str(dist)))
+        self.pluginGui.table_segmentList.setItem(row, 2, QTableWidgetItem(str(zen)))
+        self.pluginGui.table_segmentList.setItem(row, 3, QTableWidgetItem(str(radius)))
+        self.pluginGui.table_segmentList.setItem(row, 4, QTableWidgetItem(str(direction)))
+        self.render_temp_band()
 
     def insertRow(self):
         az = self.pluginGui.lineEdit_nextAzimuth.text()
@@ -427,39 +615,43 @@ class qgsazimuth (object):
                 direction = "clockwise"
 
         #insert the vertext into the table at the current position
-        i=self.pluginGui.table_segmentList.currentRow()
-        self.pluginGui.table_segmentList.insertRow(i)
-        self.pluginGui.table_segmentList.setItem(i, 0, QTableWidgetItem(str(az).upper()))
-        self.pluginGui.table_segmentList.setItem(i, 1, QTableWidgetItem(str(dist)))
-        self.pluginGui.table_segmentList.setItem(i, 2, QTableWidgetItem(str(zen)))
-        self.pluginGui.table_segmentList.setItem(i, 3, QTableWidgetItem(str(radius)))
-        self.pluginGui.table_segmentList.setItem(i, 4, QTableWidgetItem(str(direction)))
+        row=self.pluginGui.table_segmentList.currentRow()
+        self.pluginGui.table_segmentList.insertRow(row)
+        self.pluginGui.table_segmentList.setItem(row, 0, QTableWidgetItem(str(az).upper()))
+        self.pluginGui.table_segmentList.setItem(row, 1, QTableWidgetItem(str(dist)))
+        self.pluginGui.table_segmentList.setItem(row, 2, QTableWidgetItem(str(zen)))
+        self.pluginGui.table_segmentList.setItem(row, 3, QTableWidgetItem(str(radius)))
+        self.pluginGui.table_segmentList.setItem(row, 4, QTableWidgetItem(str(direction)))
+        self.render_temp_band()
 
     def delRow(self):
         self.pluginGui.table_segmentList.removeRow(self.pluginGui.table_segmentList.currentRow())
+        self.render_temp_band()
 
     def moveup(self):
+        self.render_temp_band()
         pass
 
     def movedown(self):
+        self.render_temp_band()
         pass
 
     def startgetpoint(self):
         #point capture tool
-        self.tool.finished.connect(self.getpoint)
         self.saveTool = self.canvas.mapTool()
         self.canvas.setMapTool(self.tool)
 
     def getpoint(self, pt):
-        self.pluginGui.lineEdit_vertexX0.setText(str(pt.x()))
-        self.pluginGui.lineEdit_vertexY0.setText(str(pt.y()))
+        self.pluginGui.update_startpoint(pt)
         self.canvas.setMapTool(self.saveTool)
-        self.tool.finished.disconnect(self.getpoint)
 
     def reproject(self, vlist,  vectorlayer):
         renderer=self.canvas.mapRenderer()
-        for i, point in enumerate(vlist):
-            vlist[i]= renderer.layerToMapCoordinates(vectorlayer, QgsPoint(point[0], point[1]))
+        for row, point in enumerate(vlist):
+            new_point = renderer.layerToMapCoordinates(vectorlayer, QgsPoint(point[0], point[1]))
+            # Translate it into our new point with arc_point info
+            new_point = utils.Point(new_point.x(), new_point.y(), arc_point=point.arc_point)
+            vlist[row] = new_point
         return vlist
 
     def setAngle(self, s):
@@ -496,10 +688,9 @@ class qgsazimuth (object):
 
     def setStartAt(self,  s):
         #self.say('processing startAt='+s)
-        coords=s.split(';')
-        self.pluginGui.lineEdit_vertexX0.setText(coords[0])
-        self.pluginGui.lineEdit_vertexY0.setText(coords[1])
-        self.pluginGui.lineEdit_vertexZ0.setText(coords[2])
+        coords= [float(v) for v in s.split (';')]
+        point = QgsPoint(coords[0], coords[1])
+        self.pluginGui.update_startpoint(point, coords[2])
 
     def setSurvey(self, s):
         #self.say('processing surveyType='+s)
@@ -545,6 +736,7 @@ class qgsazimuth (object):
         self.fPath = fInfo.absolutePath ()
         self.saveConf()
 
+        self.render_temp_band()
         # get saved data
         try:
             f=open(self.fileName)
@@ -621,31 +813,49 @@ class qgsazimuth (object):
         f.write('survey='+s+'\n')
 
         f.write('[data]\n')
-        for i in range(self.pluginGui.table_segmentList.rowCount()):
-            line = str(self.pluginGui.table_segmentList.item(i, 0).text()) +';' \
-                    +str(self.pluginGui.table_segmentList.item(i, 1).text()) +';' \
-                    +str(self.pluginGui.table_segmentList.item(i, 2).text())
+        for row in range(self.pluginGui.table_segmentList.rowCount()):
+            line = str(self.pluginGui.table_segmentList.item(row, 0).text()) +';' \
+                    +str(self.pluginGui.table_segmentList.item(row, 1).text()) +';' \
+                    +str(self.pluginGui.table_segmentList.item(row, 2).text())
             f.write(line+'\n')
 
         f.close()
 
     #------------------------
     def loadConf(self):
-        settings=QSettings()
+        settings = QSettings()
         size = settings.value('/Plugin-qgsAzimuth/size', QSize(800, 600), type=QSize)
-        self.pluginGui.resize(size)
         position = settings.value('/Plugin-qgsAzimuth/position', QPoint(0, 0), type=QPoint)
-        self.pluginGui.move(position)
-        #settings.restoreGeometry(settings.value("Geometry"), QByteArray(), type=QByteArray)
         self.fPath = settings.value('/Plugin-qgsAzimuth/inp_exp_dir', "", type=unicode)
+        self.angletype = settings.value('/Plugin-qgsAzimuth/angletype', "", type=unicode)
+
+        self.should_open_form = settings.value('/Plugin-qgsAzimuth/open_form', True, type=bool)
+        self.surverytype = settings.value('/Plugin-qgsAzimuth/type', "", type=unicode)
+        self.northtype = settings.value('/Plugin-qgsAzimuth/northtype', "", type=unicode)
+        self.mag_dev = settings.value('/Plugin-qgsAzimuth/northtype_value', 0.0, type=float)
+        self.distanceunits = settings.value('/Plugin-qgsAzimuth/distanceunits', "", type=unicode)
+        self.angletype = settings.value('/Plugin-qgsAzimuth/angletype', "", type=unicode)
+        self.arc_count = settings.value('/Plugin-qgsAzimuth/arcpoints', 6, type=int)
+
+        self.pluginGui.resize(size)
+        self.pluginGui.move(position)
         self.fileName = self.fPath
+        #settings.restoreGeometry(settings.value("Geometry"), QByteArray(), type=QByteArray)
 
     def saveConf(self):
-        settings=QSettings()
+        settings = QSettings()
         #settings.setValue("Geometry", self.saveGeometry())
         settings.setValue('/Plugin-qgsAzimuth/size',  self.pluginGui.size())
         settings.setValue('/Plugin-qgsAzimuth/position',  self.pluginGui.pos())
-        settings.setValue('/Plugin-qgsAzimuth/inp_exp_dir', self.fPath)
+        settings.setValue('/Plugin-qgsAzimuth/inp_exp_dir', self.fPath
+        )
+        settings.setValue('/Plugin-qgsAzimuth/open_form', self.should_open_form)
+        settings.setValue('/Plugin-qgsAzimuth/type', self.surveytype)
+        settings.setValue('/Plugin-qgsAzimuth/northtype', self.northtype)
+        settings.setValue('/Plugin-qgsAzimuth/northtype_value', self.mag_dev)
+        settings.setValue('/Plugin-qgsAzimuth/distanceunits', self.distanceunits)
+        settings.setValue('/Plugin-qgsAzimuth/angletype', self.angletype)
+        settings.setValue('/Plugin-qgsAzimuth/arcpoints', self.arc_count)
 
     def sortedDict(self, adict):
         keys = adict.keys()
