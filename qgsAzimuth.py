@@ -18,7 +18,8 @@
 #
 #---------------------------------------------------------------------
 
-import os,sys
+import math
+import os
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -32,9 +33,11 @@ from maptool import LineTool
 
 import utils
 
+
 def log(message):
     from qgis.core import QgsMessageLog
     QgsMessageLog.logMessage(str(message), "Plugin")
+
 
 class qgsazimuth(object):
     """
@@ -90,6 +93,7 @@ class qgsazimuth(object):
         self.pluginGui.pickAngle1_button.clicked.connect(self.select_angle1)
         self.pluginGui.pickAngle2_button.clicked.connect(self.select_angle2)
         self.pluginGui.clearMarkers_button.clicked.connect(self.clear_markers)
+        self.pluginGui.copyDiff_button.clicked.connect(self.copy_diff_offset)
 
         # self.pluginGui.table_segmentList.cellChanged.connect(self.render_temp_band)
 
@@ -108,18 +112,51 @@ class qgsazimuth(object):
         self.angletool2.geometryComplete.connect(self.update_angle2)
         self.angletool2.locationChanged.connect(self.update_marker_location)
 
+        self.pluginGui.azimuth1_edit.textChanged.connect(self.update_angle_calc)
+        self.pluginGui.azimuth2_edit.textChanged.connect(self.update_angle_calc)
+
+        self.pluginGui.azimuthDiff_edit.textChanged.connect(self.update_offsetlabel)
+        self.pluginGui.radioButton_defaultNorth.toggled.connect(self.update_offsetlabel)
+
+    def update_offsetlabel(self, *args):
+        mag = self.mag_dev
+        self.pluginGui.offsetLabel.setText("Offset: 0 = {}".format(mag))
+
+    def copy_diff_offset(self):
+        diff = self.pluginGui.azimuthDiff_edit.text()
+        self.pluginGui.lineEdit_magNorth.setText(diff)
+
     def clear_markers(self):
         self.angletool2.reset()
         self.angletool.reset()
+        self.pluginGui.azimuth1_edit.setText(str(0))
+        self.pluginGui.azimuth2_edit.setText(str(0))
+
+    def update_angle_calc(self):
+        a1 = self.pluginGui.azimuth1_edit.text()
+        a2 = self.pluginGui.azimuth2_edit.text()
+        try:
+            a1 = float(a1)
+            a2 = float(a2)
+        except ValueError:
+            self.pluginGui.azimuthDiff_edit.setText('')
+            return
+
+        diff = a2 - a1
+        self.pluginGui.azimuthDiff_edit.setText(str(diff))
 
     def select_angle1(self):
         self.canvas.setMapTool(self.angletool)
 
     def update_angle1(self, geometry):
-        pass
+        az = utils.azimuth_from_line(geometry)
+        az = str(az)
+        self.pluginGui.azimuth1_edit.setText(az)
 
     def update_angle2(self, geometry):
-        pass
+        az = utils.azimuth_from_line(geometry)
+        az = str(az)
+        self.pluginGui.azimuth2_edit.setText(az)
 
     def select_angle2(self):
         self.canvas.setMapTool(self.angletool2)
@@ -136,6 +173,8 @@ class qgsazimuth(object):
         self.bandpoint.reset()
         self.tool.cleanup()
         self.clear_markers()
+        del self.angletool2
+        del self.angletool
         del self.tool
         del self.bandpoint
 
@@ -305,7 +344,10 @@ class qgsazimuth(object):
     def mag_dev(self):
         if self.pluginGui.radioButton_magNorth.isChecked():
             value = str(self.pluginGui.lineEdit_magNorth.text())
-            return float(self.dmsToDd(value))
+            try:
+                return float(value)
+            except ValueError:
+                return float(self.dmsToDd(value))
         elif self.pluginGui.radioButton_defaultNorth.isChecked():
             return 0.0
         else:
@@ -512,7 +554,8 @@ class qgsazimuth(object):
         elif geometrytype == QGis.Polygon:
             polygon = utils.to_qgspoints(vlist)
             feature = utils.createpolygon([polygon])
-            featurelist.append(feature)
+            if feature:
+                featurelist.append(feature)
 
         # Add the fields for the current layer
         for feature in featurelist:
@@ -672,6 +715,7 @@ class qgsazimuth(object):
         self.canvas.setMapTool(self.tool)
 
     def getpoint(self, pt):
+        self.clear_markers()
         self.pluginGui.update_startpoint(pt)
         self.canvas.setMapTool(self.saveTool)
 

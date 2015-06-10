@@ -54,7 +54,7 @@ class LineTool(QgsMapTool):
             self.m1 = QgsVertexMarker(self.canvas())
             self.m1.setIconType(1)
             self.m1.setColor(Qt.blue)
-            self.m1.setIconSize(12)
+            self.m1.setIconSize(6)
             self.m1.setPenWidth(3)
             self.m1.setCenter(point)
             self.p1 = point
@@ -64,7 +64,7 @@ class LineTool(QgsMapTool):
             self.m2 = QgsVertexMarker(self.canvas())
             self.m2.setIconType(1)
             self.m2.setColor(Qt.red)
-            self.m2.setIconSize(12)
+            self.m2.setIconSize(6)
             self.m2.setPenWidth(3)
             self.m2.setCenter(point)
             self.p2 = point

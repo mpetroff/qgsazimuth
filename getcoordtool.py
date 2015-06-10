@@ -60,19 +60,19 @@ class GetCoordTool(QgsMapTool):
   def snappoint(self, point):
     if QGis.QGIS_VERSION_INT >= 20800:
         # Snapping changed in 2.8 and now we do it this way.
-        utils = self.canvas().snappingUtils()
+        utils = self.canvas.snappingUtils()
         match = utils.snapToMap(point)
         if match.isValid():
             return match.point()
         else:
-            return self.canvas().getCoordinateTransform().toMapCoordinates(point)
+            return self.canvas.getCoordinateTransform().toMapCoordinates(point)
     else:
         try:
             _, results = self.snapper.snapToBackgroundLayers(point)
             point = results[0].snappedVertex
             return point
         except IndexError:
-            return self.canvas().getCoordinateTransform().toMapCoordinates(point)
+            return self.canvas.getCoordinateTransform().toMapCoordinates(point)
 
   def canvasMoveEvent(self,event):
     point = self.snappoint(event.pos())

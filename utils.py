@@ -5,6 +5,14 @@ from qgis.core import QgsPoint, QgsFeature, QgsGeometry, QgsMessageLog
 from collections import namedtuple
 
 
+def azimuth_from_line(geometry):
+    line = geometry.asPolyline()
+    p1 = line[0]
+    p2 = line[1]
+    az = p1.azimuth(p2)
+    return az
+
+
 def createpoints(points):
     for point in points:
         geom = QgsGeometry.fromPoint(point)
@@ -30,7 +38,8 @@ def createpolygon(polygon):
     :param points: List of QgsPoints
     """
     geom = QgsGeometry.fromPolygon(polygon)
-    QgsMessageLog.logMessage(str(geom.isGeosValid()))
+    if not geom:
+        return None
     feature = QgsFeature()
     feature.setGeometry(geom)
     return feature
