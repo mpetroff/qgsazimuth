@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'dock.ui'
 #
-# Created: Wed Jun 10 16:45:46 2015
+# Created: Thu Jun 11 09:39:47 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -360,6 +360,8 @@ class Ui_Form(object):
         self.lineEdit_crs.setObjectName(_fromUtf8("lineEdit_crs"))
         self.horizontalLayout_4.addWidget(self.lineEdit_crs)
         self.gridLayout_3.addLayout(self.horizontalLayout_4, 0, 0, 1, 3)
+        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_3.addItem(spacerItem3, 1, 2, 1, 1)
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
@@ -393,8 +395,8 @@ class Ui_Form(object):
         self.checkBox_openForm.setChecked(True)
         self.checkBox_openForm.setObjectName(_fromUtf8("checkBox_openForm"))
         self.verticalLayout_2.addWidget(self.checkBox_openForm)
-        spacerItem3 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem3)
+        spacerItem4 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem4)
         self.gridLayout_6.addWidget(self.groupBox1, 0, 6, 1, 1)
         self.groupBox_3 = QtGui.QGroupBox(self.tab_2)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
@@ -602,10 +604,10 @@ class Ui_Form(object):
         self.verticalLayout_3.addWidget(self.radioButton_englishUnits)
         self.verticalLayout_6.addWidget(self.groupBox_7)
         self.gridLayout_6.addLayout(self.verticalLayout_6, 0, 0, 1, 1)
-        spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_6.addItem(spacerItem4, 0, 7, 1, 1)
-        spacerItem5 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_6.addItem(spacerItem5, 1, 2, 1, 1)
+        spacerItem5 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_6.addItem(spacerItem5, 0, 7, 1, 1)
+        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_6.addItem(spacerItem6, 1, 2, 1, 1)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
@@ -625,8 +627,8 @@ class Ui_Form(object):
         self.plainTextEdit_note.setReadOnly(True)
         self.plainTextEdit_note.setObjectName(_fromUtf8("plainTextEdit_note"))
         self.gridLayout_5.addWidget(self.plainTextEdit_note, 0, 0, 1, 1)
-        spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_5.addItem(spacerItem6, 1, 0, 1, 1)
+        spacerItem7 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout_5.addItem(spacerItem7, 1, 0, 1, 1)
         self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
         self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
         self.label_11.setBuddy(self.lineEdit_nextAzimuth)
