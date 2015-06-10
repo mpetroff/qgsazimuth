@@ -28,6 +28,7 @@ from ui_control import Dock
 import resources_rc
 from math import *
 from getcoordtool import *
+from maptool import LineTool
 
 import utils
 
@@ -86,6 +87,10 @@ class qgsazimuth(object):
         self.pluginGui.pushButton_segListSave.clicked.connect(self.saveList)
         self.pluginGui.pushButton_useLast.clicked.connect(self.use_last_vertex)
 
+        self.pluginGui.pickAngle1_button.clicked.connect(self.select_angle1)
+        self.pluginGui.pickAngle2_button.clicked.connect(self.select_angle2)
+        self.pluginGui.clearMarkers_button.clicked.connect(self.clear_markers)
+
         # self.pluginGui.table_segmentList.cellChanged.connect(self.render_temp_band)
 
         self.pluginGui.table_segmentList.setCurrentCell(0,0)
@@ -94,6 +99,30 @@ class qgsazimuth(object):
         self.tool.finished.connect(self.getpoint)
         self.tool.locationChanged.connect(self.pluginGui.update_startpoint)
         self.tool.locationChanged.connect(self.update_marker_location)
+
+        self.angletool = LineTool(self.canvas)
+        self.angletool.geometryComplete.connect(self.update_angle1)
+        self.angletool.locationChanged.connect(self.update_marker_location)
+
+        self.angletool2 = LineTool(self.canvas)
+        self.angletool2.geometryComplete.connect(self.update_angle2)
+        self.angletool2.locationChanged.connect(self.update_marker_location)
+
+    def clear_markers(self):
+        self.angletool2.reset()
+        self.angletool.reset()
+
+    def select_angle1(self):
+        self.canvas.setMapTool(self.angletool)
+
+    def update_angle1(self, geometry):
+        pass
+
+    def update_angle2(self, geometry):
+        pass
+
+    def select_angle2(self):
+        self.canvas.setMapTool(self.angletool2)
 
     def update_marker_location(self, point):
         self.bandpoint.setToGeometry(QgsGeometry.fromPoint(point), None)
@@ -106,6 +135,7 @@ class qgsazimuth(object):
         self.iface.removeToolBarIcon(self.action)
         self.bandpoint.reset()
         self.tool.cleanup()
+        self.clear_markers()
         del self.tool
         del self.bandpoint
 
