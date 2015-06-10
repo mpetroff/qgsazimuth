@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'dock.ui'
 #
-# Created: Wed Jun 10 16:16:16 2015
+# Created: Wed Jun 10 16:45:46 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -258,8 +258,15 @@ class Ui_Form(object):
         self.pushButton_vertexAdd.setObjectName(_fromUtf8("pushButton_vertexAdd"))
         self.formLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.pushButton_vertexAdd)
         self.offsetLabel = QtGui.QLabel(self.groupBox_2)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        self.offsetLabel.setFont(font)
+        self.offsetLabel.setText(_fromUtf8(""))
         self.offsetLabel.setObjectName(_fromUtf8("offsetLabel"))
         self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.offsetLabel)
+        self.label_9 = QtGui.QLabel(self.groupBox_2)
+        self.label_9.setObjectName(_fromUtf8("label_9"))
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label_9)
         self.gridLayout_3.addWidget(self.groupBox_2, 2, 0, 1, 1)
         self.groupBox = QtGui.QGroupBox(self.tab)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Preferred)
@@ -696,7 +703,7 @@ class Ui_Form(object):
         self.radio_anticlockwise.setText(_translate("Form", "Anti-clockwise", None))
         self.pushButton_vertexInsert.setText(_translate("Form", "Insert above", None))
         self.pushButton_vertexAdd.setText(_translate("Form", "Add to Bottom", None))
-        self.offsetLabel.setText(_translate("Form", "TextLabel", None))
+        self.label_9.setText(_translate("Form", "Offset", None))
         self.groupBox.setTitle(_translate("Form", "Starting point", None))
         self.label_2.setText(_translate("Form", "X", None))
         self.lineEdit_vertexX0.setText(_translate("Form", "0", None))

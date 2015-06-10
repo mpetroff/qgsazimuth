@@ -115,12 +115,12 @@ class qgsazimuth(object):
         self.pluginGui.azimuth1_edit.textChanged.connect(self.update_angle_calc)
         self.pluginGui.azimuth2_edit.textChanged.connect(self.update_angle_calc)
 
-        self.pluginGui.azimuthDiff_edit.textChanged.connect(self.update_offsetlabel)
+        self.pluginGui.lineEdit_magNorth.textChanged.connect(self.update_offsetlabel)
         self.pluginGui.radioButton_defaultNorth.toggled.connect(self.update_offsetlabel)
 
     def update_offsetlabel(self, *args):
         mag = self.mag_dev
-        self.pluginGui.offsetLabel.setText("Offset: 0 = {}".format(mag))
+        self.pluginGui.offsetLabel.setText(str(mag))
 
     def copy_diff_offset(self):
         diff = self.pluginGui.azimuthDiff_edit.text()
@@ -347,7 +347,10 @@ class qgsazimuth(object):
             try:
                 return float(value)
             except ValueError:
-                return float(self.dmsToDd(value))
+                try:
+                    return float(self.dmsToDd(value))
+                except IndexError:
+                    return 0.0
         elif self.pluginGui.radioButton_defaultNorth.isChecked():
             return 0.0
         else:
