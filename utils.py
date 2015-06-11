@@ -130,6 +130,24 @@ def arc_length(radius, c_angle):
 def points_on_arc(count, center, radius, start, end):
     pass
 
+def dmsToDd(dms):
+    "It's not fast, but it's a safe way of dealing with DMS"
+    #dms=dms.replace(" ", "")
+    for c in dms:
+        if ((not c.isdigit()) and (c != '.') and (c != '-')):
+            dms=dms.replace(c,';')
+    while (dms.find(";;")>=0):
+        dms=dms.replace(";;",';')
+    if dms[0]==';':
+        dms=dms[1:]
+    dms=dms.split(";")
+    dd=0
+    #dd=str(float(dms[0])+float(dms[1])/60+float(dms[2])/3600)
+    for row, f in enumerate(dms):
+        if f!="":
+            dd+=float(f)/pow(60, row)
+    return dd
+
 
 def angle_to(p1, p2):
     xDiff = p1.x - p2.x

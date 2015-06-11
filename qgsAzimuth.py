@@ -53,7 +53,6 @@ class qgsazimuth(object):
 
     def __init__(self, iface):
         self.iface = iface
-        self.legend = iface.legendInterface()
         self.canvas = iface.mapCanvas()
         self.fPath = ""  # set default working directory, updated from config file & by Import/Export
         self.bands = []
@@ -135,6 +134,8 @@ class qgsazimuth(object):
     def update_angle_calc(self):
         a1 = self.pluginGui.azimuth1_edit.text()
         a2 = self.pluginGui.azimuth2_edit.text()
+        a1 = utils.dmsToDd(a1)
+        a2 = utils.dmsToDd(a2)
         try:
             a1 = float(a1)
             a2 = float(a2)
@@ -192,7 +193,7 @@ class qgsazimuth(object):
         else:
             self.pluginGui.radioButton_useActiveLayer.setEnabled(False)
             self.pluginGui.radioButton_useMemoryLayer.setChecked(True)
-        self.legend.currentLayerChanged.connect(self.updatelayertext)
+        self.iface.currentLayerChanged.connect(self.updatelayertext)
         if not self.dock.isVisible():
             self.dock.show()
 
@@ -348,7 +349,7 @@ class qgsazimuth(object):
                 return float(value)
             except ValueError:
                 try:
-                    return float(self.dmsToDd(value))
+                    return float(utils.dmsToDd(value))
                 except IndexError:
                     return 0.0
         elif self.pluginGui.radioButton_defaultNorth.isChecked():
@@ -434,8 +435,8 @@ class qgsazimuth(object):
 
             #checking degree input
             if (self.pluginGui.radioButton_azimuthAngle.isChecked()):
-                az = float(self.dmsToDd(az))
-                zen = float(self.dmsToDd(zen))
+                az = float(utils.dmsToDd(az))
+                zen = float(utils.dmsToDd(zen))
             elif (self.pluginGui.radioButton_bearingAngle.isChecked()):
                 az = float(self.bearingToDd(az))
                 zen = float(self.bearingToDd(zen))
@@ -601,7 +602,7 @@ class qgsazimuth(object):
         else:
             bearing = False
 
-        dd = self.dmsToDd(dms)
+        dd = utils.dmsToDd(dms)
 
         if (rev):
             dd = float(dd)+180.0
@@ -612,24 +613,6 @@ class qgsazimuth(object):
             elif (adj == 'sub'):
                 dd = float(base) - float(dd)
 
-        return dd
-
-    def dmsToDd(self,dms):
-        "It's not fast, but it's a safe way of dealing with DMS"
-        #dms=dms.replace(" ", "")
-        for c in dms:
-            if ((not c.isdigit()) and (c != '.') and (c != '-')):
-                dms=dms.replace(c,';')
-        while (dms.find(";;")>=0):
-            dms=dms.replace(";;",';')
-        if dms[0]==';':
-            dms=dms[1:]
-        dms=dms.split(";")
-        dd=0
-        #dd=str(float(dms[0])+float(dms[1])/60+float(dms[2])/3600)
-        for row, f in enumerate(dms):
-            if f!="":
-                dd+=float(f)/pow(60, row)
         return dd
 
     def clearList(self):
