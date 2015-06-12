@@ -5,6 +5,14 @@ from qgis.core import QgsPoint, QgsFeature, QgsGeometry, QgsMessageLog
 from collections import namedtuple
 
 
+def azimuth_from_line(geometry):
+    line = geometry.asPolyline()
+    p1 = line[0]
+    p2 = line[1]
+    az = p1.azimuth(p2)
+    return az
+
+
 def createpoints(points):
     for point in points:
         geom = QgsGeometry.fromPoint(point)
@@ -30,7 +38,8 @@ def createpolygon(polygon):
     :param points: List of QgsPoints
     """
     geom = QgsGeometry.fromPolygon(polygon)
-    QgsMessageLog.logMessage(str(geom.isGeosValid()))
+    if not geom:
+        return None
     feature = QgsFeature()
     feature.setGeometry(geom)
     return feature
@@ -120,6 +129,24 @@ def arc_length(radius, c_angle):
 
 def points_on_arc(count, center, radius, start, end):
     pass
+
+def dmsToDd(dms):
+    "It's not fast, but it's a safe way of dealing with DMS"
+    #dms=dms.replace(" ", "")
+    for c in dms:
+        if ((not c.isdigit()) and (c != '.') and (c != '-')):
+            dms=dms.replace(c,';')
+    while (dms.find(";;")>=0):
+        dms=dms.replace(";;",';')
+    if dms[0]==';':
+        dms=dms[1:]
+    dms=dms.split(";")
+    dd=0
+    #dd=str(float(dms[0])+float(dms[1])/60+float(dms[2])/3600)
+    for row, f in enumerate(dms):
+        if f!="":
+            dd+=float(f)/pow(60, row)
+    return dd
 
 
 def angle_to(p1, p2):

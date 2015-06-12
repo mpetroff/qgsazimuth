@@ -9,6 +9,7 @@
     <file>resources/import.svg</file>
     <file>resources/remove.svg</file>
     <file>resources/up.svg</file>
+    <file>resources/tick.svg</file>
     <file>qgsazimuth.png</file>
   </qresource>
 </RCC>
