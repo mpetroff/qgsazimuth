@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'dock.ui'
 #
-# Created: Thu Jun 11 21:25:26 2015
-#      by: PyQt4 UI code generator 4.11.3
+# Created: Thu Jun 11 23:50:55 2015
+#      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -198,13 +198,13 @@ class Ui_Form(object):
         self.label_13 = QtGui.QLabel(self.groupBox_2)
         self.label_13.setObjectName(_fromUtf8("label_13"))
         self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.label_13)
-        self.lineEdit_nextDistance = QtGui.QLineEdit(self.groupBox_2)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.lineEdit_nextDistance = QtGui.QDoubleSpinBox(self.groupBox_2)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lineEdit_nextDistance.sizePolicy().hasHeightForWidth())
         self.lineEdit_nextDistance.setSizePolicy(sizePolicy)
-        self.lineEdit_nextDistance.setText(_fromUtf8(""))
+        self.lineEdit_nextDistance.setMaximum(999999999.0)
         self.lineEdit_nextDistance.setObjectName(_fromUtf8("lineEdit_nextDistance"))
         self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.lineEdit_nextDistance)
         self.radiusLabel = QtGui.QLabel(self.groupBox_2)

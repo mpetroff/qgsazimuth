@@ -626,14 +626,14 @@ class qgsazimuth(object):
     def newVertex(self):
         #adds a vertex from the gui
         self.addrow(self.pluginGui.lineEdit_nextAzimuth.text(),
-                        self.pluginGui.lineEdit_nextDistance.text(),
+                        self.pluginGui.lineEdit_nextDistance.value(),
                         self.pluginGui.lineEdit_nextVertical.text(),
                         self.pluginGui.spin_radius.value())
 
     def addRow(self):
         # this and following must be split to handle both GUI & FILE inputs
         az = self.pluginGui.lineEdit_nextAzimuth.text()
-        dist = self.pluginGui.lineEdit_nextDistance.text()
+        dist = self.pluginGui.lineEdit_nextDistance.value()
         zen = self.pluginGui.lineEdit_nextVertical.text()
         radius = self.pluginGui.spin_radius.value()
         self.addrow(az, dist, zen, radius)
@@ -660,7 +660,7 @@ class qgsazimuth(object):
 
     def insertRow(self):
         az = self.pluginGui.lineEdit_nextAzimuth.text()
-        dist = self.pluginGui.lineEdit_nextDistance.text()
+        dist = self.pluginGui.lineEdit_nextDistance.value()
         zen = self.pluginGui.lineEdit_nextVertical.text()
         radius = self.pluginGui.spin_radius.value()
 
