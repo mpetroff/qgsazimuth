@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>933</width>
-    <height>385</height>
+    <width>1087</width>
+    <height>460</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,8 +52,11 @@
               <property name="enabled">
                <bool>true</bool>
               </property>
+              <property name="toolTip">
+               <string>Import Segment List</string>
+              </property>
               <property name="text">
-               <string/>
+               <string>Import</string>
               </property>
               <property name="icon">
                <iconset resource="resources.qrc">
@@ -72,8 +75,11 @@
               <property name="enabled">
                <bool>true</bool>
               </property>
+              <property name="toolTip">
+               <string>Export Segment List</string>
+              </property>
               <property name="text">
-               <string/>
+               <string>Export</string>
               </property>
               <property name="icon">
                <iconset resource="resources.qrc">
@@ -102,8 +108,11 @@
             </item>
             <item>
              <widget class="QPushButton" name="pushButton_segListClear">
+              <property name="toolTip">
+               <string>Clear Segment List</string>
+              </property>
               <property name="text">
-               <string/>
+               <string>Clear List</string>
               </property>
               <property name="icon">
                <iconset resource="resources.qrc">
@@ -119,7 +128,7 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="1" rowspan="5">
+          <item row="2" column="1" rowspan="2">
            <widget class="QTableWidget" name="table_segmentList">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -157,11 +166,8 @@
             </column>
            </widget>
           </item>
-          <item row="2" column="2" rowspan="5">
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <property name="sizeConstraint">
-             <enum>QLayout::SetDefaultConstraint</enum>
-            </property>
+          <item row="4" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QPushButton" name="pushButton_segListRowUp">
               <property name="enabled">
@@ -173,8 +179,11 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip">
+               <string>Move Selected Segment Up</string>
+              </property>
               <property name="text">
-               <string/>
+               <string>Move Up</string>
               </property>
               <property name="icon">
                <iconset resource="resources.qrc">
@@ -199,8 +208,11 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip">
+               <string>Move Selected Segment Down</string>
+              </property>
               <property name="text">
-               <string/>
+               <string>Move Down</string>
               </property>
               <property name="icon">
                <iconset resource="resources.qrc">
@@ -215,17 +227,14 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_2">
+             <spacer name="horizontalSpacer_4">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::MinimumExpanding</enum>
+               <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>20</width>
-                <height>28</height>
+                <width>40</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>
@@ -238,8 +247,11 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip">
+               <string>Remove Selected Segment</string>
+              </property>
               <property name="text">
-               <string/>
+               <string>Remove</string>
               </property>
               <property name="icon">
                <iconset resource="resources.qrc">
@@ -254,22 +266,25 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_4">
+             <spacer name="horizontalSpacer_5">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>20</width>
-                <height>40</height>
+                <width>40</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
             <item>
              <widget class="QPushButton" name="pushButton_objectDraw">
+              <property name="toolTip">
+               <string>Draw Segment List</string>
+              </property>
               <property name="text">
-               <string/>
+               <string>Draw</string>
               </property>
               <property name="icon">
                <iconset resource="resources.qrc">
@@ -329,6 +344,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string/>
             </property>
             <property name="text">
              <string>0</string>
@@ -449,8 +467,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="toolTip">
+             <string>Insert New Segment Above Currently Selected Segment</string>
+            </property>
             <property name="text">
-             <string>Insert above</string>
+             <string>Insert Above</string>
             </property>
            </widget>
           </item>
@@ -461,6 +482,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Add New Segment to Bottom of List</string>
             </property>
             <property name="text">
              <string>Add to Bottom</string>
@@ -587,6 +611,9 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="toolTip">
+             <string>Select Starting Point from Map</string>
+            </property>
             <property name="text">
              <string>From Map</string>
             </property>
@@ -613,8 +640,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="toolTip">
+             <string>Use Last Vertex as Starting Point</string>
+            </property>
             <property name="text">
-             <string>Use last vertex</string>
+             <string>Use Last Vertex</string>
             </property>
             <property name="icon">
              <iconset resource="resources.qrc">
@@ -1281,8 +1311,6 @@
   <tabstop>radio_clockwise</tabstop>
   <tabstop>radio_anticlockwise</tabstop>
   <tabstop>pushButton_vertexAdd</tabstop>
-  <tabstop>pushButton_segListRowDn</tabstop>
-  <tabstop>pushButton_segListRowDel</tabstop>
   <tabstop>table_segmentList</tabstop>
   <tabstop>pushButton_segListLoad</tabstop>
   <tabstop>pushButton_segListSave</tabstop>
@@ -1303,13 +1331,11 @@
   <tabstop>plainTextEdit_note</tabstop>
   <tabstop>checkBox_asSegments</tabstop>
   <tabstop>checkBox_openForm</tabstop>
-  <tabstop>pushButton_objectDraw</tabstop>
   <tabstop>lineEdit_nextVertical</tabstop>
   <tabstop>lineEdit_vertexX0</tabstop>
   <tabstop>lineEdit_vertexY0</tabstop>
   <tabstop>lineEdit_vertexZ0</tabstop>
   <tabstop>pushButton_startCapture</tabstop>
-  <tabstop>pushButton_segListRowUp</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>
