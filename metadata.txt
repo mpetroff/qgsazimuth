@@ -3,7 +3,7 @@
 name=Azimuth and Distance Plugin
 qgisMinimumVersion=2.0
 description=Creates a feature from azimuths and distances
-version=0.9.5
+version=0.9.6
 author=Mauricio de Paulo, Fred Laplante, DMS Australia, TechnoglogyOne
 email=
 
@@ -14,7 +14,8 @@ deprecated=False
 repository=https://github.com/mpetroff/qgsazimuth
 tracker=https://github.com/mpetroff/qgsazimuth/issues
 changelog=
-    Version 0.9.5 New controls in options tab for calculating offset (completed by TechnoglogyOne, Australia, funded by Knox City Council, Australia) 
+    Version 0.9.6: Buttons now have text labels again (fixes regression in 0.9.4)
+    Version 0.9.5: New controls in options tab for calculating offset (completed by TechnoglogyOne, Australia, funded by Knox City Council, Australia) 
     Version 0.9.4: New dock widget UI. New icons for buttons. Feature to use last point as start. Draw temp line.(completed by DMS, Australia, funded by Knox City Council, Australia) 
     Version 0.9.3: Added snapping marker when picking the start point and drawing arc support (completed by DMS, Australia)
     Version 0.9.2: Added support for drawing into active layer (completed by DMS, Australia)
