@@ -3,6 +3,7 @@
 name=Azimuth and Distance Plugin
 qgisMinimumVersion=2.0
 description=Creates a feature from azimuths and distances
+about=This plugin aims to help users that want to create geometries from a list of azimuths and distances, such as the description on some old land registration documents.
 version=0.9.6
 author=Mauricio de Paulo, Fred Laplante, DMS Australia, TechnoglogyOne
 email=
