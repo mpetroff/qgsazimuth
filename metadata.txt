@@ -4,8 +4,8 @@ name=Azimuth and Distance Plugin
 qgisMinimumVersion=2.4
 description=Creates a feature from azimuths and distances
 about=This plugin aims to help users that want to create geometries from a list of azimuths and distances, such as the description on some old land registration documents.
-version=0.9.6
-author=Mauricio de Paulo, Fred Laplante, DMS Australia, TechnoglogyOne
+version=0.9.7
+author=Mauricio de Paulo, Fred Laplante, DMS Australia, TechnoglogyOne, Matthew Petroff
 email=
 
 # Optional items:
@@ -15,6 +15,7 @@ deprecated=False
 repository=https://github.com/mpetroff/qgsazimuth
 tracker=https://github.com/mpetroff/qgsazimuth/issues
 changelog=
+    Version 0.9.7: Added support for gradians
     Version 0.9.6: Buttons now have text labels again (fixes regression in 0.9.4)
     Version 0.9.5: New controls in options tab for calculating offset (completed by TechnoglogyOne, Australia, funded by Knox City Council, Australia) 
     Version 0.9.4: New dock widget UI. New icons for buttons. Feature to use last point as start. Draw temp line.(completed by DMS, Australia, funded by Knox City Council, Australia) 

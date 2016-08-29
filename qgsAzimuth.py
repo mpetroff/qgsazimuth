@@ -328,6 +328,22 @@ class qgsazimuth(object):
             self.pluginGui.radioButton_defaultUnits.setChecked(True)
 
     @property
+    def angleunit(self):
+        if self.pluginGui.radioButton_degreeUnit.isChecked():
+            return "degree"
+        elif self.pluginGui.radioButton_gradianUnit.isChecked():
+            return "gradian"
+
+    @angleunit.setter
+    def angleunit(self, value):
+        if value == "degree":
+            self.pluginGui.radioButton_degreeUnit.setChecked(True)
+        elif value == "gradian":
+            self.pluginGui.radioButton_gradianUnit.setChecked(True)
+        else:
+            self.pluginGui.radioButton_degreeUnit.setChecked(True)
+
+    @property
     def northtype(self):
         if self.pluginGui.radioButton_magNorth.isChecked():
             return "magnetic"
@@ -349,6 +365,8 @@ class qgsazimuth(object):
                 return float(value)
             except ValueError:
                 try:
+                    if self.pluginGui.radioButton_gradianUnit.isChecked():
+                        value = utils.gradianToDd(value)
                     return float(utils.dmsToDd(value))
                 except IndexError:
                     return 0.0
@@ -435,8 +453,12 @@ class qgsazimuth(object):
 
             #checking degree input
             if (self.pluginGui.radioButton_azimuthAngle.isChecked()):
-                az = float(utils.dmsToDd(az))
-                zen = float(utils.dmsToDd(zen))
+                if self.pluginGui.radioButton_gradianUnit.isChecked():
+                    az = utils.gradianToDd(az)
+                    zen = utils.gradianToDd(zen)
+                else:
+                    az = float(utils.dmsToDd(az))
+                    zen = float(utils.dmsToDd(zen))
             elif (self.pluginGui.radioButton_bearingAngle.isChecked()):
                 az = float(self.bearingToDd(az))
                 zen = float(self.bearingToDd(zen))
@@ -602,7 +624,10 @@ class qgsazimuth(object):
         else:
             bearing = False
 
-        dd = utils.dmsToDd(dms)
+        if self.pluginGui.radioButton_gradianUnit.isChecked():
+            dd = utils.gradianToDd(dms)
+        else:
+            dd = utils.dmsToDd(dms)
 
         if (rev):
             dd = float(dd)+180.0
@@ -746,6 +771,12 @@ class qgsazimuth(object):
         else:
             self.pluginGui.radioButton_defaultUnits.setChecked(True)
 
+    def setAngleUnit(self, s):
+        if (s=='gradian'):
+            self.pluginGui.radioButton_gradianUnit.setChecked(True)
+        else:
+            self.pluginGui.radioButton_degreeUnit.setChecked(True)
+
     def setStartAt(self,  s):
         #self.say('processing startAt='+s)
         coords= [float(v) for v in s.split (';')]
@@ -816,6 +847,8 @@ class qgsazimuth(object):
                         self.setDeclination(parts[1].lower())
                     elif (parts[0].lower()=='dist_units'):
                         self.setDistanceUnits(parts[1].lower())
+                    elif (parts[0].lower()=='angle_unit'):
+                        self.setAngleUnit(parts[1].lower())
                     elif (parts[0].lower()=='startat'):
                         self.setStartAt(parts[1].lower())
                     elif (parts[0].lower()=='survey'):
@@ -862,6 +895,12 @@ class qgsazimuth(object):
             s='Feet'
         f.write('dist_units='+s+'\n')
 
+        if (self.pluginGui.radioButton_degreeUnit.isChecked()):
+            s='degree'
+        elif (self.pluginGui.radioButton_gradianUnit.isChecked()):
+            s='gradian'
+        f.write('angle_unit='+s+'\n')
+
         f.write('startAt='+str(self.pluginGui.lineEdit_vertexX0.text())+';'+
                                     str(self.pluginGui.lineEdit_vertexY0.text())+';'+
                                     str(self.pluginGui.lineEdit_vertexZ0.text())+'\n')
@@ -894,6 +933,7 @@ class qgsazimuth(object):
         self.northtype = settings.value('/Plugin-qgsAzimuth/northtype', "", type=unicode)
         self.mag_dev = settings.value('/Plugin-qgsAzimuth/northtype_value', 0.0, type=float)
         self.distanceunits = settings.value('/Plugin-qgsAzimuth/distanceunits', "", type=unicode)
+        self.angleunit = settings.value('/Plugin-qgsAzimuth/angleunit', "", type=unicode)
         self.angletype = settings.value('/Plugin-qgsAzimuth/angletype', "", type=unicode)
         self.arc_count = settings.value('/Plugin-qgsAzimuth/arcpoints', 6, type=int)
 
@@ -914,6 +954,7 @@ class qgsazimuth(object):
         settings.setValue('/Plugin-qgsAzimuth/northtype', self.northtype)
         settings.setValue('/Plugin-qgsAzimuth/northtype_value', self.mag_dev)
         settings.setValue('/Plugin-qgsAzimuth/distanceunits', self.distanceunits)
+        settings.setValue('/Plugin-qgsAzimuth/angleunit', self.angleunit)
         settings.setValue('/Plugin-qgsAzimuth/angletype', self.angletype)
         settings.setValue('/Plugin-qgsAzimuth/arcpoints', self.arc_count)
 

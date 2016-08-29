@@ -133,6 +133,8 @@ def points_on_arc(count, center, radius, start, end):
 def dmsToDd(dms):
     "It's not fast, but it's a safe way of dealing with DMS"
     #dms=dms.replace(" ", "")
+    if isinstance(dms, float):
+        return dms
     for c in dms:
         if ((not c.isdigit()) and (c != '.') and (c != '-')):
             dms=dms.replace(c,';')
@@ -148,6 +150,15 @@ def dmsToDd(dms):
             dd+=float(f)/pow(60, row)
     return dd
 
+def gradianToDd(gradian):
+    factor = 1
+    out = ''
+    for c in gradian:
+        if c in 'cC':
+            factor *= 0.01
+        if c.isdigit() or c in '.-':
+            out += c
+    return float(out) * factor * 0.9
 
 def angle_to(p1, p2):
     xDiff = p1.x - p2.x
