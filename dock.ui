@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -148,7 +148,7 @@
             </column>
             <column>
              <property name="text">
-              <string>Vertical Angle</string>
+              <string>Zenith Angle</string>
              </property>
             </column>
             <column>
@@ -356,7 +356,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>Vertical:</string>
+             <string>Zenith:</string>
             </property>
             <property name="buddy">
              <cstring>lineEdit_nextVertical</cstring>
@@ -366,7 +366,7 @@
           <item row="2" column="1">
            <widget class="QLineEdit" name="lineEdit_nextVertical">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

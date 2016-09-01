@@ -886,7 +886,7 @@ class qgsazimuth(object):
             s='Magnetic'
         f.write('heading='+s+'\n')
 
-        if (self.magDev!=0.0):
+        if (hasattr(self, 'magDev') and self.magDev!=0.0):
             f.write('declination='+str(self.magDev)+'\n')
 
         if (self.pluginGui.radioButton_defaultUnits.isChecked()):
@@ -934,6 +934,8 @@ class qgsazimuth(object):
         self.mag_dev = settings.value('/Plugin-qgsAzimuth/northtype_value', 0.0, type=float)
         self.distanceunits = settings.value('/Plugin-qgsAzimuth/distanceunits', "", type=unicode)
         self.angleunit = settings.value('/Plugin-qgsAzimuth/angleunit', "", type=unicode)
+        if self.angleunit == 'gradian':
+            self.pluginGui.lineEdit_nextVertical.setText("100")
         self.angletype = settings.value('/Plugin-qgsAzimuth/angletype', "", type=unicode)
         self.arc_count = settings.value('/Plugin-qgsAzimuth/arcpoints', 6, type=int)
 

@@ -99,21 +99,21 @@ def pairs(points, matchtail):
         yield [start, end]
 
 
-def nextvertex(reference_point, distance, angle, virtical_anagle=90, arc_point=False):
+def nextvertex(reference_point, distance, angle, zenith_angle=0, arc_point=False):
     """
     Return the next vertex given a start, angle, distance.
     :param reference_point: Start point
     :param distance: Distance to the next vertex
     :param angle: Angle is assumed to already include north correction
-    :param virtical_anagle: Virtical angle for height correction
+    :param zenith_angle: Zenith angle for height correction
     :return: A tuple of x,y,z for the next point.
     """
     angle = math.radians(angle)
-    virtical_anagle = math.radians(virtical_anagle)
-    d1 = distance * math.sin(virtical_anagle)
+    zenith_angle = math.radians(zenith_angle)
+    d1 = distance * math.sin(zenith_angle)
     x = reference_point.x + d1 * math.sin(angle)
     y = reference_point.y + d1 * math.cos(angle)
-    z = reference_point.z + distance * math.cos(virtical_anagle)
+    z = reference_point.z + distance * math.cos(zenith_angle)
     return Point(x, y, z, arc_point)
 
 
