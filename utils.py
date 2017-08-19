@@ -99,7 +99,7 @@ def pairs(points, matchtail):
         yield [start, end]
 
 
-def nextvertex(reference_point, distance, angle, zenith_angle=0, arc_point=False):
+def nextvertex(reference_point, distance, angle, zenith_angle=90, arc_point=False):
     """
     Return the next vertex given a start, angle, distance.
     :param reference_point: Start point
@@ -195,7 +195,7 @@ class Direction:
             return Direction.CLOCKWISE
 
 
-def arc_points(start, end, distance, radius, point_count=20, direction=Direction.CLOCKWISE):
+def arc_points(start, end, distance, radius, point_count=20, direction=Direction.CLOCKWISE, zenith_angle=90):
     center = calculate_center(start, end, radius, distance)
 
     first_angle = angle_to(start, center)
@@ -224,6 +224,6 @@ def arc_points(start, end, distance, radius, point_count=20, direction=Direction
     for i in range(point_count + 1):
         a += alpha
         if not a >= last_angle and not a <= first_angle:
-            yield nextvertex(center, radius, a, arc_point=True)
+            yield nextvertex(center, radius, a, zenith_angle=zenith_angle, arc_point=True)
 
 

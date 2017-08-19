@@ -489,7 +489,7 @@ class qgsazimuth(object):
                 # Calculate the arc points.
                 points = list(utils.arc_points(reference_point, nextpoint, dis, radius,
                                                 point_count=arcpoint_count,
-                                                direction=direction))
+                                                direction=direction, zenith_angle=zen))
 
                 if direction == utils.Direction.ANTICLOCKWISE:
                     points = reversed(points)
