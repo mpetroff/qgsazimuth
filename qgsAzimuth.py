@@ -185,7 +185,7 @@ class qgsazimuth(object):
         self.clearList()
         self.setStartAt("0;0;90")    # remove previous StartAt point
 
-        self.pluginGui.lineEdit_crs.setText(self.iface.mapCanvas().mapRenderer().destinationCrs().description())
+        self.pluginGui.lineEdit_crs.setText(self.iface.mapCanvas().mapSettings().destinationCrs().description())
 
         if self.iface.activeLayer():
             self.updatelayertext(self.iface.activeLayer())
@@ -506,7 +506,7 @@ class qgsazimuth(object):
         if self.useactivelayer:
             vectorlayer = self.iface.activeLayer()
         else:
-            code = self.iface.mapCanvas().mapRenderer().destinationCrs().authid()
+            code = self.iface.mapCanvas().mapSettings().destinationCrs().authid()
             vectorlayer = QgsVectorLayer("LineString?crs={}".format(code), "tmp_plot", "memory")
         return vectorlayer
 
@@ -731,7 +731,7 @@ class qgsazimuth(object):
         self.canvas.setMapTool(self.saveTool)
 
     def reproject(self, vlist,  vectorlayer):
-        renderer=self.canvas.mapRenderer()
+        renderer=self.canvas.mapSettings()
         for row, point in enumerate(vlist):
             new_point = renderer.layerToMapCoordinates(vectorlayer, QgsPoint(point[0], point[1]))
             # Translate it into our new point with arc_point info
