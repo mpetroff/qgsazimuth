@@ -661,10 +661,6 @@ class qgsazimuth(object):
         dist = self.pluginGui.lineEdit_nextDistance.value()
         zen = self.pluginGui.lineEdit_nextVertical.text()
         radius = self.pluginGui.spin_radius.value()
-        self.addrow(az, dist, zen, radius)
-
-    def addrow(self,  az=0,  dist=0,  zen = 90, radius=None):
-        #add the vertext to the end of the table
         if radius == 0:
             radius = None
             direction = None
@@ -673,7 +669,10 @@ class qgsazimuth(object):
                 direction = "anticlockwise"
             else:
                 direction = "clockwise"
+        self.addrow(az, dist, zen, radius, direction)
 
+    def addrow(self, az=0, dist=0, zen=90, radius=None, direction=None):
+        #add the vertex to the end of the table
         row=self.pluginGui.table_segmentList.rowCount()
         self.pluginGui.table_segmentList.insertRow(row)
         self.pluginGui.table_segmentList.setItem(row, 0, QTableWidgetItem(str(az).upper()))
@@ -854,11 +853,11 @@ class qgsazimuth(object):
                     elif (parts[0].lower()=='survey'):
                         self.setSurvey(parts[1].lower())
                 else:
-                    coords=(line.strip()).split(";")
+                    coords=tuple((line.strip()).split(";"))
                     if (coords[0].lower()=='[data]'):
                         pass
                     else:
-                        self.addrow(coords[0], coords[1], coords[2])
+                        self.addrow(*coords)
         except:
             self.say("Invalid input")
 
@@ -915,7 +914,9 @@ class qgsazimuth(object):
         for row in range(self.pluginGui.table_segmentList.rowCount()):
             line = str(self.pluginGui.table_segmentList.item(row, 0).text()) +';' \
                     +str(self.pluginGui.table_segmentList.item(row, 1).text()) +';' \
-                    +str(self.pluginGui.table_segmentList.item(row, 2).text())
+                    +str(self.pluginGui.table_segmentList.item(row, 2).text()) + ';' \
+                    +str(self.pluginGui.table_segmentList.item(row, 3).text()) +';' \
+                    +str(self.pluginGui.table_segmentList.item(row, 4).text())
             f.write(line+'\n')
 
         f.close()
