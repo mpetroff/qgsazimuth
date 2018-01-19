@@ -170,10 +170,13 @@ def angle_to(p1, p2):
     return angle
 
 
-def calculate_center(start, end, radius, distance):
+def calculate_center(start, end, radius, distance, direction):
     def func(diff):
         half = distance / 2
-        return math.sqrt(radius ** 2 - half ** 2) * diff / distance
+        result = math.sqrt(radius ** 2 - half ** 2) * diff / distance
+        if direction == Direction.ANTICLOCKWISE:
+            result *= -1
+        return result
 
     midpoint = calculate_midpoint(start, end)
     return Point(midpoint.x - func(start.y - end.y), midpoint.y - func(end.x - start.x))
@@ -196,7 +199,7 @@ class Direction:
 
 
 def arc_points(start, end, distance, radius, point_count=20, direction=Direction.CLOCKWISE, zenith_angle=90):
-    center = calculate_center(start, end, radius, distance)
+    center = calculate_center(start, end, radius, distance, direction)
 
     first_angle = angle_to(start, center)
     last_angle = angle_to(end, center)
