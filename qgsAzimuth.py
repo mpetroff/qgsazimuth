@@ -449,7 +449,7 @@ class qgsazimuth(object):
         for az, dis, zen, direction, radius in self.table_entries():
             if (self.pluginGui.radioButton_englishUnits.isChecked()):
                 # adjust for input in feet, not meters
-                dis = float(dis) / 3.281
+                dis = float(dis) * 0.3048
 
             #checking degree input
             if (self.pluginGui.radioButton_azimuthAngle.isChecked()):
@@ -486,6 +486,10 @@ class qgsazimuth(object):
 
             if radius:
                 # If there is a radius then we are drawing a arc.
+                if (self.pluginGui.radioButton_englishUnits.isChecked()):
+                    # adjust for input in feet, not meters
+                    radius = float(radius) * 0.3048
+
                 # Calculate the arc points.
                 points = list(utils.arc_points(reference_point, nextpoint, dis, radius,
                                                 point_count=arcpoint_count,
