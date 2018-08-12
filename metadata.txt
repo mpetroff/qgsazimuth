@@ -1,7 +1,7 @@
 # Mandatory items:
 [general]
 name=Azimuth and Distance Plugin
-qgisMinimumVersion=2.4
+qgisMinimumVersion=3.0
 description=Creates a feature from azimuths and distances
 about=This plugin aims to help users that want to create geometries from a list of azimuths and distances, such as the description on some old land registration documents.
 version=0.9.12

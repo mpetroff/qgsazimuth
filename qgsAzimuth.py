@@ -21,17 +21,18 @@
 import math
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import Qt, QFileInfo, QSettings, QSize, QPoint
+from qgis.PyQt.QtWidgets import QAction, QTableWidgetItem, QFileDialog
+from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.core import *
 
-from ui_control import Dock
-import resources_rc
+from .ui_control import Dock
+from . import resources_rc
 from math import *
-from getcoordtool import *
-from maptool import LineTool
+from .getcoordtool import *
+from .maptool import LineTool
 
-import utils
+from . import utils
 
 
 def log(message):
@@ -63,7 +64,7 @@ class qgsazimuth(object):
         self.action.setWhatsThis("Azimuth and distance")
         self.action.triggered.connect(self.run)
 
-        self.bandpoint = QgsRubberBand(self.canvas, QGis.Point)
+        self.bandpoint = QgsRubberBand(self.canvas, QgsWkbTypes.PointGeometry)
         self.bandpoint.setIcon(QgsRubberBand.ICON_CROSS)
         self.bandpoint.setColor(QColor.fromRgb(255,50,255))
         self.bandpoint.setWidth(3)
@@ -163,7 +164,7 @@ class qgsazimuth(object):
         self.canvas.setMapTool(self.angletool2)
 
     def update_marker_location(self, point):
-        self.bandpoint.setToGeometry(QgsGeometry.fromPoint(point), None)
+        self.bandpoint.setToGeometry(QgsGeometry.fromPointXY(point), None)
 
     def unload(self):
         # remove the plugin menu item and icon
@@ -252,20 +253,20 @@ class qgsazimuth(object):
             return
 
         if not self.useactivelayer:
-            QgsMapLayerRegistry.instance().addMapLayer(vectorlayer)
+            QgsProject.instance().addMapLayer(vectorlayer)
 
         vectorlayer.startEditing()
         for feature in featurelist:
             if self.should_open_form:
                 form = self.iface.getFeatureForm(vectorlayer, feature)
-                form.setIsAddDialog(True)
+                form.setMode(QgsAttributeForm.AddFeatureMode)
                 if not form.exec_():
                     continue
             else:
-                print feature.isValid()
-                print feature.geometry().exportToWkt()
+                print(feature.isValid())
+                print(feature.geometry().asWkt())
                 error = vectorlayer.addFeature(feature)
-                print error, feature
+                print(error, feature)
                 if error:
                     log("Error in adding feature")
 
@@ -408,7 +409,7 @@ class qgsazimuth(object):
             # Don't do anything if there is no last point
             return
 
-        point = QgsPoint(x, y)
+        point = QgsPointXY(x, y)
         self.pluginGui.update_startpoint(point, z)
         self.update_marker_location(point)
         self.clearList()
@@ -544,11 +545,11 @@ class qgsazimuth(object):
 
         featurelist=[]
         geometrytype= vectorlayer.geometryType()
-        if geometrytype == QGis.Point:
+        if geometrytype == QgsWkbTypes.PointGeometry:
             points = utils.to_qgspoints(vlist)
             features = utils.createpoints(points)
             featurelist.extend(features)
-        elif geometrytype == QGis.Line:
+        elif geometrytype == QgsWkbTypes.LineGeometry:
             if as_segments:
                 # If the line is to be draw as segments then we loop the pairs and create a line for each one.
                 points_to_join = []
@@ -581,7 +582,7 @@ class qgsazimuth(object):
                 pointlist = utils.to_qgspoints(vlist, repeatfirst=self.surveytype == 'radial')
                 feature = utils.createline(pointlist)
                 featurelist.append(feature)
-        elif geometrytype == QGis.Polygon:
+        elif geometrytype == Qgis.Polygon:
             polygon = utils.to_qgspoints(vlist)
             feature = utils.createpolygon([polygon])
             if feature:
@@ -589,8 +590,7 @@ class qgsazimuth(object):
 
         # Add the fields for the current layer
         for feature in featurelist:
-            fields = vectorlayer.pendingFields()
-            feature.setFields(fields)
+            feature.setFields(vectorlayer.fields())
 
         return featurelist, vectorlayer
 
@@ -736,7 +736,7 @@ class qgsazimuth(object):
     def reproject(self, vlist,  vectorlayer):
         renderer=self.canvas.mapSettings()
         for row, point in enumerate(vlist):
-            new_point = renderer.layerToMapCoordinates(vectorlayer, QgsPoint(point[0], point[1]))
+            new_point = renderer.layerToMapCoordinates(vectorlayer, QgsPointXY(point[0], point[1]))
             # Translate it into our new point with arc_point info
             new_point = utils.Point(new_point.x(), new_point.y(), arc_point=point.arc_point)
             vlist[row] = new_point
@@ -783,7 +783,7 @@ class qgsazimuth(object):
     def setStartAt(self,  s):
         #self.say('processing startAt='+s)
         coords= [float(v) for v in s.split (';')]
-        point = QgsPoint(coords[0], coords[1])
+        point = QgsPointXY(coords[0], coords[1])
         self.pluginGui.update_startpoint(point, coords[2])
 
     def setSurvey(self, s):
@@ -868,7 +868,7 @@ class qgsazimuth(object):
     def saveList(self):
         #file=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fPath,"")
         #self.tell("loaded file name: " + self.fileName)
-        file=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fileName,"")
+        file, _, _=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fileName,"")
         if (file == ''): return
         #self.tell('target file: '+file)
         f=open(file, 'w')
@@ -930,18 +930,18 @@ class qgsazimuth(object):
         settings = QSettings()
         size = settings.value('/Plugin-qgsAzimuth/size', QSize(800, 600), type=QSize)
         position = settings.value('/Plugin-qgsAzimuth/position', QPoint(0, 0), type=QPoint)
-        self.fPath = settings.value('/Plugin-qgsAzimuth/inp_exp_dir', "", type=unicode)
-        self.angletype = settings.value('/Plugin-qgsAzimuth/angletype', "", type=unicode)
+        self.fPath = settings.value('/Plugin-qgsAzimuth/inp_exp_dir', "", type=str)
+        self.angletype = settings.value('/Plugin-qgsAzimuth/angletype', "", type=str)
 
         self.should_open_form = settings.value('/Plugin-qgsAzimuth/open_form', True, type=bool)
-        self.surverytype = settings.value('/Plugin-qgsAzimuth/type', "", type=unicode)
-        self.northtype = settings.value('/Plugin-qgsAzimuth/northtype', "", type=unicode)
+        self.surverytype = settings.value('/Plugin-qgsAzimuth/type', "", type=str)
+        self.northtype = settings.value('/Plugin-qgsAzimuth/northtype', "", type=str)
         self.mag_dev = settings.value('/Plugin-qgsAzimuth/northtype_value', 0.0, type=float)
-        self.distanceunits = settings.value('/Plugin-qgsAzimuth/distanceunits', "", type=unicode)
-        self.angleunit = settings.value('/Plugin-qgsAzimuth/angleunit', "", type=unicode)
+        self.distanceunits = settings.value('/Plugin-qgsAzimuth/distanceunits', "", type=str)
+        self.angleunit = settings.value('/Plugin-qgsAzimuth/angleunit', "", type=str)
         if self.angleunit == 'gradian':
             self.pluginGui.lineEdit_nextVertical.setText("100")
-        self.angletype = settings.value('/Plugin-qgsAzimuth/angletype', "", type=unicode)
+        self.angletype = settings.value('/Plugin-qgsAzimuth/angletype', "", type=str)
         self.arc_count = settings.value('/Plugin-qgsAzimuth/arcpoints', 6, type=int)
 
         self.pluginGui.resize(size)
@@ -966,7 +966,6 @@ class qgsazimuth(object):
         settings.setValue('/Plugin-qgsAzimuth/arcpoints', self.arc_count)
 
     def sortedDict(self, adict):
-        keys = adict.keys()
+        keys = list(adict.keys())
         keys.sort()
-        return map(adict.get, keys)
-
+        return list(map(adict.get, keys))

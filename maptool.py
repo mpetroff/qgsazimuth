@@ -1,7 +1,7 @@
-from PyQt4.QtCore import pyqtSignal, Qt
-from PyQt4.QtGui import QCursor, QPixmap
-from qgis.core import QGis, QgsGeometry
-from qgis.gui import QgsMapTool, QgsRubberBand, QgsMapCanvasSnapper, QgsVertexMarker
+from qgis.PyQt.QtCore import pyqtSignal, Qt
+from qgis.PyQt.QtGui import QCursor, QPixmap
+from qgis.core import Qgis, QgsGeometry, QgsWkbTypes
+from qgis.gui import QgsMapTool, QgsRubberBand, QgsVertexMarker
 
 
 class LineTool(QgsMapTool):
@@ -19,8 +19,7 @@ class LineTool(QgsMapTool):
         self.p1 = None
         self.p2 = None
 
-        self.snapper = QgsMapCanvasSnapper(self.canvas())
-        self.band = QgsRubberBand(canvas, QGis.Line)
+        self.band = QgsRubberBand(canvas, QgsWkbTypes.LineGeometry)
         self.band.setWidth(3)
         self.band.setColor(Qt.red)
         self.cursor = QCursor(QPixmap(["16 16 3 1",
@@ -70,7 +69,7 @@ class LineTool(QgsMapTool):
             self.p2 = point
 
         if self.m2 and self.m1:
-            geom = QgsGeometry.fromPolyline([self.p1, self.p2])
+            geom = QgsGeometry.fromPolylineXY([self.p1, self.p2])
             self.band.setToGeometry(geom, None)
             self.geometryComplete.emit(geom)
 
@@ -79,21 +78,12 @@ class LineTool(QgsMapTool):
         self.locationChanged.emit(point)
 
     def snappoint(self, point):
-        if QGis.QGIS_VERSION_INT >= 20800:
-            # Snapping changed in 2.8 and now we do it this way.
-            utils = self.canvas().snappingUtils()
-            match = utils.snapToMap(point)
-            if match.isValid():
-                return match.point()
-            else:
-                return self.canvas().getCoordinateTransform().toMapCoordinates(point)
+        utils = self.canvas().snappingUtils()
+        match = utils.snapToMap(point)
+        if match.checkExpression():
+            return match.point()
         else:
-            try:
-                _, results = self.snapper.snapToBackgroundLayers(point)
-                point = results[0].snappedVertex
-                return point
-            except IndexError:
-                return self.canvas().getCoordinateTransform().toMapCoordinates(point)
+            return self.canvas().getCoordinateTransform().toMapCoordinates(point)
 
     def activate(self):
         self.canvas().setCursor(self.cursor)
@@ -101,7 +91,7 @@ class LineTool(QgsMapTool):
 
     def deactivate(self):
         """
-        Deactive the tool.
+        Deactivate the tool.
         """
         pass
 
@@ -113,12 +103,3 @@ class LineTool(QgsMapTool):
         self.m2 = None
         self.p1 = None
         self.p2 = None
-
-    def isZoomTool(self):
-        return False
-
-    def isTransient(self):
-        return False
-
-    def isEditTool(self):
-        return False

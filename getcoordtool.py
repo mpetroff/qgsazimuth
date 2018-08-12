@@ -18,15 +18,15 @@
 # 
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtGui import QCursor, QPixmap
 from qgis.core import *
 from qgis.gui import *
 
 # Raster File Info Tool class
 class GetCoordTool(QgsMapTool):
-  finished = pyqtSignal(QgsPoint)
-  locationChanged = pyqtSignal(QgsPoint)
+  finished = pyqtSignal(QgsPointXY)
+  locationChanged = pyqtSignal(QgsPointXY)
 
   def __init__(self, canvas):
     QgsMapTool.__init__(self,canvas)
@@ -50,29 +50,18 @@ class GetCoordTool(QgsMapTool):
                                    "############.a.#",
                                    "#############.##"]), 0, 0)
 
-    self.snapper = QgsMapCanvasSnapper(self.canvas)
-
 
   def canvasPressEvent(self,event):
     point = self.snappoint(event.pos())
     self.finished.emit(point)
 
   def snappoint(self, point):
-    if QGis.QGIS_VERSION_INT >= 20800:
-        # Snapping changed in 2.8 and now we do it this way.
-        utils = self.canvas.snappingUtils()
-        match = utils.snapToMap(point)
-        if match.isValid():
-            return match.point()
-        else:
-            return self.canvas.getCoordinateTransform().toMapCoordinates(point)
+    utils = self.canvas.snappingUtils()
+    match = utils.snapToMap(point)
+    if match.isValid():
+        return match.point()
     else:
-        try:
-            _, results = self.snapper.snapToBackgroundLayers(point)
-            point = results[0].snappedVertex
-            return point
-        except IndexError:
-            return self.canvas.getCoordinateTransform().toMapCoordinates(point)
+        return self.canvas.getCoordinateTransform().toMapCoordinates(point)
 
   def canvasMoveEvent(self,event):
     point = self.snappoint(event.pos())

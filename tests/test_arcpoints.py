@@ -20,9 +20,9 @@ class MyTestCase(unittest.TestCase):
 
         center = calculate_center(start, end, radius, distance)
 
-        print start
-        print end
-        print center
+        print(start)
+        print(end)
+        print(center)
 
         points.append(start)
         points.append(end)

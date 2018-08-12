@@ -8,15 +8,15 @@ class PointFunctionTests(unittest.TestCase):
     def test_pairs_returns_non_matching_tail_head(self):
         points = [1,2,3,4]
         pairs = utils.pairs(points, matchtail=False)
-        one = pairs.next()
-        two = pairs.next()
+        one = next(pairs)
+        two = next(pairs)
         self.assertNotEqual(one[1], two[0])
 
     def test_pairs_returns_matching_tail_head(self):
         points = [1,2,3,4]
         pairs = utils.pairs(points, matchtail=True)
-        one = pairs.next()
-        two = pairs.next()
+        one = next(pairs)
+        two = next(pairs)
         self.assertEqual(one[1], two[0])
 
 

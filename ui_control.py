@@ -1,7 +1,7 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QWidget, QDockWidget, QApplication
 
-from dock import Ui_Form
+from .dock import Ui_Form
 
 
 class Widget(QWidget, Ui_Form):

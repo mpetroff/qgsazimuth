@@ -1,7 +1,7 @@
 __author__ = 'Nathan.Woodrow'
 
 import math
-from qgis.core import QgsPoint, QgsFeature, QgsGeometry, QgsMessageLog
+from qgis.core import QgsPointXY, QgsFeature, QgsGeometry, QgsMessageLog
 from collections import namedtuple
 
 
@@ -15,7 +15,7 @@ def azimuth_from_line(geometry):
 
 def createpoints(points):
     for point in points:
-        geom = QgsGeometry.fromPoint(point)
+        geom = QgsGeometry.fromPointXY(point)
         feature = QgsFeature()
         feature.setGeometry(geom)
         yield feature
@@ -24,9 +24,9 @@ def createpoints(points):
 def createline(points):
     """
     Creata a line feature from a list of points
-    :param points: List of QgsPoints
+    :param points: List of QgsPointsXY
     """
-    geom = QgsGeometry.fromPolyline(points)
+    geom = QgsGeometry.fromPolylineXY(points)
     feature = QgsFeature()
     feature.setGeometry(geom)
     return feature
@@ -37,47 +37,47 @@ def createpolygon(polygon):
     Create a polygon from a list of points
     :param points: List of QgsPoints
     """
-    geom = QgsGeometry.fromPolygon(polygon)
+    geom = QgsGeometry.fromPolygonXY(polygon)
     if not geom:
         return None
     feature = QgsFeature()
     feature.setGeometry(geom)
     return feature
 
-class Point(QgsPoint):
+class Point(QgsPointXY):
     def __init__(self, x, y, z=0, arc_point=False):
-        QgsPoint.__init__(self, x, y)
+        QgsPointXY.__init__(self, x, y)
         self.arc_point = arc_point
         self.z = z
 
     @property
     def x(self):
-        return QgsPoint.x(self)
+        return QgsPointXY.x(self)
 
     @property
     def y(self):
-        return QgsPoint.y(self)
+        return QgsPointXY.y(self)
 
 def to_qgspoints(points, repeatfirst=False):
     """
-    Generate a QgsPoint list from a list of x,y pairs
+    Generate a QgsPointXY list from a list of x,y pairs
     :param repeatfirst: Repeat the first item in the list for each other point
     :return:
     """
     if not repeatfirst:
         # Just return a full list like normal
-        return [QgsPoint(point[0], point[1]) for point in points]
+        return [QgsPointXY(point[0], point[1]) for point in points]
     else:
         pointlist = []
 
         # Pop the first point
         points = iter(points)
         v0 = points.next()
-        v0 = QgsPoint(v0[0], v0[1])
+        v0 = QgsPointXY(v0[0], v0[1])
 
         # Loop the rest
         for point in points:
-            p = QgsPoint(point[0], point[1])
+            p = QgsPointXY(point[0], point[1])
             pointlist.append(v0)
             pointlist.append(p)
         return pointlist
@@ -186,7 +186,7 @@ def calculate_midpoint(start, end):
     midpoint = Point((start.x + end.x) / 2, (start.y + end.y) / 2)
     return midpoint
 
-class Direction:
+class Direction(object):
     CLOCKWISE = 0
     ANTICLOCKWISE = 1
 
@@ -218,10 +218,10 @@ def arc_points(start, end, distance, radius, point_count=20, direction=Direction
     if sweep < 0:
         alpha *= -1.0
 
-    print "First:", first_angle
-    print "Last:", last_angle
-    print "Sweep", sweep
-    print "Alpha", alpha
+    print("First:", first_angle)
+    print("Last:", last_angle)
+    print("Sweep", sweep)
+    print("Alpha", alpha)
 
     a = first_angle
     for i in range(point_count + 1):
