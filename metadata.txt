@@ -4,7 +4,7 @@ name=Azimuth and Distance Plugin
 qgisMinimumVersion=3.0
 description=Creates a feature from azimuths and distances
 about=This plugin aims to help users that want to create geometries from a list of azimuths and distances, such as the description on some old land registration documents.
-version=0.9.12
+version=0.9.13
 author=Mauricio de Paulo, Fred Laplante, DMS Australia, TechnoglogyOne, Matthew Petroff
 email=
 
@@ -15,6 +15,7 @@ deprecated=False
 repository=https://github.com/mpetroff/qgsazimuth
 tracker=https://github.com/mpetroff/qgsazimuth/issues
 changelog=
+    Version 0.9.13: Updated for QGIS 3.0
     Version 0.9.12: Fixed drawing of arcs when unit is feet
     Version 0.9.11: Correct drawing of counter-clockwise arcs
     Version 0.9.10: Added support for importing and exporting arcs
