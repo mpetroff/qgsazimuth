@@ -11,5 +11,6 @@ Copyright (C) 2008-2009 Mauricio Carvalho Mathias de Paulo
 """
 from .qgsAzimuth import qgsazimuth
 
+
 def classFactory(iface):
-  return qgsazimuth(iface)
+    return qgsazimuth(iface)

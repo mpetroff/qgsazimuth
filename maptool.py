@@ -9,6 +9,7 @@ class LineTool(QgsMapTool):
     A basic point tool that can be connected to actions in order to handle
     point based actions.
     """
+
     geometryComplete = pyqtSignal(object)
     locationChanged = pyqtSignal(object)
 
@@ -22,26 +23,32 @@ class LineTool(QgsMapTool):
         self.band = QgsRubberBand(canvas, QgsWkbTypes.LineGeometry)
         self.band.setWidth(3)
         self.band.setColor(Qt.red)
-        self.cursor = QCursor(QPixmap(["16 16 3 1",
-                                       "      c None",
-                                       ".     c #FF0000",
-                                       "+     c #FFFFFF",
-                                       "                ",
-                                       "       +.+      ",
-                                       "      ++.++     ",
-                                       "     +.....+    ",
-                                       "    +.     .+   ",
-                                       "   +.   .   .+  ",
-                                       "  +.    .    .+ ",
-                                       " ++.    .    .++",
-                                       " ... ...+... ...",
-                                       " ++.    .    .++",
-                                       "  +.    .    .+ ",
-                                       "   +.   .   .+  ",
-                                       "   ++.     .+   ",
-                                       "    ++.....+    ",
-                                       "      ++.++     ",
-                                       "       +.+      "]))
+        self.cursor = QCursor(
+            QPixmap(
+                [
+                    "16 16 3 1",
+                    "      c None",
+                    ".     c #FF0000",
+                    "+     c #FFFFFF",
+                    "                ",
+                    "       +.+      ",
+                    "      ++.++     ",
+                    "     +.....+    ",
+                    "    +.     .+   ",
+                    "   +.   .   .+  ",
+                    "  +.    .    .+ ",
+                    " ++.    .    .++",
+                    " ... ...+... ...",
+                    " ++.    .    .++",
+                    "  +.    .    .+ ",
+                    "   +.   .   .+  ",
+                    "   ++.     .+   ",
+                    "    ++.....+    ",
+                    "      ++.++     ",
+                    "       +.+      ",
+                ]
+            )
+        )
 
     def canvasReleaseEvent(self, event):
         if self.m2 and self.m1:
@@ -73,7 +80,7 @@ class LineTool(QgsMapTool):
             self.band.setToGeometry(geom, None)
             self.geometryComplete.emit(geom)
 
-    def canvasMoveEvent(self,event):
+    def canvasMoveEvent(self, event):
         point = self.snappoint(event.pos())
         self.locationChanged.emit(point)
 

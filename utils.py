@@ -1,4 +1,4 @@
-__author__ = 'Nathan.Woodrow'
+__author__ = "Nathan.Woodrow"
 
 import math
 from qgis.core import QgsPointXY, QgsFeature, QgsGeometry, QgsMessageLog
@@ -44,6 +44,7 @@ def createpolygon(polygon):
     feature.setGeometry(geom)
     return feature
 
+
 class Point(QgsPointXY):
     def __init__(self, x, y, z=0, arc_point=False):
         QgsPointXY.__init__(self, x, y)
@@ -57,6 +58,7 @@ class Point(QgsPointXY):
     @property
     def y(self):
         return QgsPointXY.y(self)
+
 
 def to_qgspoints(points, repeatfirst=False):
     """
@@ -124,41 +126,44 @@ def arc_length(radius, c_angle):
     :param c_angle: Central angle of the circle
     :return: The length of the arc
     """
-    return 2 * math.pi * radius * ( c_angle / 360 )
+    return 2 * math.pi * radius * (c_angle / 360)
 
 
 def points_on_arc(count, center, radius, start, end):
     pass
 
+
 def dmsToDd(dms):
     "It's not fast, but it's a safe way of dealing with DMS"
-    #dms=dms.replace(" ", "")
+    # dms=dms.replace(" ", "")
     if isinstance(dms, float):
         return dms
     for c in dms:
-        if ((not c.isdigit()) and (c != '.') and (c != '-')):
-            dms=dms.replace(c,';')
-    while (dms.find(";;")>=0):
-        dms=dms.replace(";;",';')
-    if dms[0]==';':
-        dms=dms[1:]
-    dms=dms.split(";")
-    dd=0
-    #dd=str(float(dms[0])+float(dms[1])/60+float(dms[2])/3600)
+        if (not c.isdigit()) and (c != ".") and (c != "-"):
+            dms = dms.replace(c, ";")
+    while dms.find(";;") >= 0:
+        dms = dms.replace(";;", ";")
+    if dms[0] == ";":
+        dms = dms[1:]
+    dms = dms.split(";")
+    dd = 0
+    # dd=str(float(dms[0])+float(dms[1])/60+float(dms[2])/3600)
     for row, f in enumerate(dms):
-        if f!="":
-            dd+=float(f)/pow(60, row)
+        if f != "":
+            dd += float(f) / pow(60, row)
     return dd
+
 
 def gradianToDd(gradian):
     factor = 1
-    out = ''
+    out = ""
     for c in gradian:
-        if c in 'cC':
+        if c in "cC":
             factor *= 0.01
-        if c.isdigit() or c in '.-':
+        if c.isdigit() or c in ".-":
             out += c
     return float(out) * factor * 0.9
+
 
 def angle_to(p1, p2):
     xDiff = p1.x - p2.x
@@ -186,19 +191,28 @@ def calculate_midpoint(start, end):
     midpoint = Point((start.x + end.x) / 2, (start.y + end.y) / 2)
     return midpoint
 
+
 class Direction(object):
     CLOCKWISE = 0
     ANTICLOCKWISE = 1
 
     @classmethod
     def resolve(cls, value):
-        if value == 'a' or value == "anticlockwise":
+        if value == "a" or value == "anticlockwise":
             return Direction.ANTICLOCKWISE
         else:
             return Direction.CLOCKWISE
 
 
-def arc_points(start, end, distance, radius, point_count=20, direction=Direction.CLOCKWISE, zenith_angle=90):
+def arc_points(
+    start,
+    end,
+    distance,
+    radius,
+    point_count=20,
+    direction=Direction.CLOCKWISE,
+    zenith_angle=90,
+):
     center = calculate_center(start, end, radius, distance, direction)
 
     first_angle = angle_to(start, center)
@@ -227,6 +241,6 @@ def arc_points(start, end, distance, radius, point_count=20, direction=Direction
     for i in range(point_count + 1):
         a += alpha
         if not a >= last_angle and not a <= first_angle:
-            yield nextvertex(center, radius, a, zenith_angle=zenith_angle, arc_point=True)
-
-
+            yield nextvertex(
+                center, radius, a, zenith_angle=zenith_angle, arc_point=True
+            )

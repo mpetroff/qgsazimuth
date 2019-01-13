@@ -1,4 +1,4 @@
-__author__ = 'Nathan.Woodrow'
+__author__ = "Nathan.Woodrow"
 
 import unittest
 import math
@@ -30,12 +30,14 @@ class MyTestCase(unittest.TestCase):
         line_points.append(start)
         line_points.append(end)
         arcpoints_clock = list(arc_points(start, end, distance, radius, 20))
-        arcpoints_anti = list(arc_points(start, end, distance, radius, 20, direction='anit'))
-        pyplot.plot(*zip(*points), marker='o', color='r', ls='')
-        pyplot.plot(*zip(*arcpoints_anti), marker='o', color='y', ls='')
-        pyplot.plot(*zip(*arcpoints_clock), marker='o', color='b', ls='')
+        arcpoints_anti = list(
+            arc_points(start, end, distance, radius, 20, direction="anit")
+        )
+        pyplot.plot(*zip(*points), marker="o", color="r", ls="")
+        pyplot.plot(*zip(*arcpoints_anti), marker="o", color="y", ls="")
+        pyplot.plot(*zip(*arcpoints_clock), marker="o", color="b", ls="")
         pyplot.plot(*zip(*line_points))
-        c2 = pyplot.Circle(center, radius, color='0.75')
+        c2 = pyplot.Circle(center, radius, color="0.75")
         fig = pyplot.gcf()
         fig.gca().add_artist(c2)
         pyplot.axis([0, 30, 0, 30])
@@ -61,5 +63,5 @@ class MyTestCase(unittest.TestCase):
         #     print "Distnace", distance_to_point(length_1, length_2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

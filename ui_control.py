@@ -29,6 +29,7 @@ class Dock(QDockWidget):
 
 if __name__ == "__main__":
     import sys, os
+
     app = QApplication(sys.argv)
     c = Dock(None)
     c.show()
