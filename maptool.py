@@ -80,7 +80,7 @@ class LineTool(QgsMapTool):
     def snappoint(self, point):
         utils = self.canvas().snappingUtils()
         match = utils.snapToMap(point)
-        if match.checkExpression():
+        if match.isValid():
             return match.point()
         else:
             return self.canvas().getCoordinateTransform().toMapCoordinates(point)

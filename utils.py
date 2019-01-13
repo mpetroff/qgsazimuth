@@ -72,7 +72,7 @@ def to_qgspoints(points, repeatfirst=False):
 
         # Pop the first point
         points = iter(points)
-        v0 = points.next()
+        v0 = next(points)
         v0 = QgsPointXY(v0[0], v0[1])
 
         # Loop the rest

@@ -259,7 +259,7 @@ class qgsazimuth(object):
         for feature in featurelist:
             if self.should_open_form:
                 form = self.iface.getFeatureForm(vectorlayer, feature)
-                form.setMode(QgsAttributeForm.AddFeatureMode)
+                form.setMode(QgsAttributeEditorContext.AddFeatureMode)
                 if not form.exec_():
                     continue
             else:
@@ -822,7 +822,7 @@ class qgsazimuth(object):
     #       note: lines 1 through 5 are optional if hand entered, but will always be generated when 'saved'
     # ---------------------------------------------------------------------------------------------------------------------------------
     def loadList(self):
-        self.fileName=QFileDialog.getOpenFileName(None,"Load data separated by ';'",self.fPath,"")
+        self.fileName, _ = QFileDialog.getOpenFileName(None, "Load data separated by ';'", self.fPath, "")
         if not os.path.exists(self.fileName):
             return 0
         # update selected file's folder
@@ -866,11 +866,9 @@ class qgsazimuth(object):
             self.say("Invalid input")
 
     def saveList(self):
-        #file=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fPath,"")
-        #self.tell("loaded file name: " + self.fileName)
-        file, _, _=QFileDialog.getSaveFileName(None,"Save segment list to file.",self.fileName,"")
-        if (file == ''): return
-        #self.tell('target file: '+file)
+        file, _ = QFileDialog.getSaveFileName(None, "Save segment list to file.", self.fileName, "")
+        if file == '':
+            return
         f=open(file, 'w')
         # update selected file's folder
         fInfo = QFileInfo(file)
