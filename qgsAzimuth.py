@@ -613,7 +613,7 @@ class qgsazimuth(object):
                 )
                 feature = utils.createline(pointlist)
                 featurelist.append(feature)
-        elif geometrytype == Qgis.Polygon:
+        elif geometrytype == QgsWkbTypes.PolygonGeometry:
             polygon = utils.to_qgspoints(vlist)
             feature = utils.createpolygon([polygon])
             if feature:
