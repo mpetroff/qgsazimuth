@@ -35,12 +35,6 @@ from .maptool import LineTool
 from . import utils
 
 
-def log(message):
-    from qgis.core import QgsMessageLog
-
-    QgsMessageLog.logMessage(str(message), "Plugin")
-
-
 class qgsazimuth(object):
     """
     Base class for the qgsAzimuth plugin
@@ -60,6 +54,10 @@ class qgsazimuth(object):
             ""
         )  # set default working directory, updated from config file & by Import/Export
         self.bands = []
+
+    def log(self, message):
+        QgsMessageLog.logMessage(str(message), "Plugin")
+        self.iface.messageBar().pushCritical("Error", str(message))
 
     def initGui(self):
         # create action that will start plugin configuration
@@ -279,7 +277,7 @@ class qgsazimuth(object):
                 error = vectorlayer.addFeature(feature)
                 print(error, feature)
                 if error:
-                    log("Error in adding feature")
+                    self.log("Error in adding feature")
 
         self.iface.mapCanvas().refresh()
         self.clear_bands()
@@ -505,6 +503,11 @@ class qgsazimuth(object):
                 if self.pluginGui.radioButton_englishUnits.isChecked():
                     # adjust for input in feet, not meters
                     radius = float(radius) * 0.3048
+
+                # Make sure distance <= diameter
+                if dis > 2 * radius:
+                    self.log("Invalid arc: distance can't be greater than diameter")
+                    return []
 
                 # Calculate the arc points.
                 points = list(
