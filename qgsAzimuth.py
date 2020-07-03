@@ -996,7 +996,7 @@ class qgsazimuth(object):
         settings = QSettings()
         size = settings.value("/Plugin-qgsAzimuth/size", QSize(800, 600), type=QSize)
         position = settings.value(
-            "/Plugin-qgsAzimuth/position", QPoint(0, 0), type=QPoint
+            "/Plugin-qgsAzimuth/position", QPoint(0, 10), type=QPoint
         )
         self.fPath = settings.value("/Plugin-qgsAzimuth/inp_exp_dir", "", type=str)
         self.angletype = settings.value("/Plugin-qgsAzimuth/angletype", "", type=str)
