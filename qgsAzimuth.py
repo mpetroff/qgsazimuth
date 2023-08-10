@@ -843,7 +843,7 @@ class qgsazimuth(object):
         if s == "polygonal":
             self.pluginGui.radioButton_boundarySurvey.setChecked(True)
         elif s == "radial":
-            self.pluginGui.radioButton_irrSurvey.setChecked(True)
+            self.pluginGui.radioButton_radialSurvey.setChecked(True)
         else:
             self.say("invalid survey type: " + s)
 
