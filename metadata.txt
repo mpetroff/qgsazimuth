@@ -6,6 +6,7 @@ description=Creates a feature from azimuths and distances
 about=This plugin aims to help users that want to create geometries from a list of azimuths and distances, such as the description on some old land registration documents.
 version=0.9.16
 author=Mauricio de Paulo, Fred Laplante, DMS Australia, TechnoglogyOne, Matthew Petroff
+homepage=https://github.com/mpetroff/qgsazimuth
 email=
 
 # Optional items:
