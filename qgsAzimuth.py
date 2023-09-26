@@ -274,9 +274,9 @@ class qgsazimuth(object):
             else:
                 print(feature.isValid())
                 print(feature.geometry().asWkt())
-                result = vectorlayer.addFeature(feature)
-                print("Error adding feature", feature)
-                if result == False:
+                error = vectorlayer.addFeature(feature)
+                print(error, feature)
+                if error:
                     self.log("Error in adding feature")
 
         self.iface.mapCanvas().refresh()
