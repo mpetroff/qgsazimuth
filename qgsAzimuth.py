@@ -21,7 +21,7 @@
 import math
 import os
 
-from qgis.PyQt.QtCore import Qt, QFileInfo, QSettings, QSize, QPoint
+from qgis.PyQt.QtCore import Qt, QFileInfo, QSettings, QSize, QPoint, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QTableWidgetItem, QFileDialog
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.core import *
@@ -123,9 +123,26 @@ class qgsazimuth(object):
         self.pluginGui.lineEdit_magNorth.textChanged.connect(self.update_offsetlabel)
         self.pluginGui.radioButton_defaultNorth.toggled.connect(self.update_offsetlabel)
 
+        self.pluginGui.radioButton_azimuthAngle.toggled.connect(self.update_angle_label)
+        self.pluginGui.radioButton_bearingAngle.toggled.connect(self.update_angle_label)
+
     def update_offsetlabel(self, *args):
         mag = self.mag_dev
         self.pluginGui.offsetLabel.setText(str(mag))
+
+    def update_angle_label(self, *args):
+        if self.angletype == "azimuth":
+            item = self.pluginGui.table_segmentList.horizontalHeaderItem(0)
+            item.setText(QCoreApplication.translate("Form", "Azimuth"))
+            self.pluginGui.label_angle.setText(
+                QCoreApplication.translate("Form", "Azimuth:")
+            )
+        else:
+            item = self.pluginGui.table_segmentList.horizontalHeaderItem(0)
+            item.setText(QCoreApplication.translate("Form", "Bearing"))
+            self.pluginGui.label_angle.setText(
+                QCoreApplication.translate("Form", "Bearing:")
+            )
 
     def copy_diff_offset(self):
         diff = self.pluginGui.azimuthDiff_edit.text()
