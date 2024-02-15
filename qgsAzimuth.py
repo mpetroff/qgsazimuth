@@ -278,6 +278,13 @@ class qgsazimuth(object):
         if not featurelist or not vectorlayer:
             return
 
+        if vectorlayer.sourceCrs().isGeographic():
+            self.log(
+                "Selected layer uses a geographic CRS, i.e., uses lat/lon "
+                "coordinates, but only projected CRSes are supported by plugin!"
+            )
+            return
+
         if not self.useactivelayer:
             QgsProject.instance().addMapLayer(vectorlayer)
 
