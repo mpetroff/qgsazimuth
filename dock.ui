@@ -1214,32 +1214,52 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="QRadioButton" name="radioButton_defaultUnits">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Default</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioButton_englishUnits">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Feet</string>
-              </property>
+             <widget class="QComboBox" name="comboBox_distanceUnits">
+              <item>
+               <property name="text">
+                <string>Default</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Centimeters</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Feet</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Kilometers</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Meters</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Miles</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Millimeters</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Nautical Miles</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Yards</string>
+               </property>
+              </item>
              </widget>
             </item>
            </layout>
@@ -1373,7 +1393,6 @@
   <tabstop>radioButton_defaultNorth</tabstop>
   <tabstop>radioButton_magNorth</tabstop>
   <tabstop>lineEdit_magNorth</tabstop>
-  <tabstop>radioButton_englishUnits</tabstop>
   <tabstop>radioButton_azimuthAngle</tabstop>
   <tabstop>radioButton_bearingAngle</tabstop>
   <tabstop>radioButton_polarCoordAngle</tabstop>

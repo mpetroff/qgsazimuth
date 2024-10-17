@@ -349,19 +349,32 @@ class qgsazimuth(object):
 
     @property
     def distanceunits(self):
-        if self.pluginGui.radioButton_defaultUnits.isChecked():
-            return "default"
-        elif self.pluginGui.radioButton_englishUnits.isChecked():
-            return "feet"
+        return self.pluginGui.comboBox_distanceUnits.currentText()
+
+    def lower_nospace_compare(self, valueA, valueB):
+        """
+        Determine if string values match, ignoring
+        spacing and capitalization.
+        """
+        valueA = valueA.replace(" ", "").lower()
+        valueB = valueB.replace(" ", "").lower()
+        return valueA == valueB
+
+    def get_distanceunit_combobox(self, value):
+        """
+        Get matching comboBox_distanceUnits item, ignoring
+        spacing and capitalization. If not found, assume Default (0).
+        """
+        items = self.pluginGui.comboBox_distanceUnits
+        for itemNumber in range(items.count()):
+            if self.lower_nospace_compare(items.itemText(itemNumber), value):
+                return itemNumber
+        return 0
 
     @distanceunits.setter
     def distanceunits(self, value):
-        if value == "default":
-            self.pluginGui.radioButton_defaultUnits.setChecked(True)
-        elif value == "feet":
-            self.pluginGui.radioButton_englishUnits.setChecked(True)
-        else:
-            self.pluginGui.radioButton_defaultUnits.setChecked(True)
+        value = self.get_distanceunit_combobox(value)
+        self.pluginGui.comboBox_distanceUnits.setCurrentIndex(value)
 
     @property
     def angleunit(self):
@@ -468,6 +481,45 @@ class qgsazimuth(object):
 
             yield az, dis, zen, direction, radius
 
+    def get_distanceunit_enum(self, value):
+        """
+        Get matching distanceunit enum item, ignoring
+        spacing and capitalization.
+        """
+        items = QgsUnitTypes.DistanceUnit
+        if 'Degrees' in dir(items) or 'DistanceDegrees' in dir(items):
+            items = list(items)
+            for item in items:
+                if self.lower_nospace_compare(item.name, value) or self.lower_nospace_compare(item.name, "distance" + value):
+                    return item
+        else:
+            items = dir(QgsUnitTypes)
+            for item in items:
+                itemObject = getattr(QgsUnitTypes, item)
+                if isinstance(itemObject, QgsUnitTypes.DistanceUnit):
+                    if self.lower_nospace_compare(item, "distance" + value):
+                        return itemObject
+        return -1
+    
+    def get_distanceunits_factor(self, fromUnits=None, toUnits=None):
+        """
+        Determine multiplication factor between distanceunits value
+        and CRS map units. If cannot calculate, assume Default (1.0).
+        """
+        if fromUnits is None:
+            fromUnits = self.distanceunits
+        fromUnits = self.get_distanceunit_enum(fromUnits)
+    
+        if fromUnits > -1:
+            if toUnits is None:
+                toUnits = self.drawing_layer.sourceCrs().mapUnits()
+            else:
+                toUnits = self.get_distanceunit_enum(toUnits)
+            if toUnits > -1:
+                return QgsUnitTypes.fromUnitToUnitFactor(fromUnits, toUnits)
+
+        return float(1.0)
+
     def get_points(self, surveytype, arcpoint_count):
         """
         Return a list of calculated points for the full run.
@@ -485,9 +537,8 @@ class qgsazimuth(object):
         vlist.append(utils.Point(X, Y, Z))
         # convert segment list to set of vertice
         for az, dis, zen, direction, radius in self.table_entries():
-            if self.pluginGui.radioButton_englishUnits.isChecked():
-                # adjust for input in feet, not meters
-                dis = float(dis) * 0.3048
+            # adjust for input in non-default units
+            dis = float(dis) * self.get_distanceunits_factor()
 
             # checking degree input
             if self.pluginGui.radioButton_azimuthAngle.isChecked():
@@ -524,9 +575,9 @@ class qgsazimuth(object):
 
             if radius:
                 # If there is a radius then we are drawing a arc.
-                if self.pluginGui.radioButton_englishUnits.isChecked():
-                    # adjust for input in feet, not meters
-                    radius = float(radius) * 0.3048
+                
+                # adjust for input in non-default units
+                radius = float(radius) * self.get_distanceunits_factor()
 
                 # Make sure distance <= diameter
                 if dis > 2 * radius:
@@ -845,10 +896,7 @@ class qgsazimuth(object):
 
     def setDistanceUnits(self, s):
         # self.say('processing distance units='+s)
-        if s == "feet":
-            self.pluginGui.radioButton_englishUnits.setChecked(True)
-        else:
-            self.pluginGui.radioButton_defaultUnits.setChecked(True)
+        self.distanceunits = s
 
     def setAngleUnit(self, s):
         if s == "gradian":
@@ -970,11 +1018,7 @@ class qgsazimuth(object):
         if hasattr(self, "magDev") and self.magDev != 0.0:
             f.write("declination=" + str(self.magDev) + "\n")
 
-        if self.pluginGui.radioButton_defaultUnits.isChecked():
-            s = "Default"
-        elif self.pluginGui.radioButton_englishUnits.isChecked():
-            s = "Feet"
-        f.write("dist_units=" + s + "\n")
+        f.write("dist_units=" + self.distanceunits + "\n")
 
         if self.pluginGui.radioButton_degreeUnit.isChecked():
             s = "degree"
