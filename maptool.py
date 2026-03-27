@@ -20,9 +20,9 @@ class LineTool(QgsMapTool):
         self.p1 = None
         self.p2 = None
 
-        self.band = QgsRubberBand(canvas, QgsWkbTypes.LineGeometry)
+        self.band = QgsRubberBand(canvas, QgsWkbTypes.GeometryType.LineGeometry)
         self.band.setWidth(3)
-        self.band.setColor(Qt.red)
+        self.band.setColor(Qt.GlobalColor.red)
         self.cursor = QCursor(
             QPixmap(
                 [
@@ -59,7 +59,7 @@ class LineTool(QgsMapTool):
         if not self.m1:
             self.m1 = QgsVertexMarker(self.canvas())
             self.m1.setIconType(1)
-            self.m1.setColor(Qt.blue)
+            self.m1.setColor(Qt.GlobalColor.blue)
             self.m1.setIconSize(6)
             self.m1.setPenWidth(3)
             self.m1.setCenter(point)
@@ -69,7 +69,7 @@ class LineTool(QgsMapTool):
         if not self.m2:
             self.m2 = QgsVertexMarker(self.canvas())
             self.m2.setIconType(1)
-            self.m2.setColor(Qt.red)
+            self.m2.setColor(Qt.GlobalColor.red)
             self.m2.setIconSize(6)
             self.m2.setPenWidth(3)
             self.m2.setCenter(point)

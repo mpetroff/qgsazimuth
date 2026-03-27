@@ -33,4 +33,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     c = Dock(None)
     c.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
