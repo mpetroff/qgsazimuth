@@ -1021,7 +1021,7 @@ class qgsazimuth(object):
         position = settings.value(
             "/Plugin-qgsAzimuth/position", QPoint(0, 0), type=QPoint
         )
-        if position.isNull():
+        if position is None:
             position = QPoint(0, 0) # QPoint(0, 0) gets cast to NULL
         self.fPath = settings.value("/Plugin-qgsAzimuth/inp_exp_dir", "", type=str)
         self.angletype = settings.value("/Plugin-qgsAzimuth/angletype", "", type=str)
@@ -1029,7 +1029,7 @@ class qgsazimuth(object):
         self.should_open_form = settings.value(
             "/Plugin-qgsAzimuth/open_form", True, type=bool
         )
-        self.surverytype = settings.value("/Plugin-qgsAzimuth/type", "", type=str)
+        self.surveytype = settings.value("/Plugin-qgsAzimuth/type", "", type=str)
         self.northtype = settings.value("/Plugin-qgsAzimuth/northtype", "", type=str)
         self.mag_dev = settings.value(
             "/Plugin-qgsAzimuth/northtype_value", 0.0, type=float
