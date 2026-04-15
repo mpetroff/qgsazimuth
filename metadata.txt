@@ -4,7 +4,7 @@ name=Azimuth and Distance Plugin
 qgisMinimumVersion=4.0
 description=Creates a feature from azimuths and distances
 about=This plugin aims to help users that want to create geometries from a list of azimuths and distances, such as the description on some old land registration documents.
-version=0.9.20
+version=0.9.21
 author=Mauricio de Paulo, Fred Laplante, DMS Australia, TechnoglogyOne, Matthew Petroff
 homepage=https://github.com/mpetroff/qgsazimuth
 email=
@@ -16,6 +16,7 @@ deprecated=False
 repository=https://github.com/mpetroff/qgsazimuth
 tracker=https://github.com/mpetroff/qgsazimuth/issues
 changelog=
+    Version 0.9.21: Fixed bug with loading plugin after fresh install in QGIS 4.0
     Version 0.9.20: Updated for QGIS 4.0
     Version 0.9.19: Return an error if used with a layer with an unsupported geographic CRS
     Version 0.9.18: Allow three decimal places of distance precision and label angle as bearing when appropriate
